@@ -1,0 +1,76 @@
+# =====================================================================
+# BẢN MẪU .gitignore CỦA NHÓM
+#
+# File này ĐƯỢC commit. File .gitignore thật thì KHÔNG.
+#
+# Cách dùng — mỗi người chạy một lần sau khi clone:
+#     copy .gitignore.example .gitignore     (PowerShell / cmd)
+#     cp   .gitignore.example .gitignore     (Git Bash / macOS / Linux)
+#
+# Sau đó tự thêm bớt trong .gitignore của riêng mình mà không đụng đến
+# người khác. Khi có luật nào cả nhóm nên dùng chung thì sửa vào
+# .gitignore.example rồi commit, báo mọi người copy lại.
+# =====================================================================
+
+
+# =====================================================================
+# Chính file .gitignore
+# =====================================================================
+.gitignore
+
+
+# =====================================================================
+# LaTeX — file trung gian sinh ra mỗi lần biên dịch.
+# Không commit: chúng thay đổi liên tục và gây xung đột merge vô nghĩa.
+#
+# =====================================================================
+*.aux
+*.log
+*.toc
+*.out
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+*.bbl
+*.blg
+*.run.xml
+*.bcf
+*.nav
+*.snm
+*.vrb
+
+# =====================================================================
+# PDF kết xuất của bản dịch.
+# Build lại bất cứ lúc nào bằng:  .report/overleaf/render.ps1
+# (Cần cài sẵn perl + strawberry chạy xelatex)
+# =====================================================================
+.report/overleaf/*.pdf
+
+# =====================================================================
+# Gói ảnh nén dùng để upload lên Overleaf — chỉ là bản sao của img/,
+# tạo lại được nên không cần theo dõi.
+# =====================================================================
+*.zip
+
+# =====================================================================
+# Rác hệ điều hành / trình soạn thảo
+# =====================================================================
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+*~
+*.swp
+
+# =====================================================================
+# Python (script xử lý dữ liệu cho đồ án cuối kỳ)
+# =====================================================================
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
