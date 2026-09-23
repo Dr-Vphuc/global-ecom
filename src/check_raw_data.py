@@ -35,17 +35,23 @@ def ok(msg):
 
 
 def check_complete_last_line(path, n_fields):
-    """File tai bi cat thuong ket thuc bang mot dong thieu truong."""
+    """File tai bi cat thuong ket thuc bang mot dong thieu truong.
+
+    Doc theo dong chu khong nap ca file: cp_year_hs2.csv co 628k dong.
+    """
+    n_bad, first = 0, None
     with open(path, encoding="utf-8-sig", newline="") as fh:
-        rows = list(csv.reader(fh))
-    bad = [(i + 1, r) for i, r in enumerate(rows) if r and len(r) != n_fields]
-    if bad:
+        for i, r in enumerate(csv.reader(fh), 1):
+            if r and len(r) != n_fields:
+                n_bad += 1
+                if first is None:
+                    first = (i, r)
+    if n_bad:
         fail("%s: %d dong khong du %d truong. Dong dau tien: %d -> %r"
-             % (os.path.basename(path), len(bad), n_fields, bad[0][0], bad[0][1]))
+             % (os.path.basename(path), n_bad, n_fields, first[0], first[1]))
         fail("  => Rat co the FILE BI CAT khi tai. Phai tai lai.")
     else:
         ok("%s: moi dong du %d truong" % (os.path.basename(path), n_fields))
-    return rows
 
 
 def main():
@@ -54,8 +60,9 @@ def main():
     loc_path = os.path.join(RAW, "location_country.csv")
     cc_path = os.path.join(RAW, "cc_year.csv")
     prod_path = os.path.join(RAW, "product_hs92.csv")
+    cp_path = os.path.join(RAW, "cp_year_hs2.csv")
 
-    for p in (loc_path, cc_path, prod_path):
+    for p in (loc_path, cc_path, prod_path, cp_path):
         if not os.path.exists(p):
             fail("THIEU FILE: %s" % os.path.relpath(p, ROOT))
     if problems:
@@ -145,6 +152,45 @@ def main():
         fail("%d nut mo coi" % len(orph))
     else:
         ok("khong co nut mo coi")
+
+    # --- 6. File nuoc - san pham, va doi chieu cheo hai file ---
+    log("\n6. File nuoc - san pham HS2")
+    check_complete_last_line(cp_path, 11)
+
+    codes, tot_cp = set(), {}
+    with open(cp_path, encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            if not r.get("year"):
+                continue
+            codes.add(r["product_hs92_code"])
+            try:
+                y, v = int(r["year"]), float(r["export_value"] or 0)
+            except (ValueError, TypeError):
+                continue
+            tot_cp[y] = tot_cp.get(y, 0.0) + v
+    if len(codes) == 97:
+        ok("du 97 ma HS2")
+    else:
+        fail("chi co %d ma HS2, mong doi 97" % len(codes))
+
+    # Doi chieu cheo hai file: cc_year do thuong mai theo cap nuoc, cp_year_hs2
+    # do theo nuoc va san pham. Hai goc nhin khac nhau nhung tong xuat khau
+    # toan the gioi phai trung nhau. Lech lon = mot trong hai file thieu dong.
+    log("\n7. Doi chieu cheo cc_year.csv voi cp_year_hs2.csv")
+    chung = set(tot) & set(tot_cp)
+    if chung:
+        y = max(chung)
+        a, b = tot[y], tot_cp[y]
+        lech = abs(a - b) / a if a else 1.0
+        log("  nam %d: cc_year %.2f nghin ty | cp_year_hs2 %.2f nghin ty"
+            % (y, a / 1e12, b / 1e12))
+        if lech < 0.01:
+            ok("hai file khop nhau (lech %.3f%%)" % (lech * 100))
+        else:
+            fail("hai file lech %.1f%% => mot trong hai thieu du lieu"
+                 % (lech * 100))
+    else:
+        fail("hai file khong co nam nao chung")
 
     # --- Ket luan ---
     log("\n" + "=" * 60)

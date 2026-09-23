@@ -25,6 +25,7 @@ from reference_data import (  # noqa: E402
     DEFAULT_THRESHOLD,
     FOCUS_ISO3,
     NON_COUNTRY,
+    REFERENCE_YEAR,
     SECTOR_PALETTE_PROVISIONAL,
     UNINHABITED,
 )
@@ -66,7 +67,7 @@ def write_csv(path, fieldnames, rows):
 # nodes.csv
 # ---------------------------------------------------------------------------
 def build_nodes():
-    log("\n[1/3] nodes.csv")
+    log("\n[1/4] nodes.csv")
     src = read_csv(os.path.join(RAW, "location_country.csv"))
     rows, missing = [], []
 
@@ -115,7 +116,7 @@ def build_nodes():
 # edges.csv
 # ---------------------------------------------------------------------------
 def build_edges(known_iso3, threshold):
-    log("\n[2/3] edges.csv  (nguong tam: %.0f USD)" % threshold)
+    log("\n[2/4] edges.csv  (nguong tam: %.0f USD)" % threshold)
     path = os.path.join(RAW, "cc_year.csv")
     if not os.path.exists(path):
         sys.exit("THIEU FILE: %s — xem README." % path)
@@ -178,12 +179,14 @@ def build_edges(known_iso3, threshold):
             % (len(unknown), ", ".join(sorted(unknown))))
     log("  nam: %d–%d (%d nam)" % (min(years), max(years), len(years)))
 
-    # Doi chieu voi con so nhom da do san va se phai bao ve truoc hoi dong.
-    e2023 = [r for r in rows if r["year"] == 2023]
-    n_focus = len({r["source_iso3"] for r in e2023} | {r["target_iso3"] for r in e2023})
-    dens = len(e2023) / (n_focus * (n_focus - 1)) if n_focus > 1 else 0
-    log("  KIEM CHUNG 2023: %d canh, %d nut, mat do %.3f  (file phan cong ghi: 25425 / 230 / 0.483)"
-        % (len(e2023), n_focus, dens))
+    # Con so cua nam moc - day la bo ba se trich vao bao cao va slide.
+    ref = [r for r in rows if r["year"] == REFERENCE_YEAR]
+    n_ref = len({r["source_iso3"] for r in ref} | {r["target_iso3"] for r in ref})
+    dens = len(ref) / (n_ref * (n_ref - 1)) if n_ref > 1 else 0
+    log("  NAM MOC %d: %d canh, %d nut, mat do %.3f"
+        % (REFERENCE_YEAR, len(ref), n_ref, dens))
+    log("  ! con so cu trong file phan cong (25425 / 230 / 0.483) do tren ban"
+        " du lieu bi cat - da bo.")
     return rows
 
 
@@ -191,7 +194,7 @@ def build_edges(known_iso3, threshold):
 # tree.csv
 # ---------------------------------------------------------------------------
 def build_tree():
-    log("\n[3/3] tree.csv")
+    log("\n[3/4] tree.csv")
     src = read_csv(os.path.join(RAW, "product_hs92.csv"))
     by_id = {r["product_id"]: r for r in src}
 
@@ -249,6 +252,110 @@ def build_tree():
     log("  ! sector_color dang la bang mau TAM — phai thay o T04.")
 
 
+# ---------------------------------------------------------------------------
+# country_product.csv
+# ---------------------------------------------------------------------------
+def build_country_product():
+    """Co cau xuat khau theo nuoc - san pham HS2, kem RCA tu tinh."""
+    log("\n[4/4] country_product.csv")
+    path = os.path.join(RAW, "cp_year_hs2.csv")
+    if not os.path.exists(path):
+        log("  ! THIEU %s" % os.path.relpath(path, ROOT))
+        log("    -> chay: python src/download_atlas.py")
+        log("    (chi T12-T14 can file nay; ba file tren van dung duoc)")
+        return
+
+    names = {r["product_id"]: r["product_name_short"]
+             for r in read_csv(os.path.join(RAW, "product_hs92.csv"))}
+
+    # Doc hai luot thay vi giu 628k dong trong bo nho:
+    #   luot 1 cong tong theo nuoc-nam, theo san pham-nam va theo nam;
+    #   luot 2 tinh RCA roi ghi thang ra file.
+    log("  luot 1/2: cong tong theo nuoc, theo san pham, theo nam")
+    tot_c, tot_p, tot_w = {}, {}, {}
+    n_total = n_zero = 0
+    with open(path, encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            n_total += 1
+            v = float(r["export_value"] or 0)
+            if v <= 0:
+                n_zero += 1
+                continue
+            y, c, pid = r["year"], r["country_iso3_code"], r["product_id"]
+            tot_c[(c, y)] = tot_c.get((c, y), 0.0) + v
+            tot_p[(pid, y)] = tot_p.get((pid, y), 0.0) + v
+            tot_w[y] = tot_w.get(y, 0.0) + v
+
+    log("  luot 2/2: tinh RCA va ghi file")
+    out = os.path.join(OUT, "country_product.csv")
+    os.makedirs(OUT, exist_ok=True)
+    fields = ["country_iso3", "product_id", "year", "export_value", "rca", "pci"]
+
+    ref = str(REFERENCE_YEAR)
+    gms_dev = 0.0        # lech giua thi phan tu tinh va cot co san trong file goc
+    weighted = {}        # kiem dinh: trung binh RCA co trong = 1 cho moi san pham
+    vnm_ref = []         # de in thu vai dong cho Viet Nam
+    n_out = 0
+
+    src = open(path, encoding="utf-8-sig", newline="")
+    dst = open(out, "w", encoding="utf-8", newline="")
+    with src, dst:
+        w = csv.DictWriter(dst, fieldnames=fields)
+        w.writeheader()
+        for r in csv.DictReader(src):
+            v = float(r["export_value"] or 0)
+            if v <= 0:
+                continue
+            y, c, pid = r["year"], r["country_iso3_code"], r["product_id"]
+            xc, xp, xw = tot_c[(c, y)], tot_p[(pid, y)], tot_w[y]
+
+            # RCA Balassa: ti trong san pham p trong ro xuat khau cua nuoc c,
+            # chia cho ti trong cua p trong ro xuat khau toan the gioi.
+            # RCA > 1 = nuoc do xuat khau p dam dac hon muc trung binh the gioi.
+            rca = (v / xc) / (xp / xw)
+
+            # Doi chieu voi cot global_market_share (= v / xp) co san trong file
+            # goc. Lech lon nghia la tong theo san pham cua ta bi thieu dong.
+            gms = float(r["global_market_share"] or 0)
+            if gms >= 1e-4:
+                gms_dev = max(gms_dev, abs(v / xp - gms) / gms)
+
+            if y == ref:
+                weighted[pid] = weighted.get(pid, 0.0) + (xc / xw) * rca
+                if c == "VNM":
+                    vnm_ref.append((rca, v, pid))
+
+            w.writerow({
+                "country_iso3": c,
+                "product_id": pid,
+                "year": int(y),
+                "export_value": repr(v),
+                "rca": "%.4f" % rca,
+                "pci": r["pci"],
+            })
+            n_out += 1
+
+    log("  -> %s  (%d dong, %.1f MB)"
+        % (os.path.relpath(out, ROOT), n_out, os.path.getsize(out) / 1e6))
+    log("  doc %d dong -> giu %d (bo %d dong export_value = 0)"
+        % (n_total, n_out, n_zero))
+
+    # --- Hai phep kiem dinh ---
+    # 1. Thi phan tu tinh phai trung cot co san trong du lieu goc.
+    log("  KIEM DINH 1 - thi phan tu tinh vs cot goc: lech toi da %.3f%%  %s"
+        % (gms_dev * 100, "DAT" if gms_dev < 0.01 else "KHONG DAT"))
+    # 2. Voi moi san pham, trung binh RCA co trong theo quy mo nuoc phai bang 1.
+    #    Day la tinh chat toan hoc cua chi so Balassa; sai la cong thuc sai.
+    worst = max((abs(s - 1.0) for s in weighted.values()), default=0.0)
+    log("  KIEM DINH 2 - trung binh RCA co trong (phai = 1): lech toi da %.1e  %s"
+        % (worst, "DAT" if worst < 1e-6 else "KHONG DAT"))
+
+    vnm_ref.sort(reverse=True)
+    log("  Viet Nam %d - 5 nhom hang co RCA cao nhat:" % REFERENCE_YEAR)
+    for rca, v, pid in vnm_ref[:5]:
+        log("    RCA %6.2f  %6.1f ty USD  %s" % (rca, v / 1e9, names.get(pid, pid)))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD,
@@ -260,6 +367,7 @@ def main():
     known = build_nodes()
     build_edges(known, args.threshold)
     build_tree()
+    build_country_product()
     log("\nXong. File nam trong data/processed/ (da bi .gitignore loai tru).")
 
 

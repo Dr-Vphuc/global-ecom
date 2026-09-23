@@ -24,9 +24,9 @@ UNINHABITED = {"ATA", "BVT", "HMD", "SGS", "ATF"}
 
 ASEAN_ISO3 = ["BRN", "KHM", "IDN", "LAO", "MYS", "MMR", "PHL", "SGP", "THA", "VNM"]
 
-# Nước được tô đậm. Mở rộng thành set(ASEAN_ISO3) nếu muốn làm nổi cả khối
-# cho lát cắt ASEAN.
-FOCUS_ISO3 = {"VNM"}
+# Nước được tô đậm trong biểu đồ. Đã chốt: cả khối ASEAN, vì đề tài có
+# lát cắt Việt Nam – ASEAN. Muốn quay về chỉ mình Việt Nam thì đổi thành {"VNM"}.
+FOCUS_ISO3 = set(ASEAN_ISO3)
 
 # Đối tác ngoài khối đáng so sánh trong phần diễn giải.
 MAJOR_PARTNERS = ["CHN", "USA", "JPN", "KOR", "DEU", "IND", "HKG", "TWN"]
@@ -331,6 +331,10 @@ SECTOR_NAME_VI = {
 
 # Các mốc thời gian dùng cho small multiples (T20).
 MILESTONE_YEARS = [1995, 2005, 2015, 2024]
+
+# Năm "hiện tại" của cả đồ án. Mọi con số một-năm — số cạnh, mật độ, xếp hạng,
+# treemap "nay" — phải lấy đúng năm này để báo cáo không tự mâu thuẫn.
+REFERENCE_YEAR = 2024
 
 # Ngưỡng lọc cạnh mặc định, USD.
 # ⚠️ TẠM THỜI — phải chốt lại ở T10 bằng bảng đánh đổi, không chọn cảm tính.

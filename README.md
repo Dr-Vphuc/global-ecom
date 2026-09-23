@@ -10,26 +10,50 @@ Phân công chi tiết, hợp đồng dữ liệu và tiến độ nằm trong `
 
 ---
 
-## ⚠️ CẢNH BÁO: dữ liệu thô hiện tại KHÔNG dùng được
+## Dữ liệu thô: đã sửa, và bài học
 
-File `data/atlas/cc_year.csv` trong repo là **một bản tải bị cắt giữa chừng**. Nó kết thúc đột ngột ở dòng 811.777 (`795,TKM,250`) — **28.373.409 byte, thiếu đúng 2.393.842 byte (7,8%)** so với bản gốc 30.767.251 byte trên Dataverse.
+Bản `cc_year.csv` từng nằm trong repo là **một bản tải bị cắt giữa chừng**:
+28.373.409 byte thay vì 30.767.251, mất đúng 7,8% cuối file. Dữ liệu sắp xếp
+theo `country_id` nên mọi nước có mã lớn hơn 795 mất sạch số liệu xuất khẩu —
+trong đó có **Hoa Kỳ**, Anh, Ukraine, Ai Cập. Tổng xuất khẩu thế giới 2024 đọc
+ra 19,07 nghìn tỷ USD thay vì 21,81.
 
-File được sắp xếp theo `country_id`, nên toàn bộ các nước có mã lớn hơn 795 **mất hoàn toàn số liệu xuất khẩu**:
+Kết nối tới Dataverse chỉ khoảng 30 KB/s, nên một lần tải kéo dài gần 20 phút.
+Trình duyệt đứt giữa chừng và **không báo lỗi** — file vẫn mở được bình thường,
+chỉ cụt đuôi. Đó là lý do `src/download_atlas.py` luôn đối chiếu MD5 chính thức
+và `src/check_raw_data.py` là cửa chặn bắt buộc trước khi chạy pipeline.
 
-> TCA, TUV, UGA, UKR, MKD, EGY, **GBR**, TZA, **USA**, BFA, URY, UZB, VEN, WSM, YEM, ZMB
+Hiện tại `python src/check_raw_data.py` báo `DAT` trên cả 7 mục kiểm tra.
 
-Hệ quả:
+### Số liệu đã đo lại — đừng dùng số cũ
 
-- **Hoa Kỳ có 0 dòng xuất khẩu.** Hoa Kỳ chỉ xuất hiện khi là nước nhập khẩu.
-- Tổng xuất khẩu toàn cầu trong file chỉ **19,1 nghìn tỷ USD**, trong khi con số thực tế khoảng **23–24 nghìn tỷ USD**. Thiếu khoảng **4 nghìn tỷ**.
-- Mọi chỉ số mạng có hướng — `degree_out`, `strength_out`, `betweenness`, phát hiện cộng đồng — sẽ **sai** trên dữ liệu này.
-- Các con số đã đo sẵn trong file phân công (25.425 cạnh · 230 nút · mật độ 0,483 · top 1% chiếm 60,2%) được tính trên chính bản bị cắt này, nên **cũng phải đo lại** sau khi tải đủ.
+Các con số trong `phan-cong-cong-viec.xlsx` được đo trên bản bị cắt. Số đúng,
+đo trên năm mốc **2024**:
 
-Ba file tra cứu còn lại (`location_country.csv`, `product_hs92.csv`, `hs92_data_dictionary.csv`) đã được kiểm MD5 — đều nguyên vẹn. Chỉ một file hỏng.
+| Chỉ số | Số cũ trong file phân công | Số đúng |
+|---|---|---|
+| Số cạnh | 25.425 (năm 2023) | **25.754** (năm 2024) |
+| Số nút | 230 | **231** |
+| Mật độ | 0,483 | **0,485** |
+| Top 1% cạnh chiếm | 60,2% | **60,7%** |
+| Ngưỡng 10 tỷ USD | 347 cạnh, 65,7% giá trị | **385 cạnh, 67,7% giá trị** |
 
-**Việc cần làm (T06, R1):** xem mục [Tải dữ liệu thô](#tải-dữ-liệu-thô) — `python src/download_atlas.py`, rồi `python src/check_raw_data.py` cho tới khi báo `DAT`.
+⚠️ Con số 2024 trông gần giống số cũ, nhưng **đó là trùng hợp**: số cũ là năm
+2023 đo trên dữ liệu cụt. Năm 2023 đo đúng cho ra 27.535 cạnh, lệch hơn 2.000.
 
----
+Ba ô cần sửa tay trong file Excel: `Tổng quan!B7`,
+`Phân công chi tiết!C14`, `Checklist nộp bài!C26`.
+
+## Quyết định đã chốt
+
+| | |
+|---|---|
+| Năm mốc | **2024** (`REFERENCE_YEAR`) — mọi con số một-năm phải lấy năm này |
+| `is_focus` | **cả 10 nước ASEAN**, không chỉ Việt Nam |
+| `export_value = 0` | loại bỏ — không phải một cạnh, cũng không phải một dòng xuất khẩu |
+| `USP`, `ANS` | vẫn giữ trong `nodes.csv`; `USP` không có luồng nào suốt 30 năm |
+| `sector_color` | đang là bảng màu tạm, phải thay ở T04 |
+| Ngưỡng lọc cạnh | `DEFAULT_THRESHOLD = 1e10` tạm thời, chốt lại ở T10 |
 
 ## Cấu trúc repo
 
@@ -40,10 +64,10 @@ global-ecom/
 │   ├── processed/    # file trung gian — SINH LẠI, không commit
 │   └── mock/         # dữ liệu giả đúng schema — CÓ commit
 ├── src/
-│   ├── download_atlas.py       # tải dữ liệu thô, kiểm MD5
-│   ├── reference_data.py      # tên nước tiếng Việt, vùng, bảng màu
-│   ├── check_raw_data.py      # kiểm tra toàn vẹn dữ liệu thô
-│   ├── build_intermediate.py  # atlas/ -> processed/
+│   ├── download_atlas.py      # tải dữ liệu thô, nối tiếp, kiểm MD5
+│   ├── check_raw_data.py      # 7 mục kiểm tra toàn vẹn, cửa chặn
+│   ├── reference_data.py      # tên nước tiếng Việt, vùng, hằng số chung
+│   ├── build_intermediate.py  # atlas/ -> processed/ (4 file)
 │   └── make_mock.py           # sinh dữ liệu giả (T05)
 ├── docs/             # ghi chú nguồn dữ liệu và kiến thức nền
 ├── .report/          # báo cáo LaTeX
@@ -57,7 +81,7 @@ Cả bốn script **chỉ dùng thư viện chuẩn** — chạy được ngay, 
 ```bash
 python src/download_atlas.py        # 0. tải dữ liệu thô + kiểm MD5
 python src/check_raw_data.py        # 1. kiểm tra dữ liệu thô, phải báo DAT
-python src/build_intermediate.py    # 2. sinh nodes.csv, edges.csv, tree.csv
+python src/build_intermediate.py    # 2. sinh 4 file trung gian trong processed/
 python src/make_mock.py             # 3. sinh dữ liệu giả để vẽ song song
 ```
 
