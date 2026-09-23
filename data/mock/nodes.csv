@@ -1,0 +1,39 @@
+country_iso3,country_id,country_name,country_name_vi,region,continent,is_focus
+BRN,809,BRN,Brunei,South-East Asia,Asia,FALSE
+KHM,894,KHM,Campuchia,South-East Asia,Asia,FALSE
+IDN,94,IDN,Indonesia,South-East Asia,Asia,FALSE
+LAO,8,LAO,Lào,South-East Asia,Asia,FALSE
+MYS,39,MYS,Malaysia,South-East Asia,Asia,FALSE
+MMR,253,MMR,Myanmar,South-East Asia,Asia,FALSE
+PHL,467,PHL,Philippines,South-East Asia,Asia,FALSE
+SGP,827,SGP,Singapore,South-East Asia,Asia,FALSE
+THA,212,THA,Thái Lan,South-East Asia,Asia,FALSE
+VNM,305,VNM,Việt Nam,South-East Asia,Asia,TRUE
+CHN,467,CHN,Trung Quốc,East Asia,Asia,FALSE
+USA,89,USA,Hoa Kỳ,Northern America,Americas,FALSE
+JPN,858,JPN,Nhật Bản,East Asia,Asia,FALSE
+KOR,422,KOR,Hàn Quốc,East Asia,Asia,FALSE
+DEU,829,DEU,Đức,Western Europe,Europe,FALSE
+IND,421,IND,Ấn Độ,South Asia,Asia,FALSE
+HKG,767,HKG,Hồng Kông,East Asia,Asia,FALSE
+TWN,567,TWN,Đài Loan,East Asia,Asia,FALSE
+FRA,213,FRA,Pháp,Western Europe,Europe,FALSE
+GBR,471,GBR,Vương quốc Anh,Northern Europe,Europe,FALSE
+AUS,203,AUS,Úc,Australia and New Zealand,Oceania,FALSE
+BRA,420,BRA,Brazil,South America,Americas,FALSE
+ZAF,718,ZAF,Nam Phi,Southern Africa,Africa,FALSE
+RUS,589,RUS,Nga,Eastern Europe,Europe,FALSE
+MEX,847,MEX,Mexico,Central America,Americas,FALSE
+CAN,400,CAN,Canada,Northern America,Americas,FALSE
+NLD,146,NLD,Hà Lan,Western Europe,Europe,FALSE
+ITA,276,ITA,Ý,Southern Europe,Europe,FALSE
+ESP,632,ESP,Tây Ban Nha,Southern Europe,Europe,FALSE
+TUR,361,TUR,Thổ Nhĩ Kỳ,West Asia,Asia,FALSE
+SAU,864,SAU,Ả Rập Xê Út,West Asia,Asia,FALSE
+ARE,242,ARE,Các Tiểu vương quốc Ả Rập Thống nhất,West Asia,Asia,FALSE
+BGD,470,BGD,Bangladesh,South Asia,Asia,FALSE
+PAK,668,PAK,Pakistan,South Asia,Asia,FALSE
+NGA,793,NGA,Nigeria,Western Africa,Africa,FALSE
+EGY,892,EGY,Ai Cập,Northern Africa,Africa,FALSE
+CHL,660,CHL,Chile,South America,Americas,FALSE
+ARG,308,ARG,Argentina,South America,Americas,FALSE

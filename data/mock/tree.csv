@@ -1,0 +1,491 @@
+product_id,parent_id,level,hs92_code,name,name_short,sector_id,sector_color
+1,,1,0,Nganh 1,Nganh 1,1,#4E79A7
+2,1,2,08,Nhom 1-0,Nhom 1-0,1,#4E79A7
+3,2,4,0800,San pham 1-0-0,San pham 1-0-0,1,#4E79A7
+4,2,4,0801,San pham 1-0-1,San pham 1-0-1,1,#4E79A7
+5,2,4,0802,San pham 1-0-2,San pham 1-0-2,1,#4E79A7
+6,2,4,0803,San pham 1-0-3,San pham 1-0-3,1,#4E79A7
+7,2,4,0804,San pham 1-0-4,San pham 1-0-4,1,#4E79A7
+8,1,2,09,Nhom 1-1,Nhom 1-1,1,#4E79A7
+9,8,4,0810,San pham 1-1-0,San pham 1-1-0,1,#4E79A7
+10,8,4,0811,San pham 1-1-1,San pham 1-1-1,1,#4E79A7
+11,8,4,0812,San pham 1-1-2,San pham 1-1-2,1,#4E79A7
+12,8,4,0813,San pham 1-1-3,San pham 1-1-3,1,#4E79A7
+13,8,4,0814,San pham 1-1-4,San pham 1-1-4,1,#4E79A7
+14,1,2,10,Nhom 1-2,Nhom 1-2,1,#4E79A7
+15,14,4,0820,San pham 1-2-0,San pham 1-2-0,1,#4E79A7
+16,14,4,0821,San pham 1-2-1,San pham 1-2-1,1,#4E79A7
+17,14,4,0822,San pham 1-2-2,San pham 1-2-2,1,#4E79A7
+18,14,4,0823,San pham 1-2-3,San pham 1-2-3,1,#4E79A7
+19,14,4,0824,San pham 1-2-4,San pham 1-2-4,1,#4E79A7
+20,1,2,11,Nhom 1-3,Nhom 1-3,1,#4E79A7
+21,20,4,0830,San pham 1-3-0,San pham 1-3-0,1,#4E79A7
+22,20,4,0831,San pham 1-3-1,San pham 1-3-1,1,#4E79A7
+23,20,4,0832,San pham 1-3-2,San pham 1-3-2,1,#4E79A7
+24,20,4,0833,San pham 1-3-3,San pham 1-3-3,1,#4E79A7
+25,20,4,0834,San pham 1-3-4,San pham 1-3-4,1,#4E79A7
+26,1,2,12,Nhom 1-4,Nhom 1-4,1,#4E79A7
+27,26,4,0840,San pham 1-4-0,San pham 1-4-0,1,#4E79A7
+28,26,4,0841,San pham 1-4-1,San pham 1-4-1,1,#4E79A7
+29,26,4,0842,San pham 1-4-2,San pham 1-4-2,1,#4E79A7
+30,26,4,0843,San pham 1-4-3,San pham 1-4-3,1,#4E79A7
+31,26,4,0844,San pham 1-4-4,San pham 1-4-4,1,#4E79A7
+32,1,2,13,Nhom 1-5,Nhom 1-5,1,#4E79A7
+33,32,4,0850,San pham 1-5-0,San pham 1-5-0,1,#4E79A7
+34,32,4,0851,San pham 1-5-1,San pham 1-5-1,1,#4E79A7
+35,32,4,0852,San pham 1-5-2,San pham 1-5-2,1,#4E79A7
+36,32,4,0853,San pham 1-5-3,San pham 1-5-3,1,#4E79A7
+37,32,4,0854,San pham 1-5-4,San pham 1-5-4,1,#4E79A7
+38,1,2,14,Nhom 1-6,Nhom 1-6,1,#4E79A7
+39,38,4,0860,San pham 1-6-0,San pham 1-6-0,1,#4E79A7
+40,38,4,0861,San pham 1-6-1,San pham 1-6-1,1,#4E79A7
+41,38,4,0862,San pham 1-6-2,San pham 1-6-2,1,#4E79A7
+42,38,4,0863,San pham 1-6-3,San pham 1-6-3,1,#4E79A7
+43,38,4,0864,San pham 1-6-4,San pham 1-6-4,1,#4E79A7
+44,1,2,15,Nhom 1-7,Nhom 1-7,1,#4E79A7
+45,44,4,0870,San pham 1-7-0,San pham 1-7-0,1,#4E79A7
+46,44,4,0871,San pham 1-7-1,San pham 1-7-1,1,#4E79A7
+47,44,4,0872,San pham 1-7-2,San pham 1-7-2,1,#4E79A7
+48,44,4,0873,San pham 1-7-3,San pham 1-7-3,1,#4E79A7
+49,44,4,0874,San pham 1-7-4,San pham 1-7-4,1,#4E79A7
+50,,1,1,Nganh 2,Nganh 2,2,#59A14F
+51,50,2,16,Nhom 2-0,Nhom 2-0,2,#59A14F
+52,51,4,1600,San pham 2-0-0,San pham 2-0-0,2,#59A14F
+53,51,4,1601,San pham 2-0-1,San pham 2-0-1,2,#59A14F
+54,51,4,1602,San pham 2-0-2,San pham 2-0-2,2,#59A14F
+55,51,4,1603,San pham 2-0-3,San pham 2-0-3,2,#59A14F
+56,51,4,1604,San pham 2-0-4,San pham 2-0-4,2,#59A14F
+57,50,2,17,Nhom 2-1,Nhom 2-1,2,#59A14F
+58,57,4,1610,San pham 2-1-0,San pham 2-1-0,2,#59A14F
+59,57,4,1611,San pham 2-1-1,San pham 2-1-1,2,#59A14F
+60,57,4,1612,San pham 2-1-2,San pham 2-1-2,2,#59A14F
+61,57,4,1613,San pham 2-1-3,San pham 2-1-3,2,#59A14F
+62,57,4,1614,San pham 2-1-4,San pham 2-1-4,2,#59A14F
+63,50,2,18,Nhom 2-2,Nhom 2-2,2,#59A14F
+64,63,4,1620,San pham 2-2-0,San pham 2-2-0,2,#59A14F
+65,63,4,1621,San pham 2-2-1,San pham 2-2-1,2,#59A14F
+66,63,4,1622,San pham 2-2-2,San pham 2-2-2,2,#59A14F
+67,63,4,1623,San pham 2-2-3,San pham 2-2-3,2,#59A14F
+68,63,4,1624,San pham 2-2-4,San pham 2-2-4,2,#59A14F
+69,50,2,19,Nhom 2-3,Nhom 2-3,2,#59A14F
+70,69,4,1630,San pham 2-3-0,San pham 2-3-0,2,#59A14F
+71,69,4,1631,San pham 2-3-1,San pham 2-3-1,2,#59A14F
+72,69,4,1632,San pham 2-3-2,San pham 2-3-2,2,#59A14F
+73,69,4,1633,San pham 2-3-3,San pham 2-3-3,2,#59A14F
+74,69,4,1634,San pham 2-3-4,San pham 2-3-4,2,#59A14F
+75,50,2,20,Nhom 2-4,Nhom 2-4,2,#59A14F
+76,75,4,1640,San pham 2-4-0,San pham 2-4-0,2,#59A14F
+77,75,4,1641,San pham 2-4-1,San pham 2-4-1,2,#59A14F
+78,75,4,1642,San pham 2-4-2,San pham 2-4-2,2,#59A14F
+79,75,4,1643,San pham 2-4-3,San pham 2-4-3,2,#59A14F
+80,75,4,1644,San pham 2-4-4,San pham 2-4-4,2,#59A14F
+81,50,2,21,Nhom 2-5,Nhom 2-5,2,#59A14F
+82,81,4,1650,San pham 2-5-0,San pham 2-5-0,2,#59A14F
+83,81,4,1651,San pham 2-5-1,San pham 2-5-1,2,#59A14F
+84,81,4,1652,San pham 2-5-2,San pham 2-5-2,2,#59A14F
+85,81,4,1653,San pham 2-5-3,San pham 2-5-3,2,#59A14F
+86,81,4,1654,San pham 2-5-4,San pham 2-5-4,2,#59A14F
+87,50,2,22,Nhom 2-6,Nhom 2-6,2,#59A14F
+88,87,4,1660,San pham 2-6-0,San pham 2-6-0,2,#59A14F
+89,87,4,1661,San pham 2-6-1,San pham 2-6-1,2,#59A14F
+90,87,4,1662,San pham 2-6-2,San pham 2-6-2,2,#59A14F
+91,87,4,1663,San pham 2-6-3,San pham 2-6-3,2,#59A14F
+92,87,4,1664,San pham 2-6-4,San pham 2-6-4,2,#59A14F
+93,50,2,23,Nhom 2-7,Nhom 2-7,2,#59A14F
+94,93,4,1670,San pham 2-7-0,San pham 2-7-0,2,#59A14F
+95,93,4,1671,San pham 2-7-1,San pham 2-7-1,2,#59A14F
+96,93,4,1672,San pham 2-7-2,San pham 2-7-2,2,#59A14F
+97,93,4,1673,San pham 2-7-3,San pham 2-7-3,2,#59A14F
+98,93,4,1674,San pham 2-7-4,San pham 2-7-4,2,#59A14F
+99,,1,2,Nganh 3,Nganh 3,3,#9C755F
+100,99,2,24,Nhom 3-0,Nhom 3-0,3,#9C755F
+101,100,4,2400,San pham 3-0-0,San pham 3-0-0,3,#9C755F
+102,100,4,2401,San pham 3-0-1,San pham 3-0-1,3,#9C755F
+103,100,4,2402,San pham 3-0-2,San pham 3-0-2,3,#9C755F
+104,100,4,2403,San pham 3-0-3,San pham 3-0-3,3,#9C755F
+105,100,4,2404,San pham 3-0-4,San pham 3-0-4,3,#9C755F
+106,99,2,25,Nhom 3-1,Nhom 3-1,3,#9C755F
+107,106,4,2410,San pham 3-1-0,San pham 3-1-0,3,#9C755F
+108,106,4,2411,San pham 3-1-1,San pham 3-1-1,3,#9C755F
+109,106,4,2412,San pham 3-1-2,San pham 3-1-2,3,#9C755F
+110,106,4,2413,San pham 3-1-3,San pham 3-1-3,3,#9C755F
+111,106,4,2414,San pham 3-1-4,San pham 3-1-4,3,#9C755F
+112,99,2,26,Nhom 3-2,Nhom 3-2,3,#9C755F
+113,112,4,2420,San pham 3-2-0,San pham 3-2-0,3,#9C755F
+114,112,4,2421,San pham 3-2-1,San pham 3-2-1,3,#9C755F
+115,112,4,2422,San pham 3-2-2,San pham 3-2-2,3,#9C755F
+116,112,4,2423,San pham 3-2-3,San pham 3-2-3,3,#9C755F
+117,112,4,2424,San pham 3-2-4,San pham 3-2-4,3,#9C755F
+118,99,2,27,Nhom 3-3,Nhom 3-3,3,#9C755F
+119,118,4,2430,San pham 3-3-0,San pham 3-3-0,3,#9C755F
+120,118,4,2431,San pham 3-3-1,San pham 3-3-1,3,#9C755F
+121,118,4,2432,San pham 3-3-2,San pham 3-3-2,3,#9C755F
+122,118,4,2433,San pham 3-3-3,San pham 3-3-3,3,#9C755F
+123,118,4,2434,San pham 3-3-4,San pham 3-3-4,3,#9C755F
+124,99,2,28,Nhom 3-4,Nhom 3-4,3,#9C755F
+125,124,4,2440,San pham 3-4-0,San pham 3-4-0,3,#9C755F
+126,124,4,2441,San pham 3-4-1,San pham 3-4-1,3,#9C755F
+127,124,4,2442,San pham 3-4-2,San pham 3-4-2,3,#9C755F
+128,124,4,2443,San pham 3-4-3,San pham 3-4-3,3,#9C755F
+129,124,4,2444,San pham 3-4-4,San pham 3-4-4,3,#9C755F
+130,99,2,29,Nhom 3-5,Nhom 3-5,3,#9C755F
+131,130,4,2450,San pham 3-5-0,San pham 3-5-0,3,#9C755F
+132,130,4,2451,San pham 3-5-1,San pham 3-5-1,3,#9C755F
+133,130,4,2452,San pham 3-5-2,San pham 3-5-2,3,#9C755F
+134,130,4,2453,San pham 3-5-3,San pham 3-5-3,3,#9C755F
+135,130,4,2454,San pham 3-5-4,San pham 3-5-4,3,#9C755F
+136,99,2,30,Nhom 3-6,Nhom 3-6,3,#9C755F
+137,136,4,2460,San pham 3-6-0,San pham 3-6-0,3,#9C755F
+138,136,4,2461,San pham 3-6-1,San pham 3-6-1,3,#9C755F
+139,136,4,2462,San pham 3-6-2,San pham 3-6-2,3,#9C755F
+140,136,4,2463,San pham 3-6-3,San pham 3-6-3,3,#9C755F
+141,136,4,2464,San pham 3-6-4,San pham 3-6-4,3,#9C755F
+142,99,2,31,Nhom 3-7,Nhom 3-7,3,#9C755F
+143,142,4,2470,San pham 3-7-0,San pham 3-7-0,3,#9C755F
+144,142,4,2471,San pham 3-7-1,San pham 3-7-1,3,#9C755F
+145,142,4,2472,San pham 3-7-2,San pham 3-7-2,3,#9C755F
+146,142,4,2473,San pham 3-7-3,San pham 3-7-3,3,#9C755F
+147,142,4,2474,San pham 3-7-4,San pham 3-7-4,3,#9C755F
+148,,1,3,Nganh 4,Nganh 4,4,#8C564B
+149,148,2,32,Nhom 4-0,Nhom 4-0,4,#8C564B
+150,149,4,3200,San pham 4-0-0,San pham 4-0-0,4,#8C564B
+151,149,4,3201,San pham 4-0-1,San pham 4-0-1,4,#8C564B
+152,149,4,3202,San pham 4-0-2,San pham 4-0-2,4,#8C564B
+153,149,4,3203,San pham 4-0-3,San pham 4-0-3,4,#8C564B
+154,149,4,3204,San pham 4-0-4,San pham 4-0-4,4,#8C564B
+155,148,2,33,Nhom 4-1,Nhom 4-1,4,#8C564B
+156,155,4,3210,San pham 4-1-0,San pham 4-1-0,4,#8C564B
+157,155,4,3211,San pham 4-1-1,San pham 4-1-1,4,#8C564B
+158,155,4,3212,San pham 4-1-2,San pham 4-1-2,4,#8C564B
+159,155,4,3213,San pham 4-1-3,San pham 4-1-3,4,#8C564B
+160,155,4,3214,San pham 4-1-4,San pham 4-1-4,4,#8C564B
+161,148,2,34,Nhom 4-2,Nhom 4-2,4,#8C564B
+162,161,4,3220,San pham 4-2-0,San pham 4-2-0,4,#8C564B
+163,161,4,3221,San pham 4-2-1,San pham 4-2-1,4,#8C564B
+164,161,4,3222,San pham 4-2-2,San pham 4-2-2,4,#8C564B
+165,161,4,3223,San pham 4-2-3,San pham 4-2-3,4,#8C564B
+166,161,4,3224,San pham 4-2-4,San pham 4-2-4,4,#8C564B
+167,148,2,35,Nhom 4-3,Nhom 4-3,4,#8C564B
+168,167,4,3230,San pham 4-3-0,San pham 4-3-0,4,#8C564B
+169,167,4,3231,San pham 4-3-1,San pham 4-3-1,4,#8C564B
+170,167,4,3232,San pham 4-3-2,San pham 4-3-2,4,#8C564B
+171,167,4,3233,San pham 4-3-3,San pham 4-3-3,4,#8C564B
+172,167,4,3234,San pham 4-3-4,San pham 4-3-4,4,#8C564B
+173,148,2,36,Nhom 4-4,Nhom 4-4,4,#8C564B
+174,173,4,3240,San pham 4-4-0,San pham 4-4-0,4,#8C564B
+175,173,4,3241,San pham 4-4-1,San pham 4-4-1,4,#8C564B
+176,173,4,3242,San pham 4-4-2,San pham 4-4-2,4,#8C564B
+177,173,4,3243,San pham 4-4-3,San pham 4-4-3,4,#8C564B
+178,173,4,3244,San pham 4-4-4,San pham 4-4-4,4,#8C564B
+179,148,2,37,Nhom 4-5,Nhom 4-5,4,#8C564B
+180,179,4,3250,San pham 4-5-0,San pham 4-5-0,4,#8C564B
+181,179,4,3251,San pham 4-5-1,San pham 4-5-1,4,#8C564B
+182,179,4,3252,San pham 4-5-2,San pham 4-5-2,4,#8C564B
+183,179,4,3253,San pham 4-5-3,San pham 4-5-3,4,#8C564B
+184,179,4,3254,San pham 4-5-4,San pham 4-5-4,4,#8C564B
+185,148,2,38,Nhom 4-6,Nhom 4-6,4,#8C564B
+186,185,4,3260,San pham 4-6-0,San pham 4-6-0,4,#8C564B
+187,185,4,3261,San pham 4-6-1,San pham 4-6-1,4,#8C564B
+188,185,4,3262,San pham 4-6-2,San pham 4-6-2,4,#8C564B
+189,185,4,3263,San pham 4-6-3,San pham 4-6-3,4,#8C564B
+190,185,4,3264,San pham 4-6-4,San pham 4-6-4,4,#8C564B
+191,148,2,39,Nhom 4-7,Nhom 4-7,4,#8C564B
+192,191,4,3270,San pham 4-7-0,San pham 4-7-0,4,#8C564B
+193,191,4,3271,San pham 4-7-1,San pham 4-7-1,4,#8C564B
+194,191,4,3272,San pham 4-7-2,San pham 4-7-2,4,#8C564B
+195,191,4,3273,San pham 4-7-3,San pham 4-7-3,4,#8C564B
+196,191,4,3274,San pham 4-7-4,San pham 4-7-4,4,#8C564B
+197,,1,4,Nganh 5,Nganh 5,5,#B07AA1
+198,197,2,40,Nhom 5-0,Nhom 5-0,5,#B07AA1
+199,198,4,4000,San pham 5-0-0,San pham 5-0-0,5,#B07AA1
+200,198,4,4001,San pham 5-0-1,San pham 5-0-1,5,#B07AA1
+201,198,4,4002,San pham 5-0-2,San pham 5-0-2,5,#B07AA1
+202,198,4,4003,San pham 5-0-3,San pham 5-0-3,5,#B07AA1
+203,198,4,4004,San pham 5-0-4,San pham 5-0-4,5,#B07AA1
+204,197,2,41,Nhom 5-1,Nhom 5-1,5,#B07AA1
+205,204,4,4010,San pham 5-1-0,San pham 5-1-0,5,#B07AA1
+206,204,4,4011,San pham 5-1-1,San pham 5-1-1,5,#B07AA1
+207,204,4,4012,San pham 5-1-2,San pham 5-1-2,5,#B07AA1
+208,204,4,4013,San pham 5-1-3,San pham 5-1-3,5,#B07AA1
+209,204,4,4014,San pham 5-1-4,San pham 5-1-4,5,#B07AA1
+210,197,2,42,Nhom 5-2,Nhom 5-2,5,#B07AA1
+211,210,4,4020,San pham 5-2-0,San pham 5-2-0,5,#B07AA1
+212,210,4,4021,San pham 5-2-1,San pham 5-2-1,5,#B07AA1
+213,210,4,4022,San pham 5-2-2,San pham 5-2-2,5,#B07AA1
+214,210,4,4023,San pham 5-2-3,San pham 5-2-3,5,#B07AA1
+215,210,4,4024,San pham 5-2-4,San pham 5-2-4,5,#B07AA1
+216,197,2,43,Nhom 5-3,Nhom 5-3,5,#B07AA1
+217,216,4,4030,San pham 5-3-0,San pham 5-3-0,5,#B07AA1
+218,216,4,4031,San pham 5-3-1,San pham 5-3-1,5,#B07AA1
+219,216,4,4032,San pham 5-3-2,San pham 5-3-2,5,#B07AA1
+220,216,4,4033,San pham 5-3-3,San pham 5-3-3,5,#B07AA1
+221,216,4,4034,San pham 5-3-4,San pham 5-3-4,5,#B07AA1
+222,197,2,44,Nhom 5-4,Nhom 5-4,5,#B07AA1
+223,222,4,4040,San pham 5-4-0,San pham 5-4-0,5,#B07AA1
+224,222,4,4041,San pham 5-4-1,San pham 5-4-1,5,#B07AA1
+225,222,4,4042,San pham 5-4-2,San pham 5-4-2,5,#B07AA1
+226,222,4,4043,San pham 5-4-3,San pham 5-4-3,5,#B07AA1
+227,222,4,4044,San pham 5-4-4,San pham 5-4-4,5,#B07AA1
+228,197,2,45,Nhom 5-5,Nhom 5-5,5,#B07AA1
+229,228,4,4050,San pham 5-5-0,San pham 5-5-0,5,#B07AA1
+230,228,4,4051,San pham 5-5-1,San pham 5-5-1,5,#B07AA1
+231,228,4,4052,San pham 5-5-2,San pham 5-5-2,5,#B07AA1
+232,228,4,4053,San pham 5-5-3,San pham 5-5-3,5,#B07AA1
+233,228,4,4054,San pham 5-5-4,San pham 5-5-4,5,#B07AA1
+234,197,2,46,Nhom 5-6,Nhom 5-6,5,#B07AA1
+235,234,4,4060,San pham 5-6-0,San pham 5-6-0,5,#B07AA1
+236,234,4,4061,San pham 5-6-1,San pham 5-6-1,5,#B07AA1
+237,234,4,4062,San pham 5-6-2,San pham 5-6-2,5,#B07AA1
+238,234,4,4063,San pham 5-6-3,San pham 5-6-3,5,#B07AA1
+239,234,4,4064,San pham 5-6-4,San pham 5-6-4,5,#B07AA1
+240,197,2,47,Nhom 5-7,Nhom 5-7,5,#B07AA1
+241,240,4,4070,San pham 5-7-0,San pham 5-7-0,5,#B07AA1
+242,240,4,4071,San pham 5-7-1,San pham 5-7-1,5,#B07AA1
+243,240,4,4072,San pham 5-7-2,San pham 5-7-2,5,#B07AA1
+244,240,4,4073,San pham 5-7-3,San pham 5-7-3,5,#B07AA1
+245,240,4,4074,San pham 5-7-4,San pham 5-7-4,5,#B07AA1
+246,,1,5,Nganh 6,Nganh 6,6,#F28E2B
+247,246,2,48,Nhom 6-0,Nhom 6-0,6,#F28E2B
+248,247,4,4800,San pham 6-0-0,San pham 6-0-0,6,#F28E2B
+249,247,4,4801,San pham 6-0-1,San pham 6-0-1,6,#F28E2B
+250,247,4,4802,San pham 6-0-2,San pham 6-0-2,6,#F28E2B
+251,247,4,4803,San pham 6-0-3,San pham 6-0-3,6,#F28E2B
+252,247,4,4804,San pham 6-0-4,San pham 6-0-4,6,#F28E2B
+253,246,2,49,Nhom 6-1,Nhom 6-1,6,#F28E2B
+254,253,4,4810,San pham 6-1-0,San pham 6-1-0,6,#F28E2B
+255,253,4,4811,San pham 6-1-1,San pham 6-1-1,6,#F28E2B
+256,253,4,4812,San pham 6-1-2,San pham 6-1-2,6,#F28E2B
+257,253,4,4813,San pham 6-1-3,San pham 6-1-3,6,#F28E2B
+258,253,4,4814,San pham 6-1-4,San pham 6-1-4,6,#F28E2B
+259,246,2,50,Nhom 6-2,Nhom 6-2,6,#F28E2B
+260,259,4,4820,San pham 6-2-0,San pham 6-2-0,6,#F28E2B
+261,259,4,4821,San pham 6-2-1,San pham 6-2-1,6,#F28E2B
+262,259,4,4822,San pham 6-2-2,San pham 6-2-2,6,#F28E2B
+263,259,4,4823,San pham 6-2-3,San pham 6-2-3,6,#F28E2B
+264,259,4,4824,San pham 6-2-4,San pham 6-2-4,6,#F28E2B
+265,246,2,51,Nhom 6-3,Nhom 6-3,6,#F28E2B
+266,265,4,4830,San pham 6-3-0,San pham 6-3-0,6,#F28E2B
+267,265,4,4831,San pham 6-3-1,San pham 6-3-1,6,#F28E2B
+268,265,4,4832,San pham 6-3-2,San pham 6-3-2,6,#F28E2B
+269,265,4,4833,San pham 6-3-3,San pham 6-3-3,6,#F28E2B
+270,265,4,4834,San pham 6-3-4,San pham 6-3-4,6,#F28E2B
+271,246,2,52,Nhom 6-4,Nhom 6-4,6,#F28E2B
+272,271,4,4840,San pham 6-4-0,San pham 6-4-0,6,#F28E2B
+273,271,4,4841,San pham 6-4-1,San pham 6-4-1,6,#F28E2B
+274,271,4,4842,San pham 6-4-2,San pham 6-4-2,6,#F28E2B
+275,271,4,4843,San pham 6-4-3,San pham 6-4-3,6,#F28E2B
+276,271,4,4844,San pham 6-4-4,San pham 6-4-4,6,#F28E2B
+277,246,2,53,Nhom 6-5,Nhom 6-5,6,#F28E2B
+278,277,4,4850,San pham 6-5-0,San pham 6-5-0,6,#F28E2B
+279,277,4,4851,San pham 6-5-1,San pham 6-5-1,6,#F28E2B
+280,277,4,4852,San pham 6-5-2,San pham 6-5-2,6,#F28E2B
+281,277,4,4853,San pham 6-5-3,San pham 6-5-3,6,#F28E2B
+282,277,4,4854,San pham 6-5-4,San pham 6-5-4,6,#F28E2B
+283,246,2,54,Nhom 6-6,Nhom 6-6,6,#F28E2B
+284,283,4,4860,San pham 6-6-0,San pham 6-6-0,6,#F28E2B
+285,283,4,4861,San pham 6-6-1,San pham 6-6-1,6,#F28E2B
+286,283,4,4862,San pham 6-6-2,San pham 6-6-2,6,#F28E2B
+287,283,4,4863,San pham 6-6-3,San pham 6-6-3,6,#F28E2B
+288,283,4,4864,San pham 6-6-4,San pham 6-6-4,6,#F28E2B
+289,246,2,55,Nhom 6-7,Nhom 6-7,6,#F28E2B
+290,289,4,4870,San pham 6-7-0,San pham 6-7-0,6,#F28E2B
+291,289,4,4871,San pham 6-7-1,San pham 6-7-1,6,#F28E2B
+292,289,4,4872,San pham 6-7-2,San pham 6-7-2,6,#F28E2B
+293,289,4,4873,San pham 6-7-3,San pham 6-7-3,6,#F28E2B
+294,289,4,4874,San pham 6-7-4,San pham 6-7-4,6,#F28E2B
+295,,1,6,Nganh 7,Nganh 7,7,#E15759
+296,295,2,56,Nhom 7-0,Nhom 7-0,7,#E15759
+297,296,4,5600,San pham 7-0-0,San pham 7-0-0,7,#E15759
+298,296,4,5601,San pham 7-0-1,San pham 7-0-1,7,#E15759
+299,296,4,5602,San pham 7-0-2,San pham 7-0-2,7,#E15759
+300,296,4,5603,San pham 7-0-3,San pham 7-0-3,7,#E15759
+301,296,4,5604,San pham 7-0-4,San pham 7-0-4,7,#E15759
+302,295,2,57,Nhom 7-1,Nhom 7-1,7,#E15759
+303,302,4,5610,San pham 7-1-0,San pham 7-1-0,7,#E15759
+304,302,4,5611,San pham 7-1-1,San pham 7-1-1,7,#E15759
+305,302,4,5612,San pham 7-1-2,San pham 7-1-2,7,#E15759
+306,302,4,5613,San pham 7-1-3,San pham 7-1-3,7,#E15759
+307,302,4,5614,San pham 7-1-4,San pham 7-1-4,7,#E15759
+308,295,2,58,Nhom 7-2,Nhom 7-2,7,#E15759
+309,308,4,5620,San pham 7-2-0,San pham 7-2-0,7,#E15759
+310,308,4,5621,San pham 7-2-1,San pham 7-2-1,7,#E15759
+311,308,4,5622,San pham 7-2-2,San pham 7-2-2,7,#E15759
+312,308,4,5623,San pham 7-2-3,San pham 7-2-3,7,#E15759
+313,308,4,5624,San pham 7-2-4,San pham 7-2-4,7,#E15759
+314,295,2,59,Nhom 7-3,Nhom 7-3,7,#E15759
+315,314,4,5630,San pham 7-3-0,San pham 7-3-0,7,#E15759
+316,314,4,5631,San pham 7-3-1,San pham 7-3-1,7,#E15759
+317,314,4,5632,San pham 7-3-2,San pham 7-3-2,7,#E15759
+318,314,4,5633,San pham 7-3-3,San pham 7-3-3,7,#E15759
+319,314,4,5634,San pham 7-3-4,San pham 7-3-4,7,#E15759
+320,295,2,60,Nhom 7-4,Nhom 7-4,7,#E15759
+321,320,4,5640,San pham 7-4-0,San pham 7-4-0,7,#E15759
+322,320,4,5641,San pham 7-4-1,San pham 7-4-1,7,#E15759
+323,320,4,5642,San pham 7-4-2,San pham 7-4-2,7,#E15759
+324,320,4,5643,San pham 7-4-3,San pham 7-4-3,7,#E15759
+325,320,4,5644,San pham 7-4-4,San pham 7-4-4,7,#E15759
+326,295,2,61,Nhom 7-5,Nhom 7-5,7,#E15759
+327,326,4,5650,San pham 7-5-0,San pham 7-5-0,7,#E15759
+328,326,4,5651,San pham 7-5-1,San pham 7-5-1,7,#E15759
+329,326,4,5652,San pham 7-5-2,San pham 7-5-2,7,#E15759
+330,326,4,5653,San pham 7-5-3,San pham 7-5-3,7,#E15759
+331,326,4,5654,San pham 7-5-4,San pham 7-5-4,7,#E15759
+332,295,2,62,Nhom 7-6,Nhom 7-6,7,#E15759
+333,332,4,5660,San pham 7-6-0,San pham 7-6-0,7,#E15759
+334,332,4,5661,San pham 7-6-1,San pham 7-6-1,7,#E15759
+335,332,4,5662,San pham 7-6-2,San pham 7-6-2,7,#E15759
+336,332,4,5663,San pham 7-6-3,San pham 7-6-3,7,#E15759
+337,332,4,5664,San pham 7-6-4,San pham 7-6-4,7,#E15759
+338,295,2,63,Nhom 7-7,Nhom 7-7,7,#E15759
+339,338,4,5670,San pham 7-7-0,San pham 7-7-0,7,#E15759
+340,338,4,5671,San pham 7-7-1,San pham 7-7-1,7,#E15759
+341,338,4,5672,San pham 7-7-2,San pham 7-7-2,7,#E15759
+342,338,4,5673,San pham 7-7-3,San pham 7-7-3,7,#E15759
+343,338,4,5674,San pham 7-7-4,San pham 7-7-4,7,#E15759
+344,,1,7,Nganh 8,Nganh 8,8,#76B7B2
+345,344,2,64,Nhom 8-0,Nhom 8-0,8,#76B7B2
+346,345,4,6400,San pham 8-0-0,San pham 8-0-0,8,#76B7B2
+347,345,4,6401,San pham 8-0-1,San pham 8-0-1,8,#76B7B2
+348,345,4,6402,San pham 8-0-2,San pham 8-0-2,8,#76B7B2
+349,345,4,6403,San pham 8-0-3,San pham 8-0-3,8,#76B7B2
+350,345,4,6404,San pham 8-0-4,San pham 8-0-4,8,#76B7B2
+351,344,2,65,Nhom 8-1,Nhom 8-1,8,#76B7B2
+352,351,4,6410,San pham 8-1-0,San pham 8-1-0,8,#76B7B2
+353,351,4,6411,San pham 8-1-1,San pham 8-1-1,8,#76B7B2
+354,351,4,6412,San pham 8-1-2,San pham 8-1-2,8,#76B7B2
+355,351,4,6413,San pham 8-1-3,San pham 8-1-3,8,#76B7B2
+356,351,4,6414,San pham 8-1-4,San pham 8-1-4,8,#76B7B2
+357,344,2,66,Nhom 8-2,Nhom 8-2,8,#76B7B2
+358,357,4,6420,San pham 8-2-0,San pham 8-2-0,8,#76B7B2
+359,357,4,6421,San pham 8-2-1,San pham 8-2-1,8,#76B7B2
+360,357,4,6422,San pham 8-2-2,San pham 8-2-2,8,#76B7B2
+361,357,4,6423,San pham 8-2-3,San pham 8-2-3,8,#76B7B2
+362,357,4,6424,San pham 8-2-4,San pham 8-2-4,8,#76B7B2
+363,344,2,67,Nhom 8-3,Nhom 8-3,8,#76B7B2
+364,363,4,6430,San pham 8-3-0,San pham 8-3-0,8,#76B7B2
+365,363,4,6431,San pham 8-3-1,San pham 8-3-1,8,#76B7B2
+366,363,4,6432,San pham 8-3-2,San pham 8-3-2,8,#76B7B2
+367,363,4,6433,San pham 8-3-3,San pham 8-3-3,8,#76B7B2
+368,363,4,6434,San pham 8-3-4,San pham 8-3-4,8,#76B7B2
+369,344,2,68,Nhom 8-4,Nhom 8-4,8,#76B7B2
+370,369,4,6440,San pham 8-4-0,San pham 8-4-0,8,#76B7B2
+371,369,4,6441,San pham 8-4-1,San pham 8-4-1,8,#76B7B2
+372,369,4,6442,San pham 8-4-2,San pham 8-4-2,8,#76B7B2
+373,369,4,6443,San pham 8-4-3,San pham 8-4-3,8,#76B7B2
+374,369,4,6444,San pham 8-4-4,San pham 8-4-4,8,#76B7B2
+375,344,2,69,Nhom 8-5,Nhom 8-5,8,#76B7B2
+376,375,4,6450,San pham 8-5-0,San pham 8-5-0,8,#76B7B2
+377,375,4,6451,San pham 8-5-1,San pham 8-5-1,8,#76B7B2
+378,375,4,6452,San pham 8-5-2,San pham 8-5-2,8,#76B7B2
+379,375,4,6453,San pham 8-5-3,San pham 8-5-3,8,#76B7B2
+380,375,4,6454,San pham 8-5-4,San pham 8-5-4,8,#76B7B2
+381,344,2,70,Nhom 8-6,Nhom 8-6,8,#76B7B2
+382,381,4,6460,San pham 8-6-0,San pham 8-6-0,8,#76B7B2
+383,381,4,6461,San pham 8-6-1,San pham 8-6-1,8,#76B7B2
+384,381,4,6462,San pham 8-6-2,San pham 8-6-2,8,#76B7B2
+385,381,4,6463,San pham 8-6-3,San pham 8-6-3,8,#76B7B2
+386,381,4,6464,San pham 8-6-4,San pham 8-6-4,8,#76B7B2
+387,344,2,71,Nhom 8-7,Nhom 8-7,8,#76B7B2
+388,387,4,6470,San pham 8-7-0,San pham 8-7-0,8,#76B7B2
+389,387,4,6471,San pham 8-7-1,San pham 8-7-1,8,#76B7B2
+390,387,4,6472,San pham 8-7-2,San pham 8-7-2,8,#76B7B2
+391,387,4,6473,San pham 8-7-3,San pham 8-7-3,8,#76B7B2
+392,387,4,6474,San pham 8-7-4,San pham 8-7-4,8,#76B7B2
+393,,1,8,Nganh 9,Nganh 9,9,#EDC948
+394,393,2,72,Nhom 9-0,Nhom 9-0,9,#EDC948
+395,394,4,7200,San pham 9-0-0,San pham 9-0-0,9,#EDC948
+396,394,4,7201,San pham 9-0-1,San pham 9-0-1,9,#EDC948
+397,394,4,7202,San pham 9-0-2,San pham 9-0-2,9,#EDC948
+398,394,4,7203,San pham 9-0-3,San pham 9-0-3,9,#EDC948
+399,394,4,7204,San pham 9-0-4,San pham 9-0-4,9,#EDC948
+400,393,2,73,Nhom 9-1,Nhom 9-1,9,#EDC948
+401,400,4,7210,San pham 9-1-0,San pham 9-1-0,9,#EDC948
+402,400,4,7211,San pham 9-1-1,San pham 9-1-1,9,#EDC948
+403,400,4,7212,San pham 9-1-2,San pham 9-1-2,9,#EDC948
+404,400,4,7213,San pham 9-1-3,San pham 9-1-3,9,#EDC948
+405,400,4,7214,San pham 9-1-4,San pham 9-1-4,9,#EDC948
+406,393,2,74,Nhom 9-2,Nhom 9-2,9,#EDC948
+407,406,4,7220,San pham 9-2-0,San pham 9-2-0,9,#EDC948
+408,406,4,7221,San pham 9-2-1,San pham 9-2-1,9,#EDC948
+409,406,4,7222,San pham 9-2-2,San pham 9-2-2,9,#EDC948
+410,406,4,7223,San pham 9-2-3,San pham 9-2-3,9,#EDC948
+411,406,4,7224,San pham 9-2-4,San pham 9-2-4,9,#EDC948
+412,393,2,75,Nhom 9-3,Nhom 9-3,9,#EDC948
+413,412,4,7230,San pham 9-3-0,San pham 9-3-0,9,#EDC948
+414,412,4,7231,San pham 9-3-1,San pham 9-3-1,9,#EDC948
+415,412,4,7232,San pham 9-3-2,San pham 9-3-2,9,#EDC948
+416,412,4,7233,San pham 9-3-3,San pham 9-3-3,9,#EDC948
+417,412,4,7234,San pham 9-3-4,San pham 9-3-4,9,#EDC948
+418,393,2,76,Nhom 9-4,Nhom 9-4,9,#EDC948
+419,418,4,7240,San pham 9-4-0,San pham 9-4-0,9,#EDC948
+420,418,4,7241,San pham 9-4-1,San pham 9-4-1,9,#EDC948
+421,418,4,7242,San pham 9-4-2,San pham 9-4-2,9,#EDC948
+422,418,4,7243,San pham 9-4-3,San pham 9-4-3,9,#EDC948
+423,418,4,7244,San pham 9-4-4,San pham 9-4-4,9,#EDC948
+424,393,2,77,Nhom 9-5,Nhom 9-5,9,#EDC948
+425,424,4,7250,San pham 9-5-0,San pham 9-5-0,9,#EDC948
+426,424,4,7251,San pham 9-5-1,San pham 9-5-1,9,#EDC948
+427,424,4,7252,San pham 9-5-2,San pham 9-5-2,9,#EDC948
+428,424,4,7253,San pham 9-5-3,San pham 9-5-3,9,#EDC948
+429,424,4,7254,San pham 9-5-4,San pham 9-5-4,9,#EDC948
+430,393,2,78,Nhom 9-6,Nhom 9-6,9,#EDC948
+431,430,4,7260,San pham 9-6-0,San pham 9-6-0,9,#EDC948
+432,430,4,7261,San pham 9-6-1,San pham 9-6-1,9,#EDC948
+433,430,4,7262,San pham 9-6-2,San pham 9-6-2,9,#EDC948
+434,430,4,7263,San pham 9-6-3,San pham 9-6-3,9,#EDC948
+435,430,4,7264,San pham 9-6-4,San pham 9-6-4,9,#EDC948
+436,393,2,79,Nhom 9-7,Nhom 9-7,9,#EDC948
+437,436,4,7270,San pham 9-7-0,San pham 9-7-0,9,#EDC948
+438,436,4,7271,San pham 9-7-1,San pham 9-7-1,9,#EDC948
+439,436,4,7272,San pham 9-7-2,San pham 9-7-2,9,#EDC948
+440,436,4,7273,San pham 9-7-3,San pham 9-7-3,9,#EDC948
+441,436,4,7274,San pham 9-7-4,San pham 9-7-4,9,#EDC948
+442,,1,9,Nganh 10,Nganh 10,10,#BAB0AC
+443,442,2,80,Nhom 10-0,Nhom 10-0,10,#BAB0AC
+444,443,4,8000,San pham 10-0-0,San pham 10-0-0,10,#BAB0AC
+445,443,4,8001,San pham 10-0-1,San pham 10-0-1,10,#BAB0AC
+446,443,4,8002,San pham 10-0-2,San pham 10-0-2,10,#BAB0AC
+447,443,4,8003,San pham 10-0-3,San pham 10-0-3,10,#BAB0AC
+448,443,4,8004,San pham 10-0-4,San pham 10-0-4,10,#BAB0AC
+449,442,2,81,Nhom 10-1,Nhom 10-1,10,#BAB0AC
+450,449,4,8010,San pham 10-1-0,San pham 10-1-0,10,#BAB0AC
+451,449,4,8011,San pham 10-1-1,San pham 10-1-1,10,#BAB0AC
+452,449,4,8012,San pham 10-1-2,San pham 10-1-2,10,#BAB0AC
+453,449,4,8013,San pham 10-1-3,San pham 10-1-3,10,#BAB0AC
+454,449,4,8014,San pham 10-1-4,San pham 10-1-4,10,#BAB0AC
+455,442,2,82,Nhom 10-2,Nhom 10-2,10,#BAB0AC
+456,455,4,8020,San pham 10-2-0,San pham 10-2-0,10,#BAB0AC
+457,455,4,8021,San pham 10-2-1,San pham 10-2-1,10,#BAB0AC
+458,455,4,8022,San pham 10-2-2,San pham 10-2-2,10,#BAB0AC
+459,455,4,8023,San pham 10-2-3,San pham 10-2-3,10,#BAB0AC
+460,455,4,8024,San pham 10-2-4,San pham 10-2-4,10,#BAB0AC
+461,442,2,83,Nhom 10-3,Nhom 10-3,10,#BAB0AC
+462,461,4,8030,San pham 10-3-0,San pham 10-3-0,10,#BAB0AC
+463,461,4,8031,San pham 10-3-1,San pham 10-3-1,10,#BAB0AC
+464,461,4,8032,San pham 10-3-2,San pham 10-3-2,10,#BAB0AC
+465,461,4,8033,San pham 10-3-3,San pham 10-3-3,10,#BAB0AC
+466,461,4,8034,San pham 10-3-4,San pham 10-3-4,10,#BAB0AC
+467,442,2,84,Nhom 10-4,Nhom 10-4,10,#BAB0AC
+468,467,4,8040,San pham 10-4-0,San pham 10-4-0,10,#BAB0AC
+469,467,4,8041,San pham 10-4-1,San pham 10-4-1,10,#BAB0AC
+470,467,4,8042,San pham 10-4-2,San pham 10-4-2,10,#BAB0AC
+471,467,4,8043,San pham 10-4-3,San pham 10-4-3,10,#BAB0AC
+472,467,4,8044,San pham 10-4-4,San pham 10-4-4,10,#BAB0AC
+473,442,2,85,Nhom 10-5,Nhom 10-5,10,#BAB0AC
+474,473,4,8050,San pham 10-5-0,San pham 10-5-0,10,#BAB0AC
+475,473,4,8051,San pham 10-5-1,San pham 10-5-1,10,#BAB0AC
+476,473,4,8052,San pham 10-5-2,San pham 10-5-2,10,#BAB0AC
+477,473,4,8053,San pham 10-5-3,San pham 10-5-3,10,#BAB0AC
+478,473,4,8054,San pham 10-5-4,San pham 10-5-4,10,#BAB0AC
+479,442,2,86,Nhom 10-6,Nhom 10-6,10,#BAB0AC
+480,479,4,8060,San pham 10-6-0,San pham 10-6-0,10,#BAB0AC
+481,479,4,8061,San pham 10-6-1,San pham 10-6-1,10,#BAB0AC
+482,479,4,8062,San pham 10-6-2,San pham 10-6-2,10,#BAB0AC
+483,479,4,8063,San pham 10-6-3,San pham 10-6-3,10,#BAB0AC
+484,479,4,8064,San pham 10-6-4,San pham 10-6-4,10,#BAB0AC
+485,442,2,87,Nhom 10-7,Nhom 10-7,10,#BAB0AC
+486,485,4,8070,San pham 10-7-0,San pham 10-7-0,10,#BAB0AC
+487,485,4,8071,San pham 10-7-1,San pham 10-7-1,10,#BAB0AC
+488,485,4,8072,San pham 10-7-2,San pham 10-7-2,10,#BAB0AC
+489,485,4,8073,San pham 10-7-3,San pham 10-7-3,10,#BAB0AC
+490,485,4,8074,San pham 10-7-4,San pham 10-7-4,10,#BAB0AC
