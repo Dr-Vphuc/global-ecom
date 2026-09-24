@@ -1,0 +1,24 @@
+# Python 3.9+ — da kiem tra tuong thich voi Python 3.9.13 tren may hien tai.
+#   python -m pip install -r requirements.txt
+#
+# LUU Y: src/build_intermediate.py, src/check_raw_data.py va src/make_mock.py
+# chi dung thu vien chuan — chay duoc NGAY ma khong can cai gi.
+# Danh sach duoi day danh cho phan phan tich va ve bieu do.
+
+# Du lieu
+pandas>=2.0,<2.3
+numpy>=1.24,<2.0
+pyarrow>=14.0
+duckdb>=0.10
+
+# Mang luoi (T09, T10, T15, T16, T18)
+networkx>=3.1          # da co san louvain_communities, khong can python-louvain
+scipy>=1.10
+
+# Bieu do
+plotly>=5.18
+matplotlib>=3.7
+kaleido>=0.2.1         # xuat bieu do plotly ra PNG/SVG cho bao cao LaTeX
+
+# Doc file phan cong
+openpyxl>=3.1

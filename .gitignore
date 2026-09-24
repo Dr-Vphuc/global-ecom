@@ -1,0 +1,56 @@
+# ---------------------------------------------------------------------------
+# Nguyen tac #5: KHONG commit du lieu tho. Chi commit script tai va file nhe.
+# ---------------------------------------------------------------------------
+
+# Du lieu tho lon — tai lai bang huong dan trong README
+data/atlas/*.csv
+data/raw/
+# File tai do dang va file hong do src/download_atlas.py giu lai.
+# Duoi .part/.broken KHONG khop '*.csv' nen phai ghi rieng.
+*.part
+*.broken
+# ...tru 3 file tra cuu nho, can cho pipeline chay duoc ngay
+!data/atlas/location_country.csv
+!data/atlas/product_hs92.csv
+!data/atlas/hs92_data_dictionary.csv
+
+# File trung gian — sinh lai bang: python src/build_intermediate.py
+data/processed/
+*.parquet
+*.duckdb
+
+# Du lieu gia THI commit, de ca nhom dung chung mot bo
+!data/mock/
+!data/mock/*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+
+# File khoa tam cua Excel: Windows sinh ra ~$ten.xlsx khi workbook dang mo, va
+# khoa luon file do. Khong loai tru thi `git add -A` HONG CA LENH voi
+# "Permission denied", chu khong chi bo qua mot file.
+~$*
+
+# He dieu hanh / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
