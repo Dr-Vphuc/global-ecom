@@ -9,7 +9,7 @@ Kỹ thuật trọng tâm: *Visualization Techniques for Trees, Graphs, and Netw
 Phân công chi tiết, hợp đồng dữ liệu và tiến độ nằm trong `phan-cong-cong-viec.xlsx`.
 
 📌 **Viết báo cáo thì mở `docs/phat-hien-va-quyet-dinh.md` trước.** Nó gom mọi
-phát hiện đã đo được, mọi quyết định đã chốt kèm lý do, và bốn hạn chế phải nêu
+phát hiện đã đo được, mọi quyết định đã chốt kèm lý do, và năm hạn chế phải nêu
 thẳng. README này chỉ nói cách chạy repo.
 
 ---
@@ -227,7 +227,8 @@ global-ecom/
 │   ├── reference_data.py      # tên nước tiếng Việt, vùng, hằng số chung
 │   ├── build_intermediate.py  # atlas/ -> processed/ (5 file)
 │   ├── analyze_network.py     # thống kê mạng + ngưỡng lọc (T09, T10)
-│   └── make_mock.py           # sinh dữ liệu giả (T05)
+│   ├── make_mock.py           # sinh dữ liệu giả (T05)
+│   └── check_palette.py       # kiểm định bảng màu: mù màu, tương phản (T04)
 ├── docs/             # phát hiện, quyết định, nguồn dữ liệu, kiến thức nền
 ├── .report/          # báo cáo LaTeX
 └── phan-cong-cong-viec.xlsx
@@ -235,7 +236,7 @@ global-ecom/
 
 ## Chạy pipeline
 
-Cả năm script **chỉ dùng thư viện chuẩn** — chạy được ngay, không cần cài gì.
+Cả sáu script **chỉ dùng thư viện chuẩn** — chạy được ngay, không cần cài gì.
 
 ```bash
 python src/download_atlas.py        # 0. tải dữ liệu thô + kiểm MD5
@@ -243,6 +244,7 @@ python src/check_raw_data.py        # 1. kiểm tra dữ liệu thô, phải bá
 python src/build_intermediate.py    # 2. sinh 5 file trung gian trong processed/
 python src/analyze_network.py       # 3. thống kê mạng + bảng ngưỡng (T09, T10)
 python src/make_mock.py             # 4. sinh dữ liệu giả để vẽ song song
+python src/check_palette.py         # 5. kiểm định bảng màu (T04), thoát 1 nếu hỏng
 ```
 
 ### File sinh ra trong `data/processed/`
@@ -339,6 +341,7 @@ Lệnh này chỉ gỡ khỏi lần commit tới, không xóa khỏi lịch sử
 
 ## Ghi chú
 
+- `docs/style-guide.md` — **bảng màu, font, cỡ hình, quy ước nhãn** (T04)
 - `docs/cau-hoi-nghien-cuu.md` — **T01: câu hỏi + thông điệp + đối tượng** (bản nháp, chờ nhóm duyệt)
 - `docs/phat-hien-va-quyet-dinh.md` — **số liệu cho báo cáo + quyết định đã chốt**
 - `docs/nguon-du-lieu-vn-asean.md` — khảo sát các nguồn dữ liệu thương mại
