@@ -32,21 +32,58 @@ Hiện tại `python src/check_raw_data.py` báo `DAT` trên cả 8 mục kiểm
 ### Số liệu đã đo lại — đừng dùng số cũ
 
 Các con số trong `phan-cong-cong-viec.xlsx` được đo trên bản bị cắt. Số đúng,
-đo trên năm mốc **2024**:
+đo trên năm mốc **2023** — cùng năm mà file phân công ghi, nên so được trực tiếp:
 
-| Chỉ số | Số cũ trong file phân công | Số đúng |
+| Chỉ số năm 2023 | Số cũ trong file phân công | Số đúng |
 |---|---|---|
-| Số cạnh | 25.425 (năm 2023) | **25.754** (năm 2024) |
+| Số cạnh | 25.425 | **27.535** |
 | Số nút | 230 | **231** |
-| Mật độ | 0,483 | **0,485** |
-| Top 1% cạnh chiếm | 60,2% | **60,7%** |
-| Ngưỡng 10 tỷ USD | 347 cạnh, 65,7% giá trị | **385 cạnh, 67,7% giá trị** |
+| Mật độ | 0,483 | **0,518** |
+| Top 1% cạnh chiếm | 60,2% | **61,2%** |
+| Ngưỡng 10 tỷ USD | 347 cạnh, 65,7% giá trị | **390 cạnh, 67,3% giá trị** |
 
-⚠️ Con số 2024 trông gần giống số cũ, nhưng **đó là trùng hợp**: số cũ là năm
-2023 đo trên dữ liệu cụt. Năm 2023 đo đúng cho ra 27.535 cạnh, lệch hơn 2.000.
+Lệch **2.110 cạnh** — toàn bộ do bản tải cụt đuôi, không phải do cách dựng đồ thị.
 
-Ba ô cần sửa tay trong file Excel: `Tổng quan!B7`,
-`Phân công chi tiết!C14`, `Checklist nộp bài!C26`.
+Các ô trong file Excel đã được cập nhật theo số đo này.
+
+### ⚠️ Dữ liệu 2024 chưa đầy đủ — vì sao năm mốc là 2023
+
+Bản phát hành Atlas cho năm 2024 còn **tạm**. Số cạnh đứng rất yên suốt chín năm
+rồi rơi đúng ở năm cuối, trong khi tổng giá trị thì bình thường:
+
+| Năm | 2015 | 2020 | 2022 | 2023 | **2024** |
+|---|---|---|---|---|---|
+| Số cạnh | 27.323 | 27.003 | 27.489 | 27.535 | **25.754** |
+| Mật độ | 0,519 | 0,513 | 0,517 | 0,518 | **0,485** |
+| Tổng XK (nghìn tỷ USD) | 15,09 | 16,19 | 22,66 | 21,66 | 21,81 |
+
+Nghĩa là cái thiếu là các **cặp nước**, không phải tiền. Kiểm thẳng ở file thô
+`data/atlas/cc_year.csv`:
+
+```
+VNM->ARE 2023  export = 6.582.537.191
+VNM->ARE 2024  KHÔNG CÓ DÒNG NÀO
+```
+
+Tương tự với Nga, Lào, Bangladesh. Không nước nào biến mất hẳn — cả 231 nước đều
+có mặt cả hai năm — thiếu là thiếu từng cặp. **168 trong 231 nước** mất bạn hàng
+khi sang 2024; UAE nặng nhất, 218 → 129. Đây là dấu hiệu quen thuộc của một bản
+phát hành tạm: nước chưa nộp số liệu cho Comtrade thì Atlas chỉ dựng lại được
+phần nào từ báo cáo của đối tác.
+
+**Hậu quả với riêng đề tài này:** Việt Nam tụt từ **166 xuống 129 bạn hàng**, mất
+37 bạn hàng mang theo **11,4 tỷ USD (2,96% xuất khẩu)** — trong đó có **Lào**,
+một nước ASEAN. Để nguyên thì biểu đồ đọc thành *"Việt Nam đang mất bạn hàng"*,
+ngược hẳn sự thật.
+
+Dữ liệu cấp **nước × sản phẩm** của 2024 thì gần như đủ (18.102 dòng so với
+18.590 năm 2023, cùng 230 nước, tổng giá trị bình thường) — tức là treemap, RCA,
+PCI, ECI vẽ trên 2024 vẫn được. Nhưng trộn hai năm trong một bài vi phạm
+Checklist #18, nên **cả đồ án dùng một năm duy nhất: 2023**.
+
+Trong `reference_data.py`: `REFERENCE_YEAR = 2023`, `LAST_COMPLETE_YEAR = 2023`,
+`PROVISIONAL_YEARS = [2024]`. Biểu đồ chuỗi thời gian phải dừng ở 2023, hoặc vẽ
+tiếp nhưng ghi rõ 2024 là số tạm.
 
 ### Chỉ số phức tạp kinh tế — vị trí của Việt Nam
 
@@ -54,49 +91,50 @@ Ba ô cần sửa tay trong file Excel: `Tổng quan!B7`,
 Atlas. Đây là chỉ số đã chuẩn hoá: mỗi năm trung bình ≈ 0 và độ lệch chuẩn ≈ 1
 trên toàn bộ các nước, nên đọc trực tiếp được như một điểm z.
 
-| | 1995 | 2005 | 2015 | 2024 |
+| | 1995 | 2005 | 2015 | 2023 |
 |---|---|---|---|---|
-| **Việt Nam** | −1,00 (#181/211) | −0,12 (#132/224) | +0,24 (#109/230) | **+0,67 (#70/230)** |
-| Thái Lan | +0,39 (#80) | +0,65 (#58) | +0,93 (#45) | +0,81 (#54) |
-| Malaysia | +0,60 (#65) | +0,81 (#47) | +0,96 (#42) | +0,86 (#47) |
-| Philippines | +0,11 (#101) | +0,27 (#97) | +0,58 (#77) | +0,74 (#60) |
-| Indonesia | −0,14 (#120) | +0,17 (#108) | +0,28 (#104) | +0,22 (#115) |
-| Singapore | +0,91 (#33) | +1,23 (#16) | +1,57 (#6) | +1,52 (#7) |
+| **Việt Nam** | −1,00 (#181/211) | −0,12 (#132/224) | +0,24 (#109/230) | **+0,58 (#78/230)** |
+| Thái Lan | +0,39 (#80) | +0,65 (#58) | +0,93 (#45) | +0,85 (#49) |
+| Malaysia | +0,60 (#65) | +0,81 (#47) | +0,96 (#42) | +0,95 (#45) |
+| Philippines | +0,11 (#101) | +0,27 (#97) | +0,58 (#77) | +0,76 (#61) |
+| Indonesia | −0,14 (#120) | +0,17 (#108) | +0,28 (#104) | +0,28 (#101) |
+| Singapore | +0,91 (#33) | +1,23 (#16) | +1,57 (#6) | +1,68 (#5) |
 
-Việt Nam đi từ hạng 181/211 lên hạng 70/230 — từ nhóm 14% cuối bảng lên nhóm
-30% đầu bảng trong 29 năm. Khoảng cách với Thái Lan thu từ **1,39** xuống
-**0,14** điểm; Thái Lan đạt đỉnh năm 2015 rồi đi xuống.
+Việt Nam đi từ hạng 181/211 lên hạng 78/230 — từ nhóm 14% cuối bảng lên nhóm
+34% đầu bảng trong 28 năm. Khoảng cách với Thái Lan thu từ **1,39** xuống
+**0,28** điểm; Thái Lan đạt đỉnh năm 2015 rồi đi ngang.
 
 Số nước được xếp hạng đổi theo năm (211 → 230), nên cột `eci_n` trong file là
-bắt buộc khi vẽ biểu đồ thứ hạng theo thời gian — "hạng 70" không đọc được nếu
+bắt buộc khi vẽ biểu đồ thứ hạng theo thời gian — "hạng 78" không đọc được nếu
 thiếu mẫu số.
 
 ⚠️ ECI tính trên rổ xuất khẩu **gộp**, nên một nước lắp ráp hàng phức tạp vẫn
 được cộng điểm phức tạp dù giữ lại ít giá trị gia tăng. Đường ECI dốc đứng đi
-kèm RCA điện tử chỉ 2,45 (xem `country_product.csv`) là một căng thẳng nên nêu
-thẳng trong báo cáo, không nên lờ đi.
+kèm RCA điện tử chỉ 2,23 và RCA máy móc công nghiệp **0,95 — dưới 1, tức không
+có lợi thế so sánh** (xem `country_product.csv`) là một căng thẳng nên nêu thẳng
+trong báo cáo, không nên lờ đi.
 
 ### Mạng lưới: hình thù và ngưỡng lọc (T09 + T10)
 
 `src/analyze_network.py` đo mạng lưới rồi sinh ba file. Tóm tắt kết quả:
 
-| | 1995 | 2024 |
+| | 1995 | 2023 |
 |---|---|---|
 | Số nút | 211 | 231 |
-| Số cạnh | 18.411 | 25.754 |
-| **Mật độ** | 0,416 | **0,485** |
-| **Đối ứng** | 0,824 | **0,843** |
-| **Gini trọng số cạnh** | 0,955 | **0,956** |
+| Số cạnh | 18.411 | 27.535 |
+| **Mật độ** | 0,416 | **0,518** |
+| **Đối ứng** | 0,824 | **0,837** |
+| **Gini trọng số cạnh** | 0,955 | **0,957** |
 
 Ba con số in đậm là phát hiện chính của T09, và nó **ngược với trực giác về
 mạng lưới**:
 
-- **Mật độ 48,5%** — gần một nửa mọi cặp nước có giao dịch. Mạng xã hội hay mạng
+- **Mật độ 51,8%** — hơn một nửa mọi cặp nước có giao dịch. Mạng xã hội hay mạng
   trích dẫn thường dưới 1%. Mạng thương mại gần như đầy.
 - **Đối ứng 0,84** — A xuất sang B thì 84% khả năng B cũng xuất ngược lại. Hướng
   của cạnh mang rất ít thông tin, nên node-link **không cần mũi tên**; dùng mũi
   tên chỉ làm rối thêm mà không thêm ý nghĩa.
-- **Gini 0,956, gần như đứng yên suốt 30 năm.** Mạng phình từ 18 nghìn lên 26
+- **Gini 0,957, gần như đứng yên suốt 28 năm.** Mạng phình từ 18 nghìn lên 27,5
   nghìn cạnh nhưng độ lệch của giá trị không đổi.
 
 Gộp lại: **cấu trúc trung tâm–ngoại vi của thương mại không nằm ở việc ai nối với
@@ -104,12 +142,12 @@ ai, mà nằm ở việc luồng nào lớn.**
 
 Phân bố bậc xác nhận điều đó, và nó là kết quả đáng ngạc nhiên nhất của T09:
 
-| Bậc xuất khẩu 2024 | min | p25 | trung vị | p75 | p90 | max |
+| Bậc xuất khẩu 2023 | min | p25 | trung vị | p75 | p90 | max |
 |---|---|---|---|---|---|---|
-| số bạn hàng | 0 | 55 | 104 | 170 | 209 | 228 |
+| số bạn hàng | 0 | 62 | 116 | 177 | 210 | 226 |
 
-Các nước **trải gần như đều** từ 0 đến 228 bạn hàng — đo cụ thể, CCDF lệch khỏi
-một phân bố đều hoàn toàn nhiều nhất **0,046**. Nghĩa là mạng này *không có*
+Các nước **trải gần như đều** từ 0 đến 226 bạn hàng — đo cụ thể, CCDF lệch khỏi
+một phân bố đều hoàn toàn nhiều nhất **0,056**. Nghĩa là mạng này *không có*
 bậc đặc trưng và cũng *không có* hub theo nghĩa tô-pô: không tồn tại một nhóm
 nhỏ các nước nối với tất cả trong khi phần còn lại nối với vài nước.
 
@@ -129,8 +167,8 @@ giữ cạnh  ⟺  export_value ≥ 0,046% × tổng xuất khẩu thế giới 
 
 Trong `reference_data.py`: `THRESHOLD_SHARE = 0.00046` và `FOCUS_TOPK = 3`.
 
-**Vì sao không dùng ngưỡng cố định 10 tỷ USD.** Thương mại thế giới tăng **4,54 lần**
-từ 1995 (4,80 nghìn tỷ USD) đến 2024 (21,81 nghìn tỷ USD), nên một ngưỡng tính
+**Vì sao không dùng ngưỡng cố định 10 tỷ USD.** Thương mại thế giới tăng **4,51 lần**
+từ 1995 (4,80 nghìn tỷ USD) đến 2023 (21,66 nghìn tỷ USD), nên một ngưỡng tính
 bằng USD danh nghĩa đo hai năm bằng hai cái thước khác nhau:
 
 | Năm | Ngưỡng cố định 10 tỷ USD | Quy tắc đã chốt |
@@ -138,22 +176,22 @@ bằng USD danh nghĩa đo hai năm bằng hai cái thước khác nhau:
 | 1995 | 89 cạnh, 49,5% giá trị, **ASEAN 4/10** | 383 cạnh, 73,9% giá trị, ASEAN 10/10 |
 | 2005 | 176 cạnh, 56,2% giá trị, ASEAN 5/10 | 406 cạnh, 70,2% giá trị, ASEAN 10/10 |
 | 2015 | 270 cạnh, 61,6% giá trị, ASEAN 6/10 | 407 cạnh, 68,1% giá trị, ASEAN 10/10 |
-| 2024 | 385 cạnh, 67,7% giá trị, ASEAN 7/10 | 408 cạnh, 68,1% giá trị, ASEAN 10/10 |
+| 2023 | 390 cạnh, 67,3% giá trị, ASEAN 8/10 | 416 cạnh, 67,8% giá trị, ASEAN 10/10 |
 
 Cột trái là một cái bẫy: panel 1995 chỉ còn 89 cạnh và 25 nút, nên small
 multiples sẽ **đọc thành "thương mại mới xuất hiện sau 1995"** trong khi sự thật
-là "thương mại lớn lên". Cột phải giữ số cạnh ổn định 383–408 qua mọi năm mốc —
-và trên cả 30 năm nó nằm gọn trong khoảng **378–438** — nên các panel so sánh
+là "thương mại lớn lên". Cột phải giữ số cạnh ổn định 383–416 qua mọi năm mốc —
+và trên cả 29 năm nó nằm gọn trong khoảng **378–438** — nên các panel so sánh
 được với nhau.
 
 **Vì sao có phần bảo hiểm cho ASEAN.** Ngưỡng tương đối một mình vẫn **xoá Việt
 Nam khỏi năm 1995** (0 cạnh), và xoá Brunei, Lào, Myanmar khỏi hầu hết các năm.
 Với một đề tài tên là *"vị trí của Việt Nam"* thì đó là lỗi chí mạng, không phải
-chi tiết nhỏ. Giá phải trả cho phần bảo hiểm rất rẻ: **+23 cạnh** (385 → 408) và
-**+0,4 điểm phần trăm** giá trị.
+chi tiết nhỏ. Giá phải trả cho phần bảo hiểm rất rẻ: **+23 cạnh** (393 → 416) và
+**+0,36 điểm phần trăm** giá trị.
 
-**Cái đang bị bỏ mất, nói thẳng trong báo cáo.** Quy tắc này giữ 1,6% số cạnh và
-68,1% giá trị năm 2024 — tức là **vứt 98,4% số cạnh**. Phần bị vứt là hàng vạn
+**Cái đang bị bỏ mất, nói thẳng trong báo cáo.** Quy tắc này giữ 1,5% số cạnh và
+67,8% giá trị năm 2023 — tức là **vứt 98,5% số cạnh**. Phần bị vứt là hàng vạn
 luồng nhỏ; cộng lại chúng bằng gần một phần ba thương mại thế giới. Node-link vì
 vậy **không** đọc được là "bản đồ thương mại toàn cầu", mà là *"bản đồ các luồng
 thương mại lớn, cộng với chỗ đứng của ASEAN trong đó"*. Ai muốn nhìn phần đuôi
@@ -166,7 +204,8 @@ Toàn bộ 21 phương án đã cân nhắc nằm trong `data/processed/threshol
 
 | | |
 |---|---|
-| Năm mốc | **2024** (`REFERENCE_YEAR`) — mọi con số một-năm phải lấy năm này |
+| Năm mốc | **2023** (`REFERENCE_YEAR`) — mọi con số một-năm phải lấy năm này |
+| Dữ liệu 2024 | **là số tạm** (`PROVISIONAL_YEARS`) — thiếu 1.781 cặp nước; dùng được cho giá trị, không dùng được cho đếm hay cấu trúc mạng |
 | `is_focus` | **cả 10 nước ASEAN**, không chỉ Việt Nam |
 | `export_value = 0` | loại bỏ — không phải một cạnh, cũng không phải một dòng xuất khẩu |
 | `USP`, `ANS` | vẫn giữ trong `nodes.csv`; `USP` không có luồng nào suốt 30 năm và cũng vắng mặt trong file ECI |

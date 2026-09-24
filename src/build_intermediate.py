@@ -125,7 +125,7 @@ def mark_threshold(rows, share, topk):
     Hai phan cong lai:
       1. Nguong tuong doi - giu canh co export_value >= share * tong xuat khau
          the gioi CUA NAM DO. Dung ty le chu khong dung so USD co dinh, vi neu
-         co dinh thi nam 1995 chi con 89 canh con nam 2024 co 385, va small
+         co dinh thi nam 1995 chi con 89 canh con nam 2023 co 390, va small
          multiples se doc thanh "thuong mai moi xuat hien".
       2. Bao hiem cho nuoc trong tam - moi nuoc trong FOCUS_ISO3 luon giu topk
          luong xuat va topk luong nhap lon nhat cua chinh no. Khong co phan nay
@@ -449,7 +449,7 @@ def build_country_year():
             "eci": r["eci"],
             "eci_rank": rank.get((c, y), ""),
             # So nuoc duoc xep hang thay doi theo nam (211 nam 1995 -> 230 nam
-            # 2024), nen "hang 70" khong doc duoc neu thieu mau so. Ai ve bieu
+            # 2023), nen "hang 78" khong doc duoc neu thieu mau so. Ai ve bieu
             # do thu hang theo thoi gian bat buoc phai dung cot nay.
             "eci_n": n_year.get(y, ""),
             "coi": r["coi"],

@@ -330,26 +330,63 @@ SECTOR_NAME_VI = {
 }
 
 # Các mốc thời gian dùng cho small multiples (T20).
-MILESTONE_YEARS = [1995, 2005, 2015, 2024]
+MILESTONE_YEARS = [1995, 2005, 2015, 2023]
 
 # Năm "hiện tại" của cả đồ án. Mọi con số một-năm — số cạnh, mật độ, xếp hạng,
 # treemap "nay" — phải lấy đúng năm này để báo cáo không tự mâu thuẫn.
-REFERENCE_YEAR = 2024
+REFERENCE_YEAR = 2023
+
+# ---------------------------------------------------------------------------
+# Vi sao la 2023 chu khong phai 2024 - DA DO, khong phai phong doan.
+#
+# Ban phat hanh Atlas 2024 con TAM. So canh dung rat yen suot chin nam roi roi
+# dung o nam cuoi:
+#
+#     2015: 27.323   2022: 27.489   2023: 27.535   2024: 25.754
+#
+# Trong khi tong gia tri thi binh thuong: 21,66 -> 21,81 nghin ty USD. Tuc la
+# cai thieu la cac CAP nuoc, khong phai tien.
+#
+# Kiem o file tho data/atlas/cc_year.csv: cap VNM-ARE nam 2023 co 6,58 ty USD,
+# nam 2024 khong co mot dong nao. Tuong tu VNM-RUS, VNM-LAO, VNM-BGD. Khong
+# nuoc nao bien mat han - ca 231 nuoc deu co mat ca hai nam - thieu la thieu
+# tung cap. 168 trong 231 nuoc mat ban hang khi sang 2024; UAE nang nhat,
+# 218 xuong 129. Dau hieu kinh dien cua mot ban phat hanh tam: nuoc chua nop so
+# lieu cho Comtrade thi Atlas chi dung lai duoc phan nao tu bao cao doi tac.
+#
+# Hau qua cu the voi de tai nay: Viet Nam tut tu 166 xuong 129 ban hang, mat 37
+# ban hang mang theo 11,4 ty USD (2,96% xuat khau). Trong so do co LAO - mot
+# nuoc ASEAN, ngay giua lat cat Viet Nam-ASEAN. De nguyen thi bieu do doc thanh
+# "Viet Nam dang mat ban hang", nguoc han su that.
+#
+# Rieng GIA TRI thi 2024 van dung duoc (treemap, RCA, PCI, ECI, chord luong
+# lon) vi phan thieu chi 2,96%. Hong la hong nhung gi DEM va nhung gi ve HINH
+# THU mang. Nhung tron hai nam trong mot bai vi pham Checklist #18, nen ca do
+# an dung mot nam duy nhat.
+# ---------------------------------------------------------------------------
+LAST_COMPLETE_YEAR = 2023
+
+# Cac nam co du lieu chua day du. Bieu do chuoi thoi gian phai dung o
+# LAST_COMPLETE_YEAR, hoac ve tiep nhung ghi ro la so tam - khong duoc de nguoi
+# xem doc cai hut o panel cuoi nhu mot su that ve the gioi.
+PROVISIONAL_YEARS = [2024]
 
 # ---------------------------------------------------------------------------
 # Quy tac loc canh - DA CHOT o T10.
 # Bang chung: data/processed/threshold_coverage.csv (sinh boi analyze_network.py).
 #
 # Nguong la MOT TY LE tren tong xuat khau the gioi CUA NAM DO, khong phai mot so
-# USD co dinh. Thuong mai toan cau tang 4,54 lan tu 1995 (4,80 nghin ty USD) den
-# 2024 (21,81 nghin ty USD), nen mot
-# nguong 10 ty USD co dinh chi giu lai 89 canh nam 1995 nhung 385 canh nam 2024:
+# USD co dinh. Thuong mai toan cau tang 4,51 lan tu 1995 (4,80 nghin ty USD) den
+# 2023 (21,66 nghin ty USD), nen mot nguong 10 ty USD co dinh do hai nam bang
+# hai cai thuoc khac nhau: giu lai 89 canh nam 1995 nhung 3xx canh nam 2023, va
 # small multiples se doc thanh "thuong mai moi xuat hien" thay vi "thuong mai
-# lon len". Dung ty le thi so canh on dinh qua cac nam: 383 / 406 / 407 / 408.
+# lon len". Dung ty le thi so canh on dinh qua cac nam.
 #
-# Chon 0,046% de nam 2024 ra dung 10,03 ty USD, trung con so 10 ty nhom da do va
-# ghi trong de bai. Tuc la nam tham chieu KHONG doi; chi cac nam con lai duoc
-# quy ve cung mot thuoc do.
+# Chon 0,046% de nam tham chieu ra 9,96 ty USD, sat con so 10 ty nhom da do va
+# ghi trong de bai. Tuc la nam tham chieu KHONG doi thuoc do; chi cac nam con
+# lai duoc quy ve cung mot thuoc. Con so nay duoc chon khi nam tham chieu con la
+# 2024 (ra 10,03 ty); doi sang 2023 no ra 9,96 ty - lech 0,7%, coi nhu trung -
+# nen quy tac T10 song nguyen ven qua lan doi nam nay.
 # ---------------------------------------------------------------------------
 THRESHOLD_SHARE = 0.00046
 
