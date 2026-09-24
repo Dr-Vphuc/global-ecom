@@ -339,6 +339,7 @@ Lệnh này chỉ gỡ khỏi lần commit tới, không xóa khỏi lịch sử
 
 ## Ghi chú
 
+- `docs/cau-hoi-nghien-cuu.md` — **T01: câu hỏi + thông điệp + đối tượng** (bản nháp, chờ nhóm duyệt)
 - `docs/phat-hien-va-quyet-dinh.md` — **số liệu cho báo cáo + quyết định đã chốt**
 - `docs/nguon-du-lieu-vn-asean.md` — khảo sát các nguồn dữ liệu thương mại
 - `docs/kien-thuc-nen-tang.md` — kiến thức kinh tế nền cho người làm dữ liệu
