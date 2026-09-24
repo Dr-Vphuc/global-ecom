@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """T05 — Sinh dữ liệu giả đúng schema hợp đồng để R2 và R3 vẽ ngay.
 
-Sinh 2 file mà pipeline thật chưa tạo được:
-    data/mock/country_product.csv   (cần cp_year_hs2 — chưa tải)
-    data/mock/metrics.csv           (cần T18 — chưa tính)
+Từ khi T07 đóng, pipeline thật đã sinh được country_product.csv, nên bản mock
+chỉ còn hai vai trò:
 
-Và bản rút gọn của 3 file thật để nạp nhanh khi thử bố cục:
-    data/mock/nodes.csv, edges.csv, tree.csv
+    data/mock/metrics.csv   — chưa có bản thật, phải chờ T18
+    các file còn lại        — bản rút gọn để nạp nhanh khi thử bố cục
+                              (nodes, edges, tree, country_product)
 
 Giá trị là GIẢ nhưng PHÂN BỐ được làm giống thật (lệch phải rất mạnh,
 đúng dạng luật lũy thừa của dữ liệu thương mại) để bố cục biểu đồ,
@@ -65,11 +65,16 @@ def heavy_tail(scale):
 
 def mock_nodes():
     rows = []
-    for iso in MOCK_COUNTRIES:
+    # country_id phải CỐ ĐỊNH và DUY NHẤT. Bản cũ dùng abs(hash(iso)) % 900 + 4,
+    # sai cả hai đường: hash() của chuỗi bị ngẫu nhiên hoá theo từng tiến trình
+    # Python (PYTHONHASHSEED) nên mỗi lần chạy ra một bộ id khác — random.seed()
+    # không cứu được vì hash() không dùng tới nó — và nó còn đụng id: IND và RUS
+    # cùng nhận 779. Đánh số theo vị trí trong MOCK_COUNTRIES là xong cả hai.
+    for i, iso in enumerate(MOCK_COUNTRIES):
         vi, region, continent = COUNTRY_VI[iso]
         rows.append({
             "country_iso3": iso,
-            "country_id": abs(hash(iso)) % 900 + 4,
+            "country_id": 4 + i * 7,
             "country_name": iso,
             "country_name_vi": vi,
             "region": region,

@@ -44,6 +44,10 @@ DATASETS = [
     ("doi:10.7910/DVN/T4CHWJ", "International Trade Data (HS, 92)", {
         "hs92_country_country_year.csv": "cc_year.csv",
         "hs92_country_product_year_2.csv": "cp_year_hs2.csv",
+        # Giu nguyen ten goc de khong lan voi data/processed/country_year.csv.
+        # File chi 0,36 MB nhung chua ECI, COI va diversity - bo chi so do dung
+        # "vi tri cua Viet Nam", tuc la ve dung cai ten de tai dat ra.
+        "hs92_country_year.csv": "hs92_country_year.csv",
         "hs92_data_dictionary.csv": "hs92_data_dictionary.csv",
     }),
     ("doi:10.7910/DVN/3BAL1O", "Classifications Data", {

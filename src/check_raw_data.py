@@ -61,8 +61,9 @@ def main():
     cc_path = os.path.join(RAW, "cc_year.csv")
     prod_path = os.path.join(RAW, "product_hs92.csv")
     cp_path = os.path.join(RAW, "cp_year_hs2.csv")
+    cy_path = os.path.join(RAW, "hs92_country_year.csv")
 
-    for p in (loc_path, cc_path, prod_path, cp_path):
+    for p in (loc_path, cc_path, prod_path, cp_path, cy_path):
         if not os.path.exists(p):
             fail("THIEU FILE: %s" % os.path.relpath(p, ROOT))
     if problems:
@@ -173,24 +174,74 @@ def main():
     else:
         fail("chi co %d ma HS2, mong doi 97" % len(codes))
 
-    # Doi chieu cheo hai file: cc_year do thuong mai theo cap nuoc, cp_year_hs2
-    # do theo nuoc va san pham. Hai goc nhin khac nhau nhung tong xuat khau
-    # toan the gioi phai trung nhau. Lech lon = mot trong hai file thieu dong.
-    log("\n7. Doi chieu cheo cc_year.csv voi cp_year_hs2.csv")
-    chung = set(tot) & set(tot_cp)
+    # --- 7. File nuoc - nam: ECI, COI, diversity ---
+    log("\n7. File nuoc - nam (chi so phuc tap kinh te)")
+    check_complete_last_line(cy_path, 9)
+
+    cy, tot_cy = [], {}
+    with open(cy_path, encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            if not r.get("year"):
+                continue
+            cy.append(r)
+            try:
+                y, v = int(r["year"]), float(r["export_value"] or 0)
+            except (ValueError, TypeError):
+                continue
+            tot_cy[y] = tot_cy.get(y, 0.0) + v
+
+    # ECI la chi so DA CHUAN HOA: moi nam, trung binh xap xi 0 va do lech chuan
+    # xap xi 1. Day la tinh chat cua cach tinh chu khong phai trung hop, nen
+    # dung duoc lam phep thu: doc lech cot hay mat dong la hai so nay troi ngay.
+    worst_m = worst_s = 0.0
+    for y in sorted({r["year"] for r in cy}):
+        e = [float(r["eci"]) for r in cy
+             if r["year"] == y and r["eci"] not in ("", "None")]
+        if len(e) < 50:
+            continue
+        m = sum(e) / len(e)
+        s = (sum((x - m) ** 2 for x in e) / len(e)) ** 0.5
+        worst_m, worst_s = max(worst_m, abs(m)), max(worst_s, abs(s - 1))
+    if worst_m < 0.15 and worst_s < 0.12:
+        ok("ECI dung chuan hoa (|trung binh| <= %.3f, |do lech chuan - 1| <= %.3f)"
+           % (worst_m, worst_s))
+    else:
+        fail("ECI sai chuan hoa: |trung binh| %.3f, |do lech chuan - 1| %.3f"
+             " => nghi doc lech cot" % (worst_m, worst_s))
+
+    no_eci = sorted({r["country_iso3_code"] for r in cy
+                     if r["eci"] in ("", "None")})
+    if no_eci:
+        log("  [i  ] %d ma khong co ECI nam nao: %s"
+            % (len(no_eci), ", ".join(no_eci)))
+    thieu = sorted(all_iso - {r["country_iso3_code"] for r in cy})
+    if thieu:
+        log("  [i  ] %d ma co trong location_country nhung vang mat o day: %s"
+            % (len(thieu), ", ".join(thieu)))
+
+    # --- 8. Doi chieu cheo ba file ---
+    # Ba file do cung mot nen thuong mai tu ba goc khac nhau: cc_year theo cap
+    # nuoc, cp_year_hs2 theo nuoc va san pham, hs92_country_year theo nuoc.
+    # Tong xuat khau toan the gioi phai trung nhau o ca ba. Mot file bi cat khi
+    # tai se lam tut rieng cot cua no, va phep nay chi ra ngay file nao.
+    log("\n8. Doi chieu cheo ba file (tong xuat khau the gioi)")
+    chung = set(tot) & set(tot_cp) & set(tot_cy)
     if chung:
         y = max(chung)
-        a, b = tot[y], tot_cp[y]
-        lech = abs(a - b) / a if a else 1.0
-        log("  nam %d: cc_year %.2f nghin ty | cp_year_hs2 %.2f nghin ty"
-            % (y, a / 1e12, b / 1e12))
+        v = [("cc_year.csv", tot[y]), ("cp_year_hs2.csv", tot_cp[y]),
+             ("hs92_country_year.csv", tot_cy[y])]
+        for ten, gt in v:
+            log("  nam %d  %-22s %.4f nghin ty" % (y, ten, gt / 1e12))
+        hi = max(gt for _, gt in v)
+        lo = min(gt for _, gt in v)
+        lech = (hi - lo) / hi if hi else 1.0
         if lech < 0.01:
-            ok("hai file khop nhau (lech %.3f%%)" % (lech * 100))
+            ok("ca ba file khop nhau (chenh lech toi da %.3f%%)" % (lech * 100))
         else:
-            fail("hai file lech %.1f%% => mot trong hai thieu du lieu"
+            fail("ba file lech toi %.1f%% => co file thieu du lieu"
                  % (lech * 100))
     else:
-        fail("hai file khong co nam nao chung")
+        fail("ba file khong co nam nao chung")
 
     # --- Ket luan ---
     log("\n" + "=" * 60)

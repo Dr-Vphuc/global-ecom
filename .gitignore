@@ -44,6 +44,11 @@ env/
 *.bbl
 *.blg
 
+# File khoa tam cua Excel: Windows sinh ra ~$ten.xlsx khi workbook dang mo, va
+# khoa luon file do. Khong loai tru thi `git add -A` HONG CA LENH voi
+# "Permission denied", chu khong chi bo qua mot file.
+~$*
+
 # He dieu hanh / IDE
 .DS_Store
 Thumbs.db

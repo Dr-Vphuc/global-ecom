@@ -16,6 +16,10 @@
 
 > **Điểm mù chung của cả ba:** chúng đo **thương mại gộp (gross trade)**. Mà "phụ thuộc chuỗi giá trị" thì gross trade *nói dối rất nặng* với Việt Nam — một chiếc điện thoại xuất 500 USD có thể chỉ chứa 30–40 USD giá trị gia tăng nội địa. Nếu chỉ dùng BACI/Comtrade, bài phân tích sẽ bị chấm là "mô tả luồng hàng", không phải "phân tích chuỗi giá trị".
 
+> **Ghi chú cập nhật (2026-09-24):** đọc dòng "Xương sống nên dùng" của BACI
+> kèm mục 7 — Atlas **cũng** hoà giải số liệu gương, nên lợi thế riêng của BACI
+> hẹp hơn bảng này gợi ý.
+
 ---
 
 ## 2. Mảnh ghép thiếu: dữ liệu giá trị gia tăng / GVC
@@ -109,13 +113,72 @@ BACI HS92 1995–2023   → luồng song phương VN × 9 nước ASEAN × HS6
 
 ## 7. Trạng thái & bước tiếp theo
 
-**Đã có trong repo:** `data/atlas/` (cc_year, hs92_data_dictionary, location_country, product_hs92).
+> Cập nhật **2026-09-24**. Mục này là sổ kiểm kê thật, bám theo repo. Các mục
+> 1–6 phía trên giữ nguyên làm bản khảo sát ban đầu.
 
-**Chưa quyết:**
-- Chốt phạm vi đề tài (giữ hướng VN–ASEAN hay quay lại global-ecom).
-- Chọn bộ value-added: OECD TiVA vs ADB MRIO vs UIBE (đã tính sẵn).
+**Phạm vi đã chốt:** đề tài là *"Mạng lưới thương mại quốc tế — vị trí của Việt
+Nam trong cấu trúc thương mại toàn cầu"*, kèm lát cắt Việt Nam – ASEAN. Tài liệu
+này được viết cho một đề tài **rộng hơn** ("chuỗi giá trị & phụ thuộc"), nên hãy
+đọc nó như một **danh sách khảo sát**, không phải danh sách bắt buộc. Một đồ án
+DataViz không cần TiVA + MRIO + ma trận Leontief; nó cần biểu đồ tốt và một câu
+chuyện có bằng chứng.
 
-**Việc có thể làm ngay khi tiếp tục:**
-- Viết script DuckDB: tải + lọc + gộp BACI thành bảng phân tích VN × ASEAN.
-- Bổ sung mapping HS→BEC Rev.5.
-- Viết hàm tính RCA / Grubel–Lloyd / HHI / strategic dependency.
+### Đã có gì
+
+| Mục | Trạng thái |
+|---|---|
+| §1 Ba bộ lõi | **1/3** — chỉ Atlas. BACI và Comtrade chưa đụng tới |
+| §2 Giá trị gia tăng / GVC | **0/5** |
+| §3 Bộ phụ trợ | **0/11** |
+| §4 Mapping HS→BEC Rev.5 | chưa có |
+| §4 Bảng chỉ số | **1/6** — mới RCA (Balassa), đã tính và kiểm định trong `src/build_intermediate.py` |
+
+Ngay trong bộ Atlas cũng mới lấy **6 trên 23 file** (≈69 MB trên ≈16,5 GB):
+`cc_year`, `cp_year_hs2`, `hs92_country_year`, `hs92_data_dictionary`,
+`location_country`, `product_hs92`.
+
+Đủ cho toàn bộ biểu đồ đã lên kế hoạch. Không hạng mục nào của đồ án còn bị
+chặn vì thiếu dữ liệu, **trừ T08** — đúng cái task ghi rõ là cần tài khoản CEPII
+và API key Comtrade.
+
+### Vì sao không lấy nốt
+
+Đường truyền tới Dataverse từ máy làm bài chỉ khoảng **30 KB/s**:
+
+| File chưa lấy | Dung lượng | Thời gian tải ước tính |
+|---|---|---|
+| `hs92_country_product_year_4.csv` | 452 MB | ~4,2 giờ |
+| `hs92_country_product_year_6.csv` | 1,0 GB | ~9,4 giờ |
+| `hs92_country_country_product_year_6_2020_2024.csv` | 2,9 GB | ~26 giờ |
+| ba file song phương HS6 còn lại (1995–2019) | 12,2 GB | ~113 giờ |
+
+Bốn file song phương HS6 cộng lại là vài ngày chạy liên tục — coi như không khả
+thi trên máy này, và HS6 (5.040 mã) cũng quá mịn để vẽ. HS4 là ranh giới: chạy
+qua đêm được, đổi lại 1.243 nhóm hàng thay vì 97.
+
+### Đánh giá lại: BACI có còn là "xương sống nên dùng"?
+
+Lý do mạnh nhất để chọn BACI ở §1 là nó đã **hoà giải số liệu gương**, tức xử lý
+được chuyện Lào / Myanmar / Campuchia báo cáo rất thưa. Nhưng Atlas **cũng làm
+việc đó** — Growth Lab có bước làm sạch và hoà giải riêng trước khi phát hành.
+Ba file Atlas đang dùng khớp nhau đến **0,000%** ở tổng xuất khẩu thế giới năm
+2024 (mục 8 của `src/check_raw_data.py`), tức không có lỗ hổng báo cáo nào lọt
+qua.
+
+Cái BACI thật sự cho thêm là **HS6 song phương ở dung lượng tải được** — thứ
+Atlas chỉ phát hành dưới dạng file nhiều GB. Cần HS6 song phương thì đăng ký
+BACI; không cần thì bộ Atlas hiện tại là đủ.
+
+### Việc chỉ thành viên nhóm làm được
+
+- Tài khoản **CEPII** để tải BACI — miễn phí, đăng ký bằng email.
+- **API key UN Comtrade** — miễn phí, có hạn mức số lần gọi.
+
+### Nếu còn thời gian, theo thứ tự đáng làm
+
+1. `hs92_country_product_year_4.csv` — HS4, chạy qua đêm, treemap và sunburst
+   chi tiết hơn hẳn.
+2. Một lớp value-added: lấy **chỉ số UIBE hoặc ADB GVC đã tính sẵn**, đừng tự
+   dựng ma trận Leontief.
+3. Hải quan Việt Nam cho phần 2025–2026 — chỉ cần nếu báo cáo muốn chạm tới năm
+   hiện tại.

@@ -23,7 +23,7 @@ Trình duyệt đứt giữa chừng và **không báo lỗi** — file vẫn m�
 chỉ cụt đuôi. Đó là lý do `src/download_atlas.py` luôn đối chiếu MD5 chính thức
 và `src/check_raw_data.py` là cửa chặn bắt buộc trước khi chạy pipeline.
 
-Hiện tại `python src/check_raw_data.py` báo `DAT` trên cả 7 mục kiểm tra.
+Hiện tại `python src/check_raw_data.py` báo `DAT` trên cả 8 mục kiểm tra.
 
 ### Số liệu đã đo lại — đừng dùng số cũ
 
@@ -44,6 +44,34 @@ Các con số trong `phan-cong-cong-viec.xlsx` được đo trên bản bị c�
 Ba ô cần sửa tay trong file Excel: `Tổng quan!B7`,
 `Phân công chi tiết!C14`, `Checklist nộp bài!C26`.
 
+### Chỉ số phức tạp kinh tế — vị trí của Việt Nam
+
+`data/processed/country_year.csv` mang **ECI** (Economic Complexity Index) của
+Atlas. Đây là chỉ số đã chuẩn hoá: mỗi năm trung bình ≈ 0 và độ lệch chuẩn ≈ 1
+trên toàn bộ các nước, nên đọc trực tiếp được như một điểm z.
+
+| | 1995 | 2005 | 2015 | 2024 |
+|---|---|---|---|---|
+| **Việt Nam** | −1,00 (#181/211) | −0,12 (#132/224) | +0,24 (#109/230) | **+0,67 (#70/230)** |
+| Thái Lan | +0,39 (#80) | +0,65 (#58) | +0,93 (#45) | +0,81 (#54) |
+| Malaysia | +0,60 (#65) | +0,81 (#47) | +0,96 (#42) | +0,86 (#47) |
+| Philippines | +0,11 (#101) | +0,27 (#97) | +0,58 (#77) | +0,74 (#60) |
+| Indonesia | −0,14 (#120) | +0,17 (#108) | +0,28 (#104) | +0,22 (#115) |
+| Singapore | +0,91 (#33) | +1,23 (#16) | +1,57 (#6) | +1,52 (#7) |
+
+Việt Nam đi từ hạng 181/211 lên hạng 70/230 — từ nhóm 14% cuối bảng lên nhóm
+30% đầu bảng trong 29 năm. Khoảng cách với Thái Lan thu từ **1,39** xuống
+**0,14** điểm; Thái Lan đạt đỉnh năm 2015 rồi đi xuống.
+
+Số nước được xếp hạng đổi theo năm (211 → 230), nên cột `eci_n` trong file là
+bắt buộc khi vẽ biểu đồ thứ hạng theo thời gian — "hạng 70" không đọc được nếu
+thiếu mẫu số.
+
+⚠️ ECI tính trên rổ xuất khẩu **gộp**, nên một nước lắp ráp hàng phức tạp vẫn
+được cộng điểm phức tạp dù giữ lại ít giá trị gia tăng. Đường ECI dốc đứng đi
+kèm RCA điện tử chỉ 2,45 (xem `country_product.csv`) là một căng thẳng nên nêu
+thẳng trong báo cáo, không nên lờ đi.
+
 ## Quyết định đã chốt
 
 | | |
@@ -51,7 +79,7 @@ Ba ô cần sửa tay trong file Excel: `Tổng quan!B7`,
 | Năm mốc | **2024** (`REFERENCE_YEAR`) — mọi con số một-năm phải lấy năm này |
 | `is_focus` | **cả 10 nước ASEAN**, không chỉ Việt Nam |
 | `export_value = 0` | loại bỏ — không phải một cạnh, cũng không phải một dòng xuất khẩu |
-| `USP`, `ANS` | vẫn giữ trong `nodes.csv`; `USP` không có luồng nào suốt 30 năm |
+| `USP`, `ANS` | vẫn giữ trong `nodes.csv`; `USP` không có luồng nào suốt 30 năm và cũng vắng mặt trong file ECI |
 | `sector_color` | đang là bảng màu tạm, phải thay ở T04 |
 | Ngưỡng lọc cạnh | `DEFAULT_THRESHOLD = 1e10` tạm thời, chốt lại ở T10 |
 
@@ -65,9 +93,9 @@ global-ecom/
 │   └── mock/         # dữ liệu giả đúng schema — CÓ commit
 ├── src/
 │   ├── download_atlas.py      # tải dữ liệu thô, nối tiếp, kiểm MD5
-│   ├── check_raw_data.py      # 7 mục kiểm tra toàn vẹn, cửa chặn
+│   ├── check_raw_data.py      # 8 mục kiểm tra toàn vẹn, cửa chặn
 │   ├── reference_data.py      # tên nước tiếng Việt, vùng, hằng số chung
-│   ├── build_intermediate.py  # atlas/ -> processed/ (4 file)
+│   ├── build_intermediate.py  # atlas/ -> processed/ (5 file)
 │   └── make_mock.py           # sinh dữ liệu giả (T05)
 ├── docs/             # ghi chú nguồn dữ liệu và kiến thức nền
 ├── .report/          # báo cáo LaTeX
@@ -81,9 +109,21 @@ Cả bốn script **chỉ dùng thư viện chuẩn** — chạy được ngay, 
 ```bash
 python src/download_atlas.py        # 0. tải dữ liệu thô + kiểm MD5
 python src/check_raw_data.py        # 1. kiểm tra dữ liệu thô, phải báo DAT
-python src/build_intermediate.py    # 2. sinh 4 file trung gian trong processed/
+python src/build_intermediate.py    # 2. sinh 5 file trung gian trong processed/
 python src/make_mock.py             # 3. sinh dữ liệu giả để vẽ song song
 ```
+
+### File sinh ra trong `data/processed/`
+
+| File | Nội dung | Dòng |
+|---|---|---|
+| `nodes.csv` | nước: mã, tên tiếng Việt, vùng, châu lục, `is_focus` | 233 |
+| `edges.csv` | luồng xuất khẩu song phương 1995–2024, kèm `log_value` | 750.855 |
+| `tree.csv` | cây sản phẩm HS92 bốn tầng, có `sector_id` và màu tạm | 6.390 |
+| `country_product.csv` | nước × nhóm hàng HS2 × năm, kèm **RCA** tự tính và PCI | 539.986 |
+| `country_year.csv` | nước × năm: **ECI**, thứ hạng, COI, diversity | 6.755 |
+
+Cả năm file đều bị `.gitignore` loại trừ — sinh lại bằng lệnh trên, không commit.
 
 Phần phân tích mạng và vẽ biểu đồ cần thư viện ngoài:
 
@@ -120,6 +160,7 @@ sai MD5 được đổi tên thành `*.broken`, không bị xóa.
 |---|---|---|---|
 | `hs92_country_country_year.csv` | `cc_year.csv` | 30.767.251 | `9c39659168dd5212f745572ba35b2a5c` |
 | `hs92_country_product_year_2.csv` | `cp_year_hs2.csv` | 38.135.675 | `b767f3c2dad599ecce2204a4b5ba9fa6` |
+| `hs92_country_year.csv` | giữ nguyên tên | 363.501 | `9467cc0686c2380659f892948509115d` |
 | `hs92_data_dictionary.csv` | giữ nguyên tên | 3.257 | — |
 | `location_country.csv` | giữ nguyên tên | 9.677 | `9cc1c0eb7624f2a32d55b6dec1b6b21a` |
 | `product_hs92.csv` | giữ nguyên tên | 837.108 | `c4a7dc2bbb9f6711b99bd983dc610d79` |

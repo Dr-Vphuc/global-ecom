@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Sinh 3 file trung gian THẬT từ bộ Atlas theo đúng HỢP ĐỒNG DỮ LIỆU.
+"""Sinh 5 file trung gian THẬT từ bộ Atlas theo đúng HỢP ĐỒNG DỮ LIỆU.
 
-    data/atlas/location_country.csv  ->  data/processed/nodes.csv
-    data/atlas/cc_year.csv           ->  data/processed/edges.csv
-    data/atlas/product_hs92.csv      ->  data/processed/tree.csv
+    data/atlas/location_country.csv    ->  data/processed/nodes.csv
+    data/atlas/cc_year.csv             ->  data/processed/edges.csv
+    data/atlas/product_hs92.csv        ->  data/processed/tree.csv
+    data/atlas/cp_year_hs2.csv         ->  data/processed/country_product.csv
+    data/atlas/hs92_country_year.csv   ->  data/processed/country_year.csv
 
 Chạy:
     python src/build_intermediate.py
@@ -24,6 +26,7 @@ from reference_data import (  # noqa: E402
     COUNTRY_VI,
     DEFAULT_THRESHOLD,
     FOCUS_ISO3,
+    MILESTONE_YEARS,
     NON_COUNTRY,
     REFERENCE_YEAR,
     SECTOR_PALETTE_PROVISIONAL,
@@ -67,7 +70,7 @@ def write_csv(path, fieldnames, rows):
 # nodes.csv
 # ---------------------------------------------------------------------------
 def build_nodes():
-    log("\n[1/4] nodes.csv")
+    log("\n[1/5] nodes.csv")
     src = read_csv(os.path.join(RAW, "location_country.csv"))
     rows, missing = [], []
 
@@ -116,7 +119,7 @@ def build_nodes():
 # edges.csv
 # ---------------------------------------------------------------------------
 def build_edges(known_iso3, threshold):
-    log("\n[2/4] edges.csv  (nguong tam: %.0f USD)" % threshold)
+    log("\n[2/5] edges.csv  (nguong tam: %.0f USD)" % threshold)
     path = os.path.join(RAW, "cc_year.csv")
     if not os.path.exists(path):
         sys.exit("THIEU FILE: %s — xem README." % path)
@@ -194,7 +197,7 @@ def build_edges(known_iso3, threshold):
 # tree.csv
 # ---------------------------------------------------------------------------
 def build_tree():
-    log("\n[3/4] tree.csv")
+    log("\n[3/5] tree.csv")
     src = read_csv(os.path.join(RAW, "product_hs92.csv"))
     by_id = {r["product_id"]: r for r in src}
 
@@ -257,7 +260,7 @@ def build_tree():
 # ---------------------------------------------------------------------------
 def build_country_product():
     """Co cau xuat khau theo nuoc - san pham HS2, kem RCA tu tinh."""
-    log("\n[4/4] country_product.csv")
+    log("\n[4/5] country_product.csv")
     path = os.path.join(RAW, "cp_year_hs2.csv")
     if not os.path.exists(path):
         log("  ! THIEU %s" % os.path.relpath(path, ROOT))
@@ -356,6 +359,97 @@ def build_country_product():
         log("    RCA %6.2f  %6.1f ty USD  %s" % (rca, v / 1e9, names.get(pid, pid)))
 
 
+# ---------------------------------------------------------------------------
+# country_year.csv
+# ---------------------------------------------------------------------------
+def build_country_year():
+    """Chi so phuc tap kinh te theo nuoc - nam, kem thu hang tu xep."""
+    log("\n[5/5] country_year.csv")
+    path = os.path.join(RAW, "hs92_country_year.csv")
+    if not os.path.exists(path):
+        log("  ! THIEU %s" % os.path.relpath(path, ROOT))
+        log("    -> chay: python src/download_atlas.py")
+        log("    (bon file tren van dung duoc)")
+        return
+
+    src = read_csv(path)
+
+    # Thu hang ECI khong co san trong du lieu goc nen phai tu xep theo tung nam.
+    # Hang 1 = ECI cao nhat. Nuoc khong co ECI thi de trong, khong xep hang.
+    by_year = {}
+    for r in src:
+        if r["eci"] not in ("", "None"):
+            by_year.setdefault(r["year"], []).append(r)
+
+    rank, n_year = {}, {}
+    for y, rs in by_year.items():
+        rs.sort(key=lambda x: -float(x["eci"]))
+        n_year[y] = len(rs)
+        for i, r in enumerate(rs, 1):
+            rank[(r["country_iso3_code"], y)] = i
+
+    rows = []
+    for r in src:
+        c, y = r["country_iso3_code"], r["year"]
+        rows.append({
+            "country_iso3": c,
+            "year": int(y),
+            "export_value": r["export_value"],
+            "import_value": r["import_value"],
+            "eci": r["eci"],
+            "eci_rank": rank.get((c, y), ""),
+            # So nuoc duoc xep hang thay doi theo nam (211 nam 1995 -> 230 nam
+            # 2024), nen "hang 70" khong doc duoc neu thieu mau so. Ai ve bieu
+            # do thu hang theo thoi gian bat buoc phai dung cot nay.
+            "eci_n": n_year.get(y, ""),
+            "coi": r["coi"],
+            "diversity": r["diversity"],
+            # growth_proj la DU BAO cua Growth Lab, khong phai so do duoc, va
+            # trong khoang 40% dong. Giu lai nhung dung tron vao chuoi lich su.
+            "growth_proj": r["growth_proj"],
+        })
+
+    rows.sort(key=lambda x: (x["year"], x["country_iso3"]))
+    write_csv(
+        os.path.join(OUT, "country_year.csv"),
+        ["country_iso3", "year", "export_value", "import_value",
+         "eci", "eci_rank", "eci_n", "coi", "diversity", "growth_proj"],
+        rows,
+    )
+
+    # Kiem dinh: ECI la chi so da chuan hoa - moi nam trung binh xap xi 0 va
+    # do lech chuan xap xi 1. Doc lech cot hay mat dong la hai so nay troi ngay.
+    worst_m = worst_s = 0.0
+    for y, rs in by_year.items():
+        e = [float(x["eci"]) for x in rs]
+        m = sum(e) / len(e)
+        s = (sum((v - m) ** 2 for v in e) / len(e)) ** 0.5
+        worst_m, worst_s = max(worst_m, abs(m)), max(worst_s, abs(s - 1))
+    good = worst_m < 0.15 and worst_s < 0.12
+    log("  KIEM DINH - ECI chuan hoa: |trung binh| <= %.3f,"
+        " |do lech chuan - 1| <= %.3f  %s"
+        % (worst_m, worst_s, "DAT" if good else "KHONG DAT"))
+
+    n_eci = sum(1 for r in rows if r["eci"] not in ("", "None"))
+    n_gp = sum(1 for r in rows if r["growth_proj"] not in ("", "None"))
+    log("  %d dong | %d co ECI | %d co du bao tang truong (%.0f%%)"
+        % (len(rows), n_eci, n_gp, 100.0 * n_gp / len(rows)))
+
+    # Bang de trich thang vao bao cao va slide.
+    look = ["VNM", "THA", "MYS", "PHL", "IDN", "SGP"]
+    idx = {(r["country_iso3"], r["year"]): r for r in rows}
+    log("  ECI qua cac nam moc  (trong ngoac = thu hang / so nuoc duoc xep):")
+    log("    %-5s%s" % ("", "".join("%-18d" % y for y in MILESTONE_YEARS)))
+    for c in look:
+        cells = []
+        for y in MILESTONE_YEARS:
+            r = idx.get((c, y))
+            cells.append("%-18s" % (
+                "%+.2f (#%s/%s)" % (float(r["eci"]), r["eci_rank"], r["eci_n"])
+                if r and r["eci"] not in ("", "None") else "-"))
+        log("    %-5s%s" % (c, "".join(cells)))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD,
@@ -368,6 +462,7 @@ def main():
     build_edges(known, args.threshold)
     build_tree()
     build_country_product()
+    build_country_year()
     log("\nXong. File nam trong data/processed/ (da bi .gitignore loai tru).")
 
 
