@@ -336,6 +336,25 @@ MILESTONE_YEARS = [1995, 2005, 2015, 2024]
 # treemap "nay" — phải lấy đúng năm này để báo cáo không tự mâu thuẫn.
 REFERENCE_YEAR = 2024
 
-# Ngưỡng lọc cạnh mặc định, USD.
-# ⚠️ TẠM THỜI — phải chốt lại ở T10 bằng bảng đánh đổi, không chọn cảm tính.
-DEFAULT_THRESHOLD = 1e10
+# ---------------------------------------------------------------------------
+# Quy tac loc canh - DA CHOT o T10.
+# Bang chung: data/processed/threshold_coverage.csv (sinh boi analyze_network.py).
+#
+# Nguong la MOT TY LE tren tong xuat khau the gioi CUA NAM DO, khong phai mot so
+# USD co dinh. Thuong mai toan cau tang khoang 6 lan tu 1995 den 2024, nen mot
+# nguong 10 ty USD co dinh chi giu lai 89 canh nam 1995 nhung 385 canh nam 2024:
+# small multiples se doc thanh "thuong mai moi xuat hien" thay vi "thuong mai
+# lon len". Dung ty le thi so canh on dinh qua cac nam: 383 / 406 / 407 / 408.
+#
+# Chon 0,046% de nam 2024 ra dung 10,03 ty USD, trung con so 10 ty nhom da do va
+# ghi trong de bai. Tuc la nam tham chieu KHONG doi; chi cac nam con lai duoc
+# quy ve cung mot thuoc do.
+# ---------------------------------------------------------------------------
+THRESHOLD_SHARE = 0.00046
+
+# Bao hiem cho nuoc trong tam: moi nuoc trong FOCUS_ISO3 luon giu lai toi da
+# ngan nay luong xuat va ngan nay luong nhap lon nhat cua rieng no, du khong dat
+# nguong. Khong co no thi nguong tren XOA Viet Nam khoi panel 1995, va xoa Lao /
+# Brunei / Myanmar khoi hau het cac nam - khong chap nhan duoc voi mot de tai
+# ten la "vi tri cua Viet Nam". Gia phai tra chi la +23 canh (385 -> 408).
+FOCUS_TOPK = 3

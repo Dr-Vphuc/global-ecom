@@ -27,10 +27,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from reference_data import (  # noqa: E402
     ASEAN_ISO3,
     COUNTRY_VI,
-    DEFAULT_THRESHOLD,
+    FOCUS_TOPK,
     FOCUS_ISO3,
     MAJOR_PARTNERS,
     MILESTONE_YEARS,
+    THRESHOLD_SHARE,
     SECTOR_PALETTE_PROVISIONAL,
 )
 
@@ -103,8 +104,29 @@ def mock_edges():
                     "export_value": round(exp, 2),
                     "import_value": round(imp, 2),
                     "log_value": round(math.log10(exp), 4),
-                    "above_threshold": "TRUE" if exp >= DEFAULT_THRESHOLD else "FALSE",
+                    "above_threshold": "",
                 })
+    # Dung dung quy tac cua T10 tren du lieu gia, de cot above_threshold cua
+    # mock khong mang y nghia khac voi ban that: nguong tuong doi theo nam,
+    # cong bao hiem topk cho nuoc trong tam.
+    tot = {}
+    for r in rows:
+        tot[r["year"]] = tot.get(r["year"], 0.0) + r["export_value"]
+    keep, out_of, in_of = set(), {}, {}
+    for i, r in enumerate(rows):
+        if r["export_value"] >= THRESHOLD_SHARE * tot[r["year"]]:
+            keep.add(i)
+        if r["source_iso3"] in FOCUS_ISO3:
+            out_of.setdefault((r["source_iso3"], r["year"]), []).append(i)
+        if r["target_iso3"] in FOCUS_ISO3:
+            in_of.setdefault((r["target_iso3"], r["year"]), []).append(i)
+    for grp in (out_of, in_of):
+        for idxs in grp.values():
+            idxs.sort(key=lambda i: -rows[i]["export_value"])
+            keep.update(idxs[:FOCUS_TOPK])
+    for i, r in enumerate(rows):
+        r["above_threshold"] = "TRUE" if i in keep else "FALSE"
+
     write(os.path.join(MOCK, "edges.csv"),
           ["source_iso3", "target_iso3", "year", "export_value", "import_value",
            "log_value", "above_threshold"], rows)

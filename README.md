@@ -72,6 +72,92 @@ thiếu mẫu số.
 kèm RCA điện tử chỉ 2,45 (xem `country_product.csv`) là một căng thẳng nên nêu
 thẳng trong báo cáo, không nên lờ đi.
 
+### Mạng lưới: hình thù và ngưỡng lọc (T09 + T10)
+
+`src/analyze_network.py` đo mạng lưới rồi sinh ba file. Tóm tắt kết quả:
+
+| | 1995 | 2024 |
+|---|---|---|
+| Số nút | 211 | 231 |
+| Số cạnh | 18.411 | 25.754 |
+| **Mật độ** | 0,416 | **0,485** |
+| **Đối ứng** | 0,824 | **0,843** |
+| **Gini trọng số cạnh** | 0,955 | **0,956** |
+
+Ba con số in đậm là phát hiện chính của T09, và nó **ngược với trực giác về
+mạng lưới**:
+
+- **Mật độ 48,5%** — gần một nửa mọi cặp nước có giao dịch. Mạng xã hội hay mạng
+  trích dẫn thường dưới 1%. Mạng thương mại gần như đầy.
+- **Đối ứng 0,84** — A xuất sang B thì 84% khả năng B cũng xuất ngược lại. Hướng
+  của cạnh mang rất ít thông tin, nên node-link **không cần mũi tên**; dùng mũi
+  tên chỉ làm rối thêm mà không thêm ý nghĩa.
+- **Gini 0,956, gần như đứng yên suốt 30 năm.** Mạng phình từ 18 nghìn lên 26
+  nghìn cạnh nhưng độ lệch của giá trị không đổi.
+
+Gộp lại: **cấu trúc trung tâm–ngoại vi của thương mại không nằm ở việc ai nối với
+ai, mà nằm ở việc luồng nào lớn.**
+
+Phân bố bậc xác nhận điều đó, và nó là kết quả đáng ngạc nhiên nhất của T09:
+
+| Bậc xuất khẩu 2024 | min | p25 | trung vị | p75 | p90 | max |
+|---|---|---|---|---|---|---|
+| số bạn hàng | 0 | 55 | 104 | 170 | 209 | 228 |
+
+Các nước **trải gần như đều** từ 0 đến 228 bạn hàng — đo cụ thể, CCDF lệch khỏi
+một phân bố đều hoàn toàn nhiều nhất **0,046**. Nghĩa là mạng này *không có*
+bậc đặc trưng và cũng *không có* hub theo nghĩa tô-pô: không tồn tại một nhóm
+nhỏ các nước nối với tất cả trong khi phần còn lại nối với vài nước.
+
+Hệ quả thực tế cho báo cáo: **biểu đồ log-log của T09 sẽ không ra đường thẳng.**
+Sách giáo khoa hay minh hoạ mạng scale-free bằng một đường thẳng dốc; ở đây
+đường CCDF sẽ đi ngang rồi rơi dốc đứng ở mép phải. Đó không phải lỗi dữ liệu —
+đó là kết quả, và nó chính là lý do **phải lọc theo trọng số; lọc theo bậc vô
+nghĩa** vì bậc không phân biệt được nước nào quan trọng.
+
+### Quy tắc lọc cạnh đã chốt ở T10
+
+```
+giữ cạnh  ⟺  export_value ≥ 0,046% × tổng xuất khẩu thế giới CỦA NĂM ĐÓ
+             HOẶC  nó nằm trong top 3 luồng xuất / top 3 luồng nhập
+                   lớn nhất của một nước ASEAN
+```
+
+Trong `reference_data.py`: `THRESHOLD_SHARE = 0.00046` và `FOCUS_TOPK = 3`.
+
+**Vì sao không dùng ngưỡng cố định 10 tỷ USD.** Thương mại thế giới tăng khoảng
+6 lần từ 1995 đến 2024, nên một ngưỡng tính bằng USD danh nghĩa đo hai năm bằng
+hai cái thước khác nhau:
+
+| Năm | Ngưỡng cố định 10 tỷ USD | Quy tắc đã chốt |
+|---|---|---|
+| 1995 | 89 cạnh, 49,5% giá trị, **ASEAN 4/10** | 383 cạnh, 73,9% giá trị, ASEAN 10/10 |
+| 2005 | 176 cạnh, 56,2% giá trị, ASEAN 5/10 | 406 cạnh, 70,2% giá trị, ASEAN 10/10 |
+| 2015 | 270 cạnh, 61,6% giá trị, ASEAN 6/10 | 407 cạnh, 68,1% giá trị, ASEAN 10/10 |
+| 2024 | 385 cạnh, 67,7% giá trị, ASEAN 7/10 | 408 cạnh, 68,1% giá trị, ASEAN 10/10 |
+
+Cột trái là một cái bẫy: panel 1995 chỉ còn 89 cạnh và 25 nút, nên small
+multiples sẽ **đọc thành "thương mại mới xuất hiện sau 1995"** trong khi sự thật
+là "thương mại lớn lên". Cột phải giữ số cạnh ổn định 383–408 qua mọi năm mốc —
+và trên cả 30 năm nó nằm gọn trong khoảng **378–438** — nên các panel so sánh
+được với nhau.
+
+**Vì sao có phần bảo hiểm cho ASEAN.** Ngưỡng tương đối một mình vẫn **xoá Việt
+Nam khỏi năm 1995** (0 cạnh), và xoá Brunei, Lào, Myanmar khỏi hầu hết các năm.
+Với một đề tài tên là *"vị trí của Việt Nam"* thì đó là lỗi chí mạng, không phải
+chi tiết nhỏ. Giá phải trả cho phần bảo hiểm rất rẻ: **+23 cạnh** (385 → 408) và
+**+0,4 điểm phần trăm** giá trị.
+
+**Cái đang bị bỏ mất, nói thẳng trong báo cáo.** Quy tắc này giữ 1,6% số cạnh và
+68,1% giá trị năm 2024 — tức là **vứt 98,4% số cạnh**. Phần bị vứt là hàng vạn
+luồng nhỏ; cộng lại chúng bằng gần một phần ba thương mại thế giới. Node-link vì
+vậy **không** đọc được là "bản đồ thương mại toàn cầu", mà là *"bản đồ các luồng
+thương mại lớn, cộng với chỗ đứng của ASEAN trong đó"*. Ai muốn nhìn phần đuôi
+phải xem ma trận kề (T16), vì ma trận chịu được nhiều cạnh hơn hẳn node-link.
+
+Toàn bộ 21 phương án đã cân nhắc nằm trong `data/processed/threshold_coverage.csv`
+— gồm cả họ ngưỡng tuyệt đối và họ "mỗi nước giữ k luồng lớn nhất" đã bị loại.
+
 ## Quyết định đã chốt
 
 | | |
@@ -81,7 +167,8 @@ thẳng trong báo cáo, không nên lờ đi.
 | `export_value = 0` | loại bỏ — không phải một cạnh, cũng không phải một dòng xuất khẩu |
 | `USP`, `ANS` | vẫn giữ trong `nodes.csv`; `USP` không có luồng nào suốt 30 năm và cũng vắng mặt trong file ECI |
 | `sector_color` | đang là bảng màu tạm, phải thay ở T04 |
-| Ngưỡng lọc cạnh | `DEFAULT_THRESHOLD = 1e10` tạm thời, chốt lại ở T10 |
+| Ngưỡng lọc cạnh | **chốt ở T10**: `THRESHOLD_SHARE = 0.00046` (tỷ lệ theo năm) + `FOCUS_TOPK = 3` |
+| Mũi tên trên node-link | **không dùng** — đối ứng 0,84 nên hướng cạnh gần như vô nghĩa |
 
 ## Cấu trúc repo
 
@@ -96,6 +183,7 @@ global-ecom/
 │   ├── check_raw_data.py      # 8 mục kiểm tra toàn vẹn, cửa chặn
 │   ├── reference_data.py      # tên nước tiếng Việt, vùng, hằng số chung
 │   ├── build_intermediate.py  # atlas/ -> processed/ (5 file)
+│   ├── analyze_network.py     # thống kê mạng + ngưỡng lọc (T09, T10)
 │   └── make_mock.py           # sinh dữ liệu giả (T05)
 ├── docs/             # ghi chú nguồn dữ liệu và kiến thức nền
 ├── .report/          # báo cáo LaTeX
@@ -104,13 +192,14 @@ global-ecom/
 
 ## Chạy pipeline
 
-Cả bốn script **chỉ dùng thư viện chuẩn** — chạy được ngay, không cần cài gì.
+Cả năm script **chỉ dùng thư viện chuẩn** — chạy được ngay, không cần cài gì.
 
 ```bash
 python src/download_atlas.py        # 0. tải dữ liệu thô + kiểm MD5
 python src/check_raw_data.py        # 1. kiểm tra dữ liệu thô, phải báo DAT
 python src/build_intermediate.py    # 2. sinh 5 file trung gian trong processed/
-python src/make_mock.py             # 3. sinh dữ liệu giả để vẽ song song
+python src/analyze_network.py       # 3. thống kê mạng + bảng ngưỡng (T09, T10)
+python src/make_mock.py             # 4. sinh dữ liệu giả để vẽ song song
 ```
 
 ### File sinh ra trong `data/processed/`
@@ -122,8 +211,11 @@ python src/make_mock.py             # 3. sinh dữ liệu giả để vẽ song 
 | `tree.csv` | cây sản phẩm HS92 bốn tầng, có `sector_id` và màu tạm | 6.390 |
 | `country_product.csv` | nước × nhóm hàng HS2 × năm, kèm **RCA** tự tính và PCI | 539.986 |
 | `country_year.csv` | nước × năm: **ECI**, thứ hạng, COI, diversity | 6.755 |
+| `network_stats.csv` | mỗi năm một dòng: nút, cạnh, mật độ, đối ứng, Gini | 30 |
+| `degree_distribution.csv` | phân bố bậc dạng dài, có `ccdf` — sẵn cho log-log | 1.094 |
+| `threshold_coverage.csv` | 21 phương án lọc cạnh, bằng chứng cho T10 | 21 |
 
-Cả năm file đều bị `.gitignore` loại trừ — sinh lại bằng lệnh trên, không commit.
+Cả tám file đều bị `.gitignore` loại trừ — sinh lại bằng lệnh trên, không commit.
 
 Phần phân tích mạng và vẽ biểu đồ cần thư viện ngoài:
 

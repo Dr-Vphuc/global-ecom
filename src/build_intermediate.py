@@ -9,7 +9,7 @@
 
 Chạy:
     python src/build_intermediate.py
-    python src/build_intermediate.py --threshold 1e10
+    python src/build_intermediate.py --threshold-share 0.00046
 
 Chỉ dùng thư viện chuẩn — chạy được ngay trên máy sạch, không cần pip install.
 Mọi đường dẫn đều tương đối so với gốc repo (checklist #21).
@@ -24,11 +24,12 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from reference_data import (  # noqa: E402
     COUNTRY_VI,
-    DEFAULT_THRESHOLD,
+    FOCUS_TOPK,
     FOCUS_ISO3,
     MILESTONE_YEARS,
     NON_COUNTRY,
     REFERENCE_YEAR,
+    THRESHOLD_SHARE,
     SECTOR_PALETTE_PROVISIONAL,
     UNINHABITED,
 )
@@ -118,8 +119,48 @@ def build_nodes():
 # ---------------------------------------------------------------------------
 # edges.csv
 # ---------------------------------------------------------------------------
-def build_edges(known_iso3, threshold):
-    log("\n[2/5] edges.csv  (nguong tam: %.0f USD)" % threshold)
+def mark_threshold(rows, share, topk):
+    """Dien cot above_threshold theo quy tac da chot o T10.
+
+    Hai phan cong lai:
+      1. Nguong tuong doi - giu canh co export_value >= share * tong xuat khau
+         the gioi CUA NAM DO. Dung ty le chu khong dung so USD co dinh, vi neu
+         co dinh thi nam 1995 chi con 89 canh con nam 2024 co 385, va small
+         multiples se doc thanh "thuong mai moi xuat hien".
+      2. Bao hiem cho nuoc trong tam - moi nuoc trong FOCUS_ISO3 luon giu topk
+         luong xuat va topk luong nhap lon nhat cua chinh no. Khong co phan nay
+         thi Viet Nam bien mat khoi nam 1995.
+
+    Tra ve (nguong tung nam, so canh duoc giu).
+    """
+    tot = {}
+    for r in rows:
+        tot[r["year"]] = tot.get(r["year"], 0.0) + r["export_value"]
+    th_year = dict((y, share * v) for y, v in tot.items())
+
+    keep = set()
+    out_of, in_of = {}, {}
+    for i, r in enumerate(rows):
+        if r["export_value"] >= th_year[r["year"]]:
+            keep.add(i)
+        if r["source_iso3"] in FOCUS_ISO3:
+            out_of.setdefault((r["source_iso3"], r["year"]), []).append(i)
+        if r["target_iso3"] in FOCUS_ISO3:
+            in_of.setdefault((r["target_iso3"], r["year"]), []).append(i)
+
+    for grp in (out_of, in_of):
+        for idxs in grp.values():
+            idxs.sort(key=lambda i: -rows[i]["export_value"])
+            keep.update(idxs[:topk])
+
+    for i, r in enumerate(rows):
+        r["above_threshold"] = "TRUE" if i in keep else "FALSE"
+    return th_year, len(keep)
+
+
+def build_edges(known_iso3, share, topk):
+    log("\n[2/5] edges.csv  (nguong = %.3f%% tong xuat khau the gioi moi nam)"
+        % (share * 100))
     path = os.path.join(RAW, "cc_year.csv")
     if not os.path.exists(path):
         sys.exit("THIEU FILE: %s — xem README." % path)
@@ -158,12 +199,18 @@ def build_edges(known_iso3, threshold):
                     "source_iso3": s,
                     "target_iso3": t,
                     "year": year,
-                    "export_value": repr(exp),
+                    # Giu kieu so de mark_threshold() so sanh duoc; doi
+                    # sang chuoi ngay truoc khi ghi.
+                    "export_value": exp,
                     "import_value": repr(imp),
                     "log_value": "%.4f" % math.log10(exp),
-                    "above_threshold": "TRUE" if exp >= threshold else "FALSE",
+                    "above_threshold": "",
                 }
             )
+
+    th_year, n_keep = mark_threshold(rows, share, topk)
+    for r in rows:
+        r["export_value"] = repr(r["export_value"])
 
     rows.sort(key=lambda x: (x["year"], x["source_iso3"], x["target_iso3"]))
     write_csv(
@@ -174,6 +221,9 @@ def build_edges(known_iso3, threshold):
     )
 
     log("  doc %d dong -> giu %d canh" % (n_total, len(rows)))
+    log("  loc: %d canh dat nguong (%.1f%%), vd nam %d nguong = %.2f ty USD"
+        % (n_keep, 100.0 * n_keep / len(rows), REFERENCE_YEAR,
+           th_year.get(REFERENCE_YEAR, 0) / 1e9))
     log("  bo %d dong co export_value = 0 (khong phai canh)" % n_zero)
     if n_bad:
         log("  ! bo %d dong hong khong doc duoc so" % n_bad)
@@ -452,14 +502,18 @@ def build_country_year():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD,
-                    help="Nguong loc canh (USD). Mac dinh %.0e — chot lai o T10."
-                         % DEFAULT_THRESHOLD)
+    ap.add_argument("--threshold-share", type=float, default=THRESHOLD_SHARE,
+                    help="Nguong loc canh, tinh bang ty le tren tong xuat"
+                         " khau the gioi moi nam. Mac dinh %g (chot o T10)."
+                         % THRESHOLD_SHARE)
+    ap.add_argument("--focus-topk", type=int, default=FOCUS_TOPK,
+                    help="So luong xuat/nhap lon nhat luon giu cho moi nuoc"
+                         " trong tam. Mac dinh %d." % FOCUS_TOPK)
     args = ap.parse_args()
 
     log("Goc repo: %s" % ROOT)
     known = build_nodes()
-    build_edges(known, args.threshold)
+    build_edges(known, args.threshold_share, args.focus_topk)
     build_tree()
     build_country_product()
     build_country_year()
