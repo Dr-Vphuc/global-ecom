@@ -341,7 +341,8 @@ REFERENCE_YEAR = 2024
 # Bang chung: data/processed/threshold_coverage.csv (sinh boi analyze_network.py).
 #
 # Nguong la MOT TY LE tren tong xuat khau the gioi CUA NAM DO, khong phai mot so
-# USD co dinh. Thuong mai toan cau tang khoang 6 lan tu 1995 den 2024, nen mot
+# USD co dinh. Thuong mai toan cau tang 4,54 lan tu 1995 (4,80 nghin ty USD) den
+# 2024 (21,81 nghin ty USD), nen mot
 # nguong 10 ty USD co dinh chi giu lai 89 canh nam 1995 nhung 385 canh nam 2024:
 # small multiples se doc thanh "thuong mai moi xuat hien" thay vi "thuong mai
 # lon len". Dung ty le thi so canh on dinh qua cac nam: 383 / 406 / 407 / 408.

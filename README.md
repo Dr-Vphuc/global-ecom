@@ -8,6 +8,10 @@ Kỹ thuật trọng tâm: *Visualization Techniques for Trees, Graphs, and Netw
 
 Phân công chi tiết, hợp đồng dữ liệu và tiến độ nằm trong `phan-cong-cong-viec.xlsx`.
 
+📌 **Viết báo cáo thì mở `docs/phat-hien-va-quyet-dinh.md` trước.** Nó gom mọi
+phát hiện đã đo được, mọi quyết định đã chốt kèm lý do, và bốn hạn chế phải nêu
+thẳng. README này chỉ nói cách chạy repo.
+
 ---
 
 ## Dữ liệu thô: đã sửa, và bài học
@@ -125,9 +129,9 @@ giữ cạnh  ⟺  export_value ≥ 0,046% × tổng xuất khẩu thế giới 
 
 Trong `reference_data.py`: `THRESHOLD_SHARE = 0.00046` và `FOCUS_TOPK = 3`.
 
-**Vì sao không dùng ngưỡng cố định 10 tỷ USD.** Thương mại thế giới tăng khoảng
-6 lần từ 1995 đến 2024, nên một ngưỡng tính bằng USD danh nghĩa đo hai năm bằng
-hai cái thước khác nhau:
+**Vì sao không dùng ngưỡng cố định 10 tỷ USD.** Thương mại thế giới tăng **4,54 lần**
+từ 1995 (4,80 nghìn tỷ USD) đến 2024 (21,81 nghìn tỷ USD), nên một ngưỡng tính
+bằng USD danh nghĩa đo hai năm bằng hai cái thước khác nhau:
 
 | Năm | Ngưỡng cố định 10 tỷ USD | Quy tắc đã chốt |
 |---|---|---|
@@ -185,7 +189,7 @@ global-ecom/
 │   ├── build_intermediate.py  # atlas/ -> processed/ (5 file)
 │   ├── analyze_network.py     # thống kê mạng + ngưỡng lọc (T09, T10)
 │   └── make_mock.py           # sinh dữ liệu giả (T05)
-├── docs/             # ghi chú nguồn dữ liệu và kiến thức nền
+├── docs/             # phát hiện, quyết định, nguồn dữ liệu, kiến thức nền
 ├── .report/          # báo cáo LaTeX
 └── phan-cong-cong-viec.xlsx
 ```
@@ -296,5 +300,6 @@ Lệnh này chỉ gỡ khỏi lần commit tới, không xóa khỏi lịch sử
 
 ## Ghi chú
 
+- `docs/phat-hien-va-quyet-dinh.md` — **số liệu cho báo cáo + quyết định đã chốt**
 - `docs/nguon-du-lieu-vn-asean.md` — khảo sát các nguồn dữ liệu thương mại
 - `docs/kien-thuc-nen-tang.md` — kiến thức kinh tế nền cho người làm dữ liệu
