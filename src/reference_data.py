@@ -6,7 +6,11 @@ Chứa:
   - ASEAN_ISO3 : danh sách mã nước ASEAN
   - FOCUS_ISO3 : nước được tô đậm trong biểu đồ (cột is_focus của nodes.csv)
   - NON_COUNTRY : các mã KHÔNG phải quốc gia thật
-  - SECTOR_PALETTE_PROVISIONAL : bảng màu tạm cho 10 ngành cấp 1 HS92
+  - SECTOR_PALETTE        : bảng màu 10 ngành cấp 1 HS92 (T04, đã kiểm định)
+  - SECTOR_TEXT_ON_FILL   : màu chữ đặt đè lên từng ô màu đó
+  - FONT_STACK, FONT_SIZES, FIG_* : font và kích thước hình chuẩn (T04)
+  - SEQUENTIAL_SCALE      : thang màu tuần tự cho ma trận kề / bản đồ nhiệt
+  - HIGHLIGHT_*           : cách làm nổi Việt Nam (viền + độ dày, không dùng màu)
 
 Vùng và châu lục theo phân loại UN M49.
 Chỉ dùng thư viện chuẩn — không cần cài gì để chạy.
@@ -297,23 +301,46 @@ COUNTRY_VI = {
 
 
 # ---------------------------------------------------------------------------
-# Bảng màu 10 ngành cấp 1 HS92.
+# Bảng màu 10 ngành cấp 1 HS92 — ĐÃ CHỐT ở T04.
 #
-# ⚠️ TẠM THỜI — phải chốt lại ở T04 (R3 sở hữu style-guide.md).
-# Đây là bảng Tableau 10 đã đảo thứ tự cho hợp ngữ nghĩa ngành,
-# CHƯA kiểm tra mù màu đỏ–lục (checklist #13) và chưa kiểm tra trên nền tối.
+# Kiểm định bằng `python src/check_palette.py`, không phải bằng mắt. Chi tiết
+# và lý do từng lựa chọn nằm ở docs/style-guide.md.
+#
+# Đo được, ΔE2000 của cặp gần nhau nhất trong 45 cặp:
+#
+#     mắt thường 16,1  ·  protan 13,3  ·  deutan 12,3  ·  tritan 11,6
+#
+# Bảng Tableau 10 dùng tạm trước đó KHÔNG đạt: với người mù màu lục (deutan,
+# dạng phổ biến nhất) thì Nông sản #59A14F và Phương tiện vận tải #E15759 đều
+# hiện ra thành cùng một màu bùn — ΔE = 0,7, tức là không phân biệt nổi. Hai
+# nhóm này nằm cạnh nhau trong mọi treemap của đồ án.
+#
+# Nền của bảng mới: thang "muted" của Paul Tol (9 màu, thiết kế sẵn cho mù
+# màu), đổi ô Khoáng sản sang nâu đậm #5D4037 cho hợp nghĩa và để đẩy ΔE mắt
+# thường từ 15,0 lên 16,1. Ô "Khác" dùng xám nhạt để tự chìm xuống.
+#
+# ⚠️ Bảng này để TÔ MẢNG (treemap, sunburst, ruy-băng chord, nền nút). Bốn màu
+# nhạt — Đá, Máy móc, Điện tử, Khác — có tương phản với nền trắng dưới 3:1 nên
+# mảng phải có viền trắng 1px. Đừng vẽ đường mảnh 1px bằng các màu này.
 # ---------------------------------------------------------------------------
-SECTOR_PALETTE_PROVISIONAL = {
-    1:  "#4E79A7",   # Textiles  — Dệt may, giày dép, nội thất
-    2:  "#59A14F",   # Agriculture — Nông sản, động vật, gỗ, giấy
-    3:  "#9C755F",   # Stone — Đá, thủy tinh, gốm sứ
-    4:  "#8C564B",   # Minerals — Khoáng sản, nhiên liệu, quặng, muối
-    5:  "#B07AA1",   # Metals — Kim loại
-    6:  "#F28E2B",   # Chemicals — Hóa chất và nhựa
-    7:  "#E15759",   # Vehicles — Phương tiện vận tải
-    8:  "#76B7B2",   # Machinery — Máy móc và thiết bị đo
-    9:  "#EDC948",   # Electronics — Điện tử
-    10: "#BAB0AC",   # Other — Khác
+SECTOR_PALETTE = {
+    1:  "#CC6677",   # Textiles — Dệt may, giày dép, nội thất
+    2:  "#117733",   # Agriculture — Nông sản, động vật, gỗ, giấy
+    3:  "#DDCC77",   # Stone — Đá, thủy tinh, gốm sứ
+    4:  "#5D4037",   # Minerals — Khoáng sản, nhiên liệu, quặng, muối
+    5:  "#332288",   # Metals — Kim loại
+    6:  "#AA4499",   # Chemicals — Hóa chất và nhựa
+    7:  "#999933",   # Vehicles — Phương tiện vận tải
+    8:  "#44AA99",   # Machinery — Máy móc và thiết bị đo
+    9:  "#88CCEE",   # Electronics — Điện tử
+    10: "#DDDDDD",   # Other — Khác
+}
+
+# Màu chữ đặt đè lên từng ô màu ở trên. Tính sẵn để không ai phải đoán:
+# mọi cặp dưới đây đạt tương phản WCAG >= 4,5:1.
+SECTOR_TEXT_ON_FILL = {
+    1:  "#000000", 2:  "#FFFFFF", 3:  "#000000", 4:  "#FFFFFF", 5:  "#FFFFFF",
+    6:  "#FFFFFF", 7:  "#000000", 8:  "#000000", 9:  "#000000", 10: "#000000",
 }
 
 SECTOR_NAME_VI = {
@@ -327,6 +354,64 @@ SECTOR_NAME_VI = {
     8:  "Máy móc và thiết bị",
     9:  "Điện tử",
     10: "Khác",
+}
+
+# ---------------------------------------------------------------------------
+# Thang màu tuần tự — dùng cho ma trận kề (T16) và mọi bản đồ nhiệt.
+#
+# Sáng đến tối theo L* giảm đều: 99 → 91 → 72 → 50 → 24. Vì thứ tự nằm ở độ
+# sáng chứ không nằm ở sắc độ, người mù màu vẫn đọc đúng thứ tự. Bước ΔE giữa
+# các nấc: 15, 23, 23, 23 — đều nhất trong ba thang đã thử.
+#
+# ⚠️ Không đặt thang này chung một hình với chú giải 10 ngành: nấc #FE9929 nằm
+# gần màu ngành Đá #DDCC77 và Phương tiện vận tải #999933.
+# ---------------------------------------------------------------------------
+SEQUENTIAL_SCALE = ["#FFFFE5", "#FEE391", "#FE9929", "#CC4C02", "#662506"]
+
+# ---------------------------------------------------------------------------
+# Làm nổi Việt Nam — BẰNG HÌNH DẠNG, KHÔNG BẰNG MÀU.
+#
+# Đã thử thêm màu thứ 11 để nhấn Việt Nam. Không còn chỗ: mọi màu cam/đỏ đủ
+# khác 10 màu ngành ở mắt thường (ΔE 22–27) đều tụt xuống ΔE 4–8 khi mô phỏng
+# mù màu, tức là trùng với màu ngành. Chỉ màu đen còn đứng vững (ΔE 19,9).
+#
+# Nên Việt Nam được đánh dấu bằng: viền đen 1,5px quanh nút/ô, nhãn in đậm,
+# và — nếu là biểu đồ đường — đường dày 2,2px trong khi các nước khác 1,0px.
+# Kênh màu để dành cho ngành hàng.
+# ---------------------------------------------------------------------------
+HIGHLIGHT_STROKE = "#000000"
+HIGHLIGHT_STROKE_WIDTH = 1.5
+HIGHLIGHT_LINE_WIDTH = 2.2
+DEFAULT_LINE_WIDTH = 1.0
+
+# ---------------------------------------------------------------------------
+# Font và kích thước hình — T04, xem docs/style-guide.md.
+#
+# Thứ tự là thứ tự ưu tiên: máy nào có Segoe UI thì dùng, không thì Arial,
+# không nữa thì DejaVu Sans. DejaVu Sans đi kèm sẵn trong matplotlib nên chắc
+# chắn máy nào cũng có. Đã kiểm: cả ba font đều có đủ 19 ký tự có dấu tiếng
+# Việt đem ra thử (ế ữ ợ ằ ẵ ọ ỹ Đ ...), nên chữ không bị mất dấu hay hiện ô
+# vuông trên máy người khác.
+# ---------------------------------------------------------------------------
+FONT_STACK = ["Segoe UI", "Arial", "DejaVu Sans"]
+
+# Khổ A4 dọc, lề 2,5 cm -> vùng chữ rộng 16 cm = 6,30 inch.
+# Dùng đúng mấy con số này để mọi hình trong báo cáo cùng một cỡ chữ thật.
+FIG_WIDTH_FULL = 6.30    # hình chạy hết chiều ngang trang
+FIG_WIDTH_HALF = 3.05    # hai hình đặt cạnh nhau
+FIG_HEIGHT_DEFAULT = 3.90
+FIG_DPI_SCREEN = 200
+FIG_DPI_PRINT = 300
+
+# Cỡ chữ tính bằng point, đã tính cho hình rộng 6,30 inch xuất ở 300 dpi.
+FONT_SIZES = {
+    "title": 13,      # câu tiêu đề nói kết luận
+    "subtitle": 10,   # dòng phụ: nguồn, năm, đơn vị
+    "axis": 9,
+    "tick": 8,
+    "legend": 9,
+    "annotation": 8,
+    "footnote": 7,    # dòng nguồn dữ liệu dưới cùng
 }
 
 # Các mốc thời gian dùng cho small multiples (T20).

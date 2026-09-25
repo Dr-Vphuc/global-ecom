@@ -32,7 +32,7 @@ from reference_data import (  # noqa: E402
     MAJOR_PARTNERS,
     MILESTONE_YEARS,
     THRESHOLD_SHARE,
-    SECTOR_PALETTE_PROVISIONAL,
+    SECTOR_PALETTE,
 )
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -147,7 +147,7 @@ def mock_tree():
             "name": name,
             "name_short": name[:18],
             "sector_id": sector,
-            "sector_color": SECTOR_PALETTE_PROVISIONAL.get(sector, ""),
+            "sector_color": SECTOR_PALETTE.get(sector, ""),
         })
         return pid
 

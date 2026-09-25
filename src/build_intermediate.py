@@ -30,7 +30,7 @@ from reference_data import (  # noqa: E402
     NON_COUNTRY,
     REFERENCE_YEAR,
     THRESHOLD_SHARE,
-    SECTOR_PALETTE_PROVISIONAL,
+    SECTOR_PALETTE,
     UNINHABITED,
 )
 
@@ -281,7 +281,7 @@ def build_tree():
                 "name": r["product_name"],
                 "name_short": r["product_name_short"],
                 "sector_id": sid if sid else "",
-                "sector_color": SECTOR_PALETTE_PROVISIONAL.get(sid, ""),
+                "sector_color": SECTOR_PALETTE.get(sid, ""),
             }
         )
 
