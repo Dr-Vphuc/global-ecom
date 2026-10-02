@@ -54,3 +54,13 @@ env/
 Thumbs.db
 .vscode/
 .idea/
+
+# Bieu do xuat ra tu src/make_hierarchy_charts.py — sinh lai duoc, khong commit.
+output/
+
+# San pham bien dich cua ban dich LaTeX (.report/overleaf/render.ps1 dung lai).
+.report/overleaf/*.pdf
+.report/overleaf/*.xdv
+
+# Goi anh nen de upload Overleaf — chi la ban sao cua img/.
+*.zip
