@@ -1,0 +1,19 @@
+column_name,data_type,description,notes
+country_id,integer,Numerical country identification code assigned by the Growth Lab,Augmented version of UN M49 codes.
+country_iso3_code,string,Three letter country identification code,Augmented version of ISO 3166-1 alpha-3 codes.
+partner_country_id,integer,Numerical country identification code assigned by the Growth Lab,Augmented version of UN M49 codes. Values correspond to identical countries as country ID field.
+partner_iso3_code,string,Three letter country identification code,Augmented version of ISO 3166-1 alpha-3 codes. Values correspond to identical countries as country ISO-3 code field.
+product_id,integer,Numerical product ID code assigned by the Growth Lab,Product IDs are valid only within their classification. The same product IDs are used in different classifications to refer to different products.
+product_hs92_code,string,Product code using HS 1992,
+year,integer,Year of record,
+export_value,integer,Export value in current USD,
+import_value,integer,Import value in current USD,
+global_market_share,float,Global market share,Proportion of a given product a country exports in relation to global exports of that product.
+export_rca,float,Revealed Comparative Advantage,"RCA measures whether a country is an exporter of a product, based on the relative advantage or disadvantage it has in the export of a certain good. A country is an effective exporter of a product if it exports more than its “fair share” or a share that is at least equal to the share of total world trade that the product represents (RCA > 1)."
+eci,float,Economic Complexity Index,"A measure of the knowledge in a society as expressed in the products it makes. The economic complexity of a country is calculated based on the diversity of exports a country produces and their ubiquity, or the number of the countries able to produce them (and those countries’ complexity)."
+distance,float,Distance,"A country's ability to enter in to a new product. A lower value requires related capabilities to existing products, offering a greater likelihood of success."
+cog,float,Complexity Opportunity Outlook Gain,"Measures opportunities for future diversification in entering a product, by opening new links to complex products."
+coi,float,Economic Complexity Opportunity Index,"A measure of how many complex products are near a country’s current set of productive capabilities. COI captures the ease of diversification for a country, where a high COI reflects an abundance of nearby complex products that rely on similar know-how to current production."
+diversity,integer,Diversity,A measure of how many different types of products a country is able to make. Sum of the number of products with RCA ≥ 1.
+pci,float,Product Complexity Index,Ranks the diversity and sophistication of the productive know-how required to produce a product. PCI is calculated based on how many other countries can produce the product and the economic complexity of those countries.
+growth_proj,float,Economic Complexity Growth Projection,"A prediction of how much a country will grow over the following 10 years based on its current ECI and COI, as compared to its current income level in GDP per capita and expected natural resource exports."

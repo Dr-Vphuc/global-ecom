@@ -1,0 +1,215 @@
+% =====================================================================
+% TEMPLATE DỊCH SÁCH SANG TIẾNG VIỆT
+% Biên dịch bằng XeLaTeX (KHÔNG dùng pdflatex, sẽ lỗi font/dấu)
+% =====================================================================
+\documentclass[12pt,a4paper, openany]{book}
+
+% ---------------------------------------------------------------------
+% 1. FONT & NGÔN NGỮ TIẾNG VIỆT
+% ---------------------------------------------------------------------
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{vietnamese}
+
+% Noto Serif/Sans hỗ trợ đầy đủ dấu tiếng Việt và có sẵn miễn phí (Google Fonts).
+% Nếu máy đã có Times New Roman / Arial, có thể đổi tên font tương ứng.
+\setmainfont{Noto Serif}[Ligatures=TeX]
+\setsansfont{Noto Sans}
+\setmonofont{Noto Sans Mono}
+
+% ---------------------------------------------------------------------
+% 2. KHỔ TRANG & DÃN DÒNG
+% ---------------------------------------------------------------------
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=3cm,right=2cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ---------------------------------------------------------------------
+% 3. ĐỊNH DẠNG TIÊU ĐỀ CHƯƠNG
+% ---------------------------------------------------------------------
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}
+  {\chaptertitlename\ \thechapter}
+  {20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{0pt}{40pt}
+
+% ---------------------------------------------------------------------
+% 4. ĐẦU TRANG / CHÂN TRANG
+% ---------------------------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[RE]{\nouppercase{\leftmark}}
+\fancyhead[LO]{\nouppercase{\rightmark}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---------------------------------------------------------------------
+% 5. ẢNH, MÀU, LIÊN KẾT, TRÍCH DẪN
+% ---------------------------------------------------------------------
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{csquotes}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    pdftitle={Tên sách (bản dịch)},
+    pdfauthor={Tên dịch giả},
+}
+
+\begin{document}
+
+% =====================================================================
+% BÌA SÁCH
+% =====================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\Large \textsc{MATTHEW O. WARD, GEORGES GRINSTEIN, \\ DANIEL KEIM}}\\[0.6cm]
+    \rule{0.8\textwidth}{0.4pt}\\[0.5cm]
+
+    {\huge \bfseries TRỰC QUAN HÓA DỮ LIỆU TƯƠNG TÁC TỪ NỀN TẢNG, KĨ THUẬT ĐẾN ỨNG DỤNG}\\[0.4cm]
+    {\Large \textit{Nguyên tác: \textit{Interactive Data Visualization - Foundations, Techniques, and Applications}}}\\[0.5cm]
+    \rule{0.8\textwidth}{0.4pt}\\[2cm]
+
+    % Nếu có ảnh bìa gốc, bỏ % dòng dưới và đổi tên file ảnh:
+    \includegraphics[width=0.35\textwidth]{img/cover-image.jpg}\\[0.5cm]
+
+    \vfill
+
+    {\large\textbf{Chương 9. Kỹ thuật trực quan hóa cho Cây, Đồ thị và Mạng}}\\[0.3cm]
+    {\normalsize Nguyễn Việt Phúc, Dương Quang Huy, Nguyễn Khắc Huy}\\[1cm]
+
+    {\large \today}
+\end{titlepage}
+
+% ---------------------------------------------------------------------
+% TRANG PHÂN CÔNG
+% ---------------------------------------------------------------------
+\newpage
+\thispagestyle{empty}
+\vspace*{4cm}
+\noindent
+\begin{center}
+    {\Large\textbf{PHÂN CÔNG CÔNG VIỆC}}
+\end{center}
+
+\vspace{1.5cm}
+
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{4cm}|p{2.5cm}|p{7.5cm}|}
+\hline
+ Nguyễn Khắc Huy & 23001525 & Phần 9.1. Biểu diễn cấu trúc Phân cấp \\
+\hline
+ Nguyễn Việt Phúc & 23001547 & Phần 9.2. Biểu diễn Đồ thị, Mạng tùy ý\\
+\hline
+ Dương Quang Huy & 23001524 & Phần 9.3. Các vấn đề khác \newline Phần 9.4. Tài liệu tham khảo\\
+\hline
+\end{tabular}
+\end{table}
+
+% =====================================================================
+% MỤC LỤC
+% =====================================================================
+\frontmatter
+\tableofcontents
+
+% ---------------------------------------------------------------------
+% LỜI NGƯỜI DỊCH (không đánh số chương)
+% ---------------------------------------------------------------------
+\chapter*{Lời người dịch}
+\addcontentsline{toc}{chapter}{Lời người dịch}
+
+Ghi chú, lý do chọn dịch phần này, cách xử lý thuật ngữ, v.v.
+
+% =====================================================================
+% NỘI DUNG CHÍNH
+% =====================================================================
+\mainmatter
+
+\chapter*{Phần 9.1. \newline Biểu diễn cấu trúc Phân cấp}
+\addcontentsline{toc}{chapter}{Phần 9.1. Biểu diễn cấu trúc Phân cấp}
+\markboth{Phần 9.1. Biểu diễn cấu trúc Phân cấp}{}
+
+Nội dung bản dịch bắt đầu ở đây\dots
+
+\chapter*{Phần 9.2. \newline Biểu diễn Đồ thị, Mạng tùy ý}
+\addcontentsline{toc}{chapter}{Phần 9.2. Biểu diễn Đồ thị, Mạng tùy ý}
+\markboth{Phần 9.2. Biểu diễn Đồ thị, Mạng tùy ý}{}
+
+Cây chỉ là một dạng của một cách biểu diễn quan hệ tổng quát hơn, gọi là đồ thị. Nói một cách chính xác về mặt kỹ thuật, cây là một đồ thị liên thông, không trọng số và không có chu trình. Rõ ràng còn rất nhiều khả năng khác nữa, bao gồm đồ thị có cạnh mang trọng số, đồ thị vô hướng, đồ thị có chu trình, đồ thị không liên thông, v.v. Thay vì đưa ra thêm các thuật toán dành riêng cho từng lớp đồ thị khác nhau, cuốn sách mô tả một số hướng tiếp cận tổng quát để trực quan hóa những đồ thị mà ta không biết trước lớp hay cấu trúc của nó; ta gọi đó là đồ thị tùy ý. 
+
+Trong phạm vi trình bày ở đây, ta giả định đồ thị là vô hướng, mặc dù một số kỹ thuật được nêu có thể mở rộng dễ dàng sang đồ thị có hướng. Ta sẽ xem xét hai hướng vẽ đồ thị tách biệt nhau: sơ đồ node-link (tiếp nối phần đã trình bày ở mục trước) và hiển thị dạng ma trận. Các tài liệu rộng và sâu hơn về vẽ đồ thị sẽ được giới thiệu ở cuối chương.
+
+Một số đồ thị khá phức tạp [85, 239]. Chẳng hạn, các đồ thị trong thế giới thực hay còn được gọi phổ biến hơn là mạng, chúng có những đặc trưng ít khi tìm thấy ở các mạng đơn giản hay mạng ngẫu nhiên. Mạng thực tế có nhiều nhóm rời rạc, không liên thông với nhau, kích thước rất khác nhau; bậc của các node tuân theo luật lũy thừa \footnote{Tức sẽ chứa một lượng nhỏ các node có bậc cực lớn trong khi phần lớn các node có bậc tương đối nhỏ}; và đường kính \footnote{Đường kính của mạng là khoảng cách ngắn nhất dài nhất giữa hai node trong mạng. Để tính đường kính đồ thị, ta tìm đường đi ngắn nhất có thể giữa các cặp đỉnh trong đồ thị, thu được một tập hợp các đường đi, trong đó độ dài của đường dài nhất chính là độ lớn đường kính của đồ thị.} của mạng bị giới hạn nếu so với các đồ thị ngẫu nhiên tương đương có cùng số node và số cạnh [7, 311]. Tính chất trên là hệ quả của tính chất về bậc của các node, các điểm có bậc cực lớn đóng vai trò là đường đi trung gian tối ưu cho phần lớn các trường hợp, từ đó góp phần giảm đường kính đồ thị.
+
+Strogatz [401] mô tả những cách khác nhau khiến một đồ thị bộc lộ tính phức tạp, bao gồm: phức tạp về cấu trúc (các cạnh rối vào nhau), sự tiến hóa của mạng (mạng biến đổi theo thời gian), sự đa dạng của kết nối (trọng số/hướng), phức tạp về động lực (trạng thái của node thay đổi theo thời gian), và sự đa dạng của node (có nhiều loại node khác nhau).
+
+\section*{9.2.1. Đồ thị Node-Link}
+
+\subsubsection{Phương pháp force-directed} 
+
+Các phương pháp vẽ đồ thị force-directed (định hướng bằng lực) dùng phép so sánh với lò xo để biểu diễn các liên kết: vị trí của các node được tinh chỉnh lặp đi lặp lại cho đến khi tổng năng lượng (hay ứng suất) của hệ đạt cực tiểu. Với mỗi cặp node có liên kết, tồn tại hai lực: $f_{ij}$, lực gây ra bởi lò xo nối chúng, và $g_{ij}$, lực đẩy tĩnh điện có tác dụng giữ cho các node không tiến lại quá gần nhau. Một mô hình đơn giản là dùng định luật Hooke cho lực lò xo và định luật nghịch đảo bình phương cho lực đẩy. Hình \ref{fig:spring} minh họa hai lực này tác động lên hai node $i$ và $j$.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{img/spring_force_diagram_white_bg_fixed.png}
+    \caption{Lò xo đang bị kéo dãn ($d > s$) nên lực $f$ kéo hai node lại gần, trong khi lực đẩy $g$ tỉ lệ nghịch với $d_2$ thì luôn đẩy chúng ra xa. Vị trí cân bằng là nơi hai lực triệt tiêu nhau.}
+    \label{fig:spring}
+\end{figure}
+
+Gọi $d(i, j)$ là khoảng cách Euclid giữa node $i$ và node $j$, $s_{i,j}$ là chiều dài tự nhiên của lò xo khi ở trạng thái nghỉ, và $k_{ij}$ là độ căng của lò xo, thì thành phần theo trục $x$ của lực lò xo giữa hai node được tính bằng:
+
+\begin{equation}
+f_{ij}(x) = k_{ij} \cdot \big(d(i,j) - s_{ij}\big) \cdot \frac{x_i - x_j}{d(i,j)} 
+\label{equa:Hooke}
+\end{equation}
+
+Nếu $r_{ij}$ là cường độ của lực đẩy giữa node $i$ và node $j$, thành phần theo trục $x$ của lực đẩy được tính bằng:
+
+\begin{equation}
+g_{ij}(x) = \frac{r_{ij}}{d(i,j)^2} \cdot \frac{x_i - x_j}{d(i,j)}
+\label{equa:tinhdien}
+\end{equation}
+
+Về bản chất, cả hai lực trên là các đại lượng vector hướng theo đường thẳng
+nối hai node $i$ và $j$. Gọi
+\[
+  \vec{u}_{ij} = \frac{(x_i - x_j,\ y_i - y_j)}{d(i,j)}
+\]
+là vector đơn vị chỉ từ $j$ sang $i$, thì lực lò xo và lực đẩy có dạng
+vector đầy đủ:
+\[
+  \vec{F}_{ij} = k_{ij} \cdot \big(d(i,j) - s_{ij}\big) \cdot \vec{u}_{ij},
+  \qquad
+  \vec{G}_{ij} = \frac{r_{ij}}{d(i,j)^2} \cdot \vec{u}_{ij}.
+\]
+Vì thuật toán bố trí đồ thị cập nhật tọa độ theo từng trục riêng biệt, ta
+cần chiếu các vector lực này lên trục $x$, bằng cách nhân độ lớn của lực
+với thành phần $x$ của $\vec{u}_{ij}$, chính là $\frac{x_i - x_j}{d(i,j)}$.
+Đó là lý do công thức \ref{equa:Hooke} và \ref{equa:tinhdien} đều xuất hiện thừa số
+$\frac{x_i - x_j}{d(i,j)}$ ở cuối; muốn có thành phần theo trục $y$ chỉ
+cần thay $x_i - x_j$ bằng $y_i - y_j$.
+
+Mỗi bước của quá trình tinh chỉnh vị trí sẽ tính tổng tất cả các lực tác dụng lên mỗi node (các thành phần theo $x$, $y$, và $z$ tùy trường hợp) rồi dịch chuyển vị trí của node đó một lượng tỉ lệ với lực tổng hợp ấy. Hiển nhiên là một khi các điểm đã di chuyển thì toàn bộ các lực phải được tính lại và lại thực hiện một lần dịch chuyển vị trí nữa. Để tránh hiện tượng dao động \footnote{Hiện tượng khi các node di chuyển qua lại một vị trí nhất định. Xảy ra khi bài toán tối ưu (ở đây là tối thiểu lực tác động lên hệ) rơi vào cực tiểu cục bộ. Hiện tượng này khá tương đồng với hiện tượng đảo chiều liên tục của gradient qua các bước cập nhật trong huấn luyện mô hình học máy.}, thông thường người ta bắt đầu bằng những bước dịch chuyển chiếm một tỉ lệ đáng kể so với lực, rồi giảm dần kích thước bước để hội tụ về điểm mà tại đó các lực đạt cực tiểu. Vị trí ban đầu có thể được gán ngẫu nhiên. Vì hoàn toàn có khả năng kết thúc ở một cực tiểu năng lượng cục bộ thay vì cực tiểu toàn cục, người ta thường chạy thuật toán bố trí nhiều lần với các cấu hình khởi tạo khác nhau để chọn ra cấu hình tốt nhất trong số các cấu hình đã tính được. Độ tốt của một cách bố trí có thể được tính dựa trên tổng độ lớn của các lực trên cấu hình đó.
+
+\subsubsection{Vẽ đồ thị phẳng}
+
+Các kỹ thuật vẽ đồ thị phẳng xuất phát từ giả định rằng đồ thị nền là phẳng, tức là nó không có cạnh nào cắt nhau. Những thuật toán này nhận được rất nhiều sự chú ý vì vài lý do. Thứ nhất, do lý thuyết về đồ thị phẳng đã có bề dày lịch sử lâu đời, có rất nhiều khái niệm có thể khai thác được từ kho tài liệu sẵn có. Thứ hai, vì các cạnh cắt nhau thường làm đồ thị trở nên khó đọc, việc giảm thiểu hoặc loại bỏ hoàn toàn những chỗ cắt nhau đó là một chiến lược tốt. Cuối cùng, đồ thị phẳng thường thưa: công thức Euler chỉ ra rằng một đồ thị phẳng có $n$ đỉnh thì có nhiều nhất $3n − 6$ cạnh. Việc tập trung vào đồ thị phẳng cũng không quá hạn chế, bởi ta có thể loại bỏ các điểm cắt bằng cách chèn node giả vào ngay tại các điểm cắt đó, thực hiện bố trí bằng thuật toán dành cho đồ thị phẳng, rồi sau đó gỡ bỏ các node giả đi.
+
+\chapter*{Phần 9.3. \newline Các vấn đề khác}
+\addcontentsline{toc}{chapter}{Phần 9.3. Các vấn đề khác}
+\markboth{Phần 9.3. Các vấn đề khác}{}
+
+Nội dung bản dịch bắt đầu ở đây\dots
+
+\chapter*{Phần 9.4. \newline Tài liệu tham khảo}
+\addcontentsline{toc}{chapter}{Phần 9.4. Tài liệu tham khảo}
+\markboth{Phần 9.4. Tài liệu tham khảo}{}
+
+Nội dung bản dịch bắt đầu ở đây\dots
+
+\end{document}
