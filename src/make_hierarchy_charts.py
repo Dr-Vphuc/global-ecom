@@ -81,6 +81,36 @@ def sector_of(tree, pid):
     return node
 
 
+def sector_index(tree):
+    """Dựng sẵn bảng tra product_id -> (sector_id, số thứ tự ngành 1..10).
+
+    Trước đây mỗi lần cần biết một nút thuộc ngành nào, code leo ngược lên tầng 1
+    rồi quét cả 6.390 nút để tìm lại id của nút đó — O(số nút) cho mỗi lần tra.
+    Với 97 nhóm HS2 thì không ai thấy chậm, nhưng nếu sau này đổi sang HS4 hoặc
+    HS6 (1.243 / 5.040 nhóm) thì chi phí nhân lên hàng chục lần mà không có lý do
+    gì chính đáng. Dựng bảng một lần ở đây, mọi chỗ khác tra bằng dict.
+
+    Số thứ tự ngành đánh theo thứ tự product_id của tầng 1 — đúng thứ tự mà
+    SECTOR_PALETTE và SECTOR_NAME_VI trong reference_data.py dùng.
+    """
+    level1 = sorted(k for k, n in tree.items() if n["level"] == 1)
+    order = {sid: i + 1 for i, sid in enumerate(level1)}
+
+    index = {}
+    for pid in tree:
+        cur = pid
+        seen = set()
+        while cur is not None and cur in tree and tree[cur]["level"] > 1:
+            if cur in seen:          # cây hỏng có chu trình — bỏ qua nút này
+                cur = None
+                break
+            seen.add(cur)
+            cur = tree[cur]["parent"]
+        if cur is not None and cur in order:
+            index[pid] = (cur, order[cur])
+    return index
+
+
 def load_exports(country, year):
     """Xuất khẩu của một nước trong một năm, theo nhóm HS2."""
     path = os.path.join(ATLAS, "cp_year_hs2.csv")
@@ -107,12 +137,13 @@ def build_nodes(tree, exports):
     Tầng 1 là 10 ngành, tầng 2 là các nhóm HS2 có xuất khẩu. Giá trị của ngành
     được plotly tự cộng từ các con, nên chỉ truyền giá trị ở tầng lá.
     """
+    index = sector_index(tree)
+
     sector_total = {}
     for pid, v in exports.items():
-        s = sector_of(tree, pid)
-        if s:
-            sid = [k for k, n in tree.items() if n is s][0]
-            sector_total[sid] = sector_total.get(sid, 0.0) + v
+        hit = index.get(pid)
+        if hit:
+            sector_total[hit[0]] = sector_total.get(hit[0], 0.0) + v
 
     ids, labels, parents, values, colors, hovers = [], [], [], [], [], []
     total = sum(exports.values())
@@ -120,7 +151,7 @@ def build_nodes(tree, exports):
     # Tầng 1 — ngành
     for sid in sorted(sector_total, key=lambda k: -sector_total[k]):
         node = tree[sid]
-        sector_no = _sector_number(tree, sid)
+        sector_no = index[sid][1]
         ids.append("s%d" % sid)
         labels.append(R.SECTOR_NAME_VI.get(sector_no, node["short"]))
         parents.append("")
@@ -137,9 +168,10 @@ def build_nodes(tree, exports):
         node = tree.get(pid)
         if not node:
             continue
-        s = sector_of(tree, pid)
-        sid = [k for k, n in tree.items() if n is s][0]
-        sector_no = _sector_number(tree, sid)
+        hit = index.get(pid)
+        if not hit:
+            continue
+        sid, sector_no = hit
         ids.append("p%d" % pid)
         labels.append(R.HS2_NAME_VI.get(node["code"], node["short"]))
         parents.append("s%d" % sid)
@@ -170,12 +202,6 @@ def build_nodes(tree, exports):
     return dict(ids=ids, labels=labels, parents=parents, values=values,
                 colors=colors, hovers=hovers, texts=texts, total=total,
                 n_sectors=n_sectors)
-
-
-def _sector_number(tree, sid):
-    """Số thứ tự ngành 1..10 theo đúng thứ tự product_id của tầng 1."""
-    level1 = sorted(k for k, n in tree.items() if n["level"] == 1)
-    return level1.index(sid) + 1
 
 
 def _layout(title, subtitle):
