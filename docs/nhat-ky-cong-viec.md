@@ -103,17 +103,16 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | Ngày gộp | PR | Mang vào | Việc |
 |---|---|---|---|
 | 07/09 | #1, #2 | khung repo, dữ liệu công khai ban đầu | T03 |
-| 20/10 ¹ | #7 | bản LaTeX chương 9, script render, `.gitignore.example` | — |
 | 23/09 | #3 ² | **gỡ dữ liệu thô khỏi git theo Nguyên tắc #5**; dựng pipeline; sửa dữ liệu bị cắt cụt | T06, T07 |
 | 24/09 | #3 | thống kê mạng 30 năm + chốt ngưỡng lọc; dữ liệu ECI; sổ phát hiện | T09 (một phần), T10 |
 | 24/09 | #4 | **đổi năm mốc 2024 → 2023** vì bản Atlas 2024 còn tạm | — |
 | 25/09 | #5 | câu hỏi nghiên cứu; bảng màu đã kiểm mù màu + style guide | T01, T04 |
-| 20/10 | #7 | kiểm cây HS92; treemap; sunburst; lưới 4 nước ASEAN ³ | T11, T12, T13, T14 |
+| 20/10 ¹ | #7 | bản LaTeX chương 9 + script render; kiểm cây HS92; treemap; sunburst; lưới 4 nước ASEAN ³ | T11, T12, T13, T14 |
 | 20/10 | #8 | hai script 3D cho slide; **hàm định dạng số tiếng Việt**; file phân công bắt kịp thực tế | — |
 | 20/10 | #9 | 13 chỗ in số trên 4 biểu đồ đầu đi qua hàm định dạng | tiền đề cho T22 |
 | 20/10 | #10 | chỉ số mạng theo nước, trên **hai** đồ thị; phát hiện A7, A8, A9 | T18 |
 
-¹ commit từ 22/09 nhưng nằm trên nhánh `huynguyenkhac17`, chỉ vào `main` khi gộp PR #7 ngày 20/10.
+¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
 ³ phần này do **Huy Nguyễn Khắc** làm (7 commit); 18 commit còn lại trên `main` đứng tên `Dr-Vphuc`.
 
@@ -130,7 +129,7 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 | Con số | Giá trị (2023) | Lấy lại bằng |
 |---|---|---|
 | Quy mô mạng | 231 nút · 27.535 cạnh | `data/processed/network_stats.csv` dòng 2023 |
-| Mật độ · nghịch đảo | 0,5183 · 0,8368 | cùng file |
+| Mật độ · đối ứng | 0,5183 · 0,8368 | cùng file |
 | Gini giá trị cạnh | 0,9569 | cùng file |
 | Tổng xuất khẩu thế giới | 21,66 nghìn tỷ USD | cùng file, cột `total_export_value` |
 | Xuất khẩu Việt Nam | 385,5390 tỷ USD = **75,3×** năm 1995 | `country_year.csv`, lọc `VNM` |
