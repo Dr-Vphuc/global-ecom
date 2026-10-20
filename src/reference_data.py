@@ -662,3 +662,113 @@ HS2_NAME_VI = {
     "97": "Tác phẩm nghệ thuật, đồ cổ",
     "99": "Hàng hóa khác",
 }
+
+
+# ---------------------------------------------------------------------------
+# Mã hóa CỘNG ĐỒNG trong các hình mạng lưới (T15, T16, T17).
+#
+# Cộng đồng KHÔNG được tô bằng màu. Lý do đo được, không phải thẩm mỹ: đã thử
+# tìm một bảng 3 màu đủ xa 10 màu ngành ở trên. Bảy bảng ứng viên (Paul Tol
+# high-contrast, Tol bright, Okabe–Ito và bốn biến thể) đều đạt khoảng cách nội
+# bộ rất tốt (ΔE 26–46 ở mắt thường) nhưng khi mô phỏng mù màu thì khoảng cách
+# tới màu ngành gần nhất tụt xuống ΔE 2,6–6,6 — tức là trùng với một màu ngành.
+# Bảng 10 ngành đã chiếm hết gam an toàn cho người mù màu; không còn chỗ. Đây
+# đúng là kết luận mà mục "Làm nổi Việt Nam" ở trên đã gặp khi tìm màu thứ 11.
+#
+# Nên cộng đồng được mã hóa HAI LẦN, dư thừa có chủ ý:
+#   - độ sáng: ba nấc xám, ΔE nội bộ 20,1 / 36,5 / 61,0
+#   - hình dạng: ba ký hiệu điểm khác nhau
+#
+# Xám không có sắc độ nên mô phỏng mù màu KHÔNG làm nó đổi: cặp gần nhau nhất
+# vẫn là ΔE 20,1 với cả protan, deutan và tritan. Người mù màu hoàn toàn (đơn
+# sắc) vẫn đọc được hình này — điều mà không bảng màu nào làm nổi.
+#
+# ⚠️ Nấc sáng nhất #E8E8E8 chỉ cách màu ngành "Khác" #DDDDDD có ΔE 2,4. Không
+# sửa, vì (a) ngành "Khác" vốn được chọn xám nhạt để tự chìm xuống, và (b)
+# không hình nào trong đồ án vẽ ngành và cộng đồng cùng lúc — người xem không
+# bao giờ thấy hai thứ cạnh nhau để mà lẫn. Nhưng ai gộp hai thứ vào một hình
+# thì phải đọc dòng này trước.
+# ---------------------------------------------------------------------------
+COMMUNITY_FILL = {0: "#E8E8E8", 1: "#9A9A9A", 2: "#3A3A3A"}
+
+# Ký hiệu điểm cho plotly. Tròn / vuông / thoi — ba dáng phân biệt được cả khi
+# nút nhỏ 6px trên máy chiếu.
+COMMUNITY_SYMBOL = {0: "circle", 1: "square", 2: "diamond"}
+
+# Màu viền nút. Nút xám đậm cần viền sáng, nút xám nhạt cần viền tối, nếu không
+# mép nút biến mất vào nền.
+COMMUNITY_STROKE = {0: "#888888", 1: "#FFFFFF", 2: "#FFFFFF"}
+
+# Tên cụm được đặt theo NỘI DUNG tìm thấy, không phải theo số thứ tự Louvain
+# trả về. Số cụm do louvain() trong compute_metrics.py đánh lại theo kích thước
+# giảm dần, nên cụm 0 luôn là cụm đông nhất. Ai chạy lại với --seed khác phải
+# kiểm lại ba cái tên này còn đúng không.
+# Đã kiểm thành phần thật của từng cụm trên metrics.csv năm 2023 trước khi đặt
+# tên, vì một cái tên sai in trên biểu đồ là một tuyên bố sai:
+#   cụm 0: 41 nước — 29 châu Á, 5 châu Phi, 4 châu Mỹ, 2 châu Đại Dương, 1 Âu.
+#          Lớn nhất: CHN JPN KOR HKG TWN IND VNM SGP. Việt Nam nằm ở đây.
+#   cụm 1: 25 nước — 21 châu Âu. Lớn nhất: DEU FRA NLD ITA GBR BEL CHE ESP.
+#   cụm 2:  7 nước — 6 châu Mỹ. Lớn nhất: USA MEX CAN ISR COL PAN DOM.
+COMMUNITY_NAME_VI = {
+    0: "Khối châu Á do Trung Quốc dẫn đầu",
+    1: "Khối châu Âu",
+    2: "Khối Bắc Mỹ do Hoa Kỳ dẫn đầu",
+}
+
+# Bản ngắn, dùng khi chỗ hẹp (chú giải trong hình, nhãn trục ma trận).
+COMMUNITY_SHORT_VI = {0: "Châu Á", 1: "Châu Âu", 2: "Bắc Mỹ"}
+
+# Màu cho dải ruy-băng và nền ô ma trận khi KHÔNG mã hóa cộng đồng: dùng
+# SEQUENTIAL_SCALE ở trên. Hằng số này chỉ để ghi lại rằng lựa chọn đó là có ý.
+MATRIX_EMPTY_CELL = "#FFFFFF"
+
+
+# ---------------------------------------------------------------------------
+# Gom 23 vùng địa lý thành 8 KHỐI — dùng cho chord diagram (T17).
+#
+# 23 vùng là quá nhiều cho một vòng chord: bốn vùng cuối (Polynesia, Micronesia,
+# Vùng cực, Melanesia) cộng lại chưa tới 0,1% thương mại thế giới nhưng vẫn
+# chiếm bốn cung và bốn nhãn. Gom lại còn 8 khối thì cung nhỏ nhất vẫn đọc được.
+#
+# Ranh giới gom theo địa lý thuần, KHÔNG theo khối kinh tế (EU, RCEP, CPTPP):
+# dùng khối kinh tế sẽ phải giải thích vì sao Anh nằm ngoài EU từ 2020, Việt Nam
+# ở trong cả RCEP lẫn CPTPP, và một nước có thể thuộc nhiều khối cùng lúc — tức
+# là không phân hoạch được. Địa lý thì phân hoạch được và không ai cãi.
+# ---------------------------------------------------------------------------
+BLOC_OF_REGION = {
+    "East Asia": "dong_a",
+    "South-East Asia": "dong_nam_a",
+    "South Asia": "nam_tay_a", "West Asia": "nam_tay_a",
+    "Central Asia": "nam_tay_a",
+    "Northern Europe": "chau_au", "Western Europe": "chau_au",
+    "Eastern Europe": "chau_au", "Southern Europe": "chau_au",
+    "Northern America": "bac_my",
+    "Central America": "my_latinh", "South America": "my_latinh",
+    "Caribbean": "my_latinh",
+    "Northern Africa": "chau_phi", "Western Africa": "chau_phi",
+    "Middle Africa": "chau_phi", "Eastern Africa": "chau_phi",
+    "Southern Africa": "chau_phi",
+    "Australia and New Zealand": "chau_dai_duong",
+    "Melanesia": "chau_dai_duong", "Micronesia": "chau_dai_duong",
+    "Polynesia": "chau_dai_duong",
+    "Antarctica": "khac", "Other": "khac",
+}
+
+BLOC_NAME_VI = {
+    "viet_nam": "Việt Nam",
+    "dong_a": "Đông Á",
+    "dong_nam_a": "Đông Nam Á (trừ VN)",
+    "nam_tay_a": "Nam và Tây Á",
+    "chau_au": "Châu Âu",
+    "bac_my": "Bắc Mỹ",
+    "my_latinh": "Mỹ Latinh",
+    "chau_phi": "Châu Phi",
+    "chau_dai_duong": "Châu Đại Dương",
+    "khac": "Khác",
+}
+
+# Thứ tự quanh vòng chord. Việt Nam đặt ở ĐẦU để cung của nó bắt đầu đúng đỉnh
+# vòng tròn, và hai khối bạn hàng lớn nhất của Việt Nam (Đông Á, Bắc Mỹ) đặt
+# ngay hai bên để dải ruy-băng chính không phải vắt ngang cả hình.
+BLOC_ORDER = ["viet_nam", "dong_a", "dong_nam_a", "nam_tay_a", "chau_au",
+              "chau_phi", "my_latinh", "bac_my", "chau_dai_duong", "khac"]

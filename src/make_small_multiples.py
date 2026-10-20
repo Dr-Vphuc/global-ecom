@@ -168,7 +168,13 @@ def main():
     os.makedirs(OUTDIR, exist_ok=True)
     stem = "small_multiples_%s_%d" % ("-".join(c.lower() for c in countries), args.year)
     html = os.path.join(OUTDIR, stem + ".html")
-    fig.write_html(html, include_plotlyjs="cdn", config={"displayModeBar": False})
+    # default_width/height 100% + responsive: biểu đồ co theo khung chứa. Cần
+    # cho trang web ở T27, nơi mỗi biểu đồ nằm trong một <iframe> có chiều cao
+    # do trang ngoài đặt; kích thước cứng sẽ sinh thanh cuộn lồng trong thanh
+    # cuộn. Bản .png bên dưới vẫn giữ kích thước cố định cho slide và LaTeX.
+    fig.write_html(html, include_plotlyjs="cdn",
+                   default_width="100%", default_height="100%",
+                   config={"displayModeBar": False, "responsive": True})
     print("  %s" % html)
     try:
         png = os.path.join(OUTDIR, stem + ".png")

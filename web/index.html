@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="vi" data-palette="#CC6677,#117733,#DDCC77,#5D4037,#332288,#AA4499,#999933,#44AA99,#88CCEE,#DDDDDD">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vị trí Việt Nam trong mạng lưới thương mại toàn cầu</title>
+<meta name="description" content="Phân tích mạng lưới thương mại thế giới 2023 từ dữ liệu Atlas of Economic Complexity, tập trung vào vị trí của Việt Nam.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23FCFCFB'/%3E%3Crect x='2' y='2' width='6' height='6' fill='%23CC6677'/%3E%3Crect x='9' y='4' width='5' height='5' fill='%2388CCEE'/%3E%3Crect x='4' y='9' width='5' height='5' fill='%23117733'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#FCFCFB; --surface:#FFFFFF; --ink:#1A1A1A; --ink-2:#555555;
+  --ink-3:#808080; --line:#E4E4E2; --accent:#1F3864;
+  --maxw:1180px;
+}
+:root:not([data-theme="light"]){ }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15171A; --surface:#1D2024; --ink:#F2F2F0; --ink-2:#B4B4B0;
+    --ink-3:#8A8A86; --line:#2E3238; --accent:#9FB8E6;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15171A; --surface:#1D2024; --ink:#F2F2F0; --ink-2:#B4B4B0;
+  --ink-3:#8A8A86; --line:#2E3238; --accent:#9FB8E6;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Segoe UI",Arial,"DejaVu Sans",sans-serif;
+  font-size:16px; line-height:1.62;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 16px}
+
+header.hero{padding:72px 0 40px; border-bottom:1px solid var(--line)}
+.kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 14px}
+h1{font-size:clamp(28px,4.6vw,46px); line-height:1.18; margin:0 0 18px;
+  letter-spacing:-.016em; max-width:21ch}
+.sub{font-size:clamp(16px,2vw,19px); color:var(--ink-2); max-width:64ch; margin:0}
+.meta{margin-top:26px; font-size:13px; color:var(--ink-3)}
+
+.answer{margin:34px 0 0; padding:20px 22px; background:var(--surface);
+  border:1px solid var(--line); border-left:3px solid var(--accent);
+  border-radius:3px}
+.answer b{color:var(--ink)}
+
+nav.toc{position:sticky; top:0; z-index:20; background:var(--bg);
+  border-bottom:1px solid var(--line); padding:11px 0}
+nav.toc ol{list-style:none; display:flex; flex-wrap:wrap; gap:6px;
+  margin:0; padding:0}
+nav.toc a{display:inline-block; padding:5px 12px; border-radius:999px;
+  text-decoration:none; color:var(--ink-2); font-size:13.5px;
+  border:1px solid transparent}
+nav.toc a:hover{color:var(--ink); border-color:var(--line);
+  background:var(--surface)}
+
+section.act{padding:58px 0 10px; border-top:1px solid var(--line)}
+section.act:first-of-type{border-top:none}
+.actno{font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3)}
+h2{font-size:clamp(22px,3vw,31px); margin:8px 0 10px; letter-spacing:-.012em}
+.lead{color:var(--ink-2); max-width:62ch; margin:0 0 10px; font-size:17px}
+
+figure.chart{margin:36px 0 0; background:var(--surface);
+  border:1px solid var(--line); border-radius:4px; overflow:hidden}
+.chead{padding:17px 20px 13px; border-bottom:1px solid var(--line)}
+.chead h3{margin:0 0 5px; font-size:18px; letter-spacing:-.008em}
+.tag{display:inline-block; font-size:11px; letter-spacing:.06em;
+  color:var(--ink-3); border:1px solid var(--line); border-radius:3px;
+  padding:1px 7px; margin-left:8px; vertical-align:2px}
+.look{margin:0; font-size:14.5px; color:var(--ink-2)}
+.look b{color:var(--ink)}
+.frame{width:100%; border:0; display:block; background:#FFFFFF}
+.fact{margin:0; padding:13px 20px; border-top:1px solid var(--line);
+  font-size:14px; color:var(--ink-2); background:var(--bg)}
+.fact strong{color:var(--ink)}
+
+.legend{margin:30px 0 0; padding:18px 20px; background:var(--surface);
+  border:1px solid var(--line); border-radius:4px}
+.legend h3{margin:0 0 12px; font-size:14px; letter-spacing:.04em;
+  text-transform:uppercase; color:var(--ink-3)}
+.swatches{display:flex; flex-wrap:wrap; gap:7px 16px; margin:0; padding:0;
+  list-style:none}
+.swatches li{display:flex; align-items:center; gap:7px; font-size:13.5px;
+  color:var(--ink-2)}
+.sw{width:15px; height:15px; border-radius:3px; border:1px solid rgba(0,0,0,.18);
+  flex:0 0 auto}
+
+.caveat{margin:30px 0 0; padding:17px 20px; border:1px solid var(--line);
+  border-left:3px solid var(--ink-3); border-radius:3px; background:var(--surface);
+  font-size:14.5px; color:var(--ink-2)}
+.caveat h3{margin:0 0 8px; font-size:14px; color:var(--ink);
+  letter-spacing:.03em; text-transform:uppercase}
+.caveat ul{margin:0; padding-left:19px}
+.caveat li{margin:5px 0}
+
+footer{margin-top:66px; padding:28px 0 56px; border-top:1px solid var(--line);
+  font-size:13.5px; color:var(--ink-3)}
+footer a{color:var(--ink-2)}
+
+.themebtn{position:fixed; right:14px; bottom:14px; z-index:30;
+  background:var(--surface); color:var(--ink-2); border:1px solid var(--line);
+  border-radius:999px; padding:8px 15px; font-size:13px; cursor:pointer;
+  font-family:inherit}
+.themebtn:hover{color:var(--ink)}
+
+@media (max-width:640px){
+  header.hero{padding:44px 0 30px}
+  section.act{padding:40px 0 6px}
+  figure.chart{margin-top:26px}
+}
+</style>
+<script>
+(function(){
+  var k='gecom-theme';
+  try{ var s=localStorage.getItem(k); if(s){document.documentElement.dataset.theme=s;} }
+  catch(e){}
+  document.addEventListener('DOMContentLoaded',function(){
+    var b=document.getElementById('themebtn');
+    if(!b) return;
+    b.addEventListener('click',function(){
+      var cur=document.documentElement.dataset.theme;
+      if(!cur){
+        cur=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+      }
+      var next=cur==='dark'?'light':'dark';
+      document.documentElement.dataset.theme=next;
+      try{ localStorage.setItem(k,next); }catch(e){}
+    });
+  });
+})();
+</script>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <p class="kicker">Đồ án Trực quan hóa dữ liệu</p>
+  <h1>Việt Nam đứng ở đâu trong mạng lưới thương mại toàn cầu?</h1>
+  <p class="sub">231 quốc gia · 27.535 luồng xuất khẩu · 21,66 nghìn tỷ USD,
+     năm 2023. Dữ liệu từ Atlas of Economic Complexity (Harvard Growth Lab),
+     phân loại HS92.</p>
+  <div class="answer"><b>Câu trả lời ngắn:</b> Việt Nam đã leo rất nhanh —
+     kim ngạch tăng 75 lần từ 1995, ECI từ hạng 181/211 lên 78/230. Nhưng leo
+     bằng cách trở thành công xưởng lắp ráp cho một khối do Trung Quốc dẫn
+     đầu: nhập 86 xu hàng ngoại cho mỗi đồng bán ra, và từ 2005 đến nay bán
+     nhiều tiền hơn qua <b>ít cửa hơn</b> — mất 34 thị trường.</div>
+  <p class="meta">Mọi con số trên trang này do script trong <code>src/</code>
+     sinh ra và in ra để kiểm lại được. Biểu đồ tương tác: rê chuột để xem giá
+     trị, bấm vào ô treemap và sunburst để xem sâu hơn.</p>
+</div></header>
+
+<nav class="toc"><div class="wrap"><ol><li><a href="#quy-mo">1. Quy mô</a></li><li><a href="#cau-truc">2. Cấu trúc</a></li><li><a href="#viet-nam">3. Vị trí Việt Nam</a></li><li><a href="#y-nghia">4. Ý nghĩa</a></li></ol></div></nav>
+
+<section class="act" id="quy-mo"><div class="wrap"><div class="actno">Hồi 1</div><h2>Quy mô</h2><p class="lead">Mạng lưới thương mại thế giới lớn cỡ nào, và nó có hình gì?</p><figure class="chart"><div class="chead"><h3>Mạng lưới không có hub<span class="tag">T09</span></h3><p class="look">Đường gạch xám là dáng điệu mà một mạng scale-free sẽ có — một đường thẳng. Bốn đường thực tế không thẳng, và chúng càng ngày càng xa đường gạch đó.</p></div><iframe class="frame" src="charts/degree_dist_out.html" height="640" loading="lazy" title="Mạng lưới không có hub"></iframe><p class="fact"><strong>Con số:</strong> Mật độ 51,8%. Nước nhiều bạn hàng nhất chỉ gấp 1,8 lần nước trung vị.</p></figure></div></section><section class="act" id="cau-truc"><div class="wrap"><div class="actno">Hồi 2</div><h2>Cấu trúc</h2><p class="lead">Thế giới chia thành mấy khối, và chia theo đường nào?</p><figure class="chart"><div class="chead"><h3>Ba khối địa lý<span class="tag">T15</span></h3><p class="look">Rê chuột vào một nút để xem nước đó buôn bao nhiêu và thuộc khối nào. Việt Nam là nút viền đen.</p></div><iframe class="frame" src="charts/node_link_2023.html" height="780" loading="lazy" title="Ba khối địa lý"></iframe><p class="fact"><strong>Con số:</strong> Cả 10/10 nước ASEAN rơi vào cùng một khối 41 nước do Trung Quốc dẫn đầu. Không có khối ASEAN riêng.</p></figure><figure class="chart"><div class="chead"><h3>Cùng dữ liệu, đổi thứ tự hàng cột<span class="tag">T16</span></h3><p class="look">Hai ma trận chứa ĐÚNG cùng 416 luồng. Bản trái sắp theo tên nước, bản phải sắp theo cụm. So hai bên để thấy cấu trúc nằm ở thứ tự chứ không ở dữ liệu.</p></div><iframe class="frame" src="charts/adjacency_2023.html" height="620" loading="lazy" title="Cùng dữ liệu, đổi thứ tự hàng cột"></iframe><p class="fact"><strong>Con số:</strong> Mật độ trong khối 12,9% so với ngoài khối 4,1% — đặc gấp 3,1 lần.</p></figure></div></section><section class="act" id="viet-nam"><div class="wrap"><div class="actno">Hồi 3</div><h2>Vị trí Việt Nam</h2><p class="lead">Việt Nam bán cái gì, bán cho ai, và đứng ở đâu trong khối đó?</p><figure class="chart"><div class="chead"><h3>Việt Nam bán cái gì, 2023<span class="tag">T12</span></h3><p class="look">Bấm vào một ngành để xem 97 nhóm hàng bên trong. Bấm vào ô tiêu đề để quay ra.</p></div><iframe class="frame" src="charts/treemap_vnm_2023.html" height="680" loading="lazy" title="Việt Nam bán cái gì, 2023"></iframe><p class="fact"><strong>Con số:</strong> Điện tử 29,9% — ngành lớn nhất. Năm 1995 ngành này chỉ chiếm 0,6%.</p></figure><figure class="chart"><div class="chead"><h3>…và năm 1995, để so<span class="tag">T12</span></h3><p class="look">Cùng bảng màu, cùng cách đọc. Nhìn mảng xanh lá (nông sản) và mảng nâu (khoáng sản) chiếm bao nhiêu.</p></div><iframe class="frame" src="charts/treemap_vnm_1995.html" height="680" loading="lazy" title="…và năm 1995, để so"></iframe><p class="fact"><strong>Con số:</strong> Nông sản 42,9%, khoáng sản 20,6%. Hai ngành này cộng lại là hơn nửa kim ngạch.</p></figure><figure class="chart"><div class="chead"><h3>Cùng dữ liệu, bố cục xuyên tâm<span class="tag">T13</span></h3><p class="look">So với treemap ở trên: sunburst cho thấy quan hệ cha–con rõ hơn, nhưng so diện tích thì khó hơn vì mắt người đọc góc kém hơn đọc chiều dài.</p></div><iframe class="frame" src="charts/sunburst_vnm_2023.html" height="680" loading="lazy" title="Cùng dữ liệu, bố cục xuyên tâm"></iframe><p class="fact"><strong>Con số:</strong> Cùng một cây, hai cách lấp đầy không gian — đây là nội dung mục 9.1 của giáo trình.</p></figure><figure class="chart"><div class="chead"><h3>So với ba nước ASEAN cùng cỡ<span class="tag">T14</span></h3><p class="look">Mỗi ô lưới tự chuẩn hóa về 100% nên so được CƠ CẤU. Quy mô tuyệt đối ghi dưới tên nước.</p></div><iframe class="frame" src="charts/small_multiples_vnm-tha-mys-idn_2023.html" height="680" loading="lazy" title="So với ba nước ASEAN cùng cỡ"></iframe><p class="fact"><strong>Con số:</strong> Việt Nam là nước duy nhất còn dựa mạnh vào dệt may và giày dép: 18,4%, gấp 2,3 lần Indonesia.</p></figure><figure class="chart"><div class="chead"><h3>Việt Nam bán cho khối nào<span class="tag">T17</span></h3><p class="look">Dải đậm là dải có Việt Nam. Rê chuột vào một dải để xem giá trị hai chiều.</p></div><iframe class="frame" src="charts/chord_2023.html" height="880" loading="lazy" title="Việt Nam bán cho khối nào"></iframe><p class="fact"><strong>Con số:</strong> 63,9% hàng Việt Nam bán ra đi về Đông Á và Bắc Mỹ. Đông Nam Á chỉ nhận 7,8%.</p></figure></div></section><section class="act" id="y-nghia"><div class="wrap"><div class="actno">Hồi 4</div><h2>Ý nghĩa</h2><p class="lead">Vị trí đó được tạo nên bởi cái gì, và nó bền đến đâu?</p><figure class="chart"><div class="chead"><h3>Cơ cấu chuyển dịch, 1995–2023<span class="tag">T21</span></h3><p class="look">Nhìn dải xanh lá (nông sản) teo lại và dải xanh nhạt (điện tử) phình ra từ khoảng 2010.</p></div><iframe class="frame" src="charts/streamgraph_vnm_ty_trong.html" height="660" loading="lazy" title="Cơ cấu chuyển dịch, 1995–2023"></iframe><p class="fact"><strong>Con số:</strong> Điện tử 0,6% → 29,9%. Nông sản 42,9% → 11,6%.</p></figure><figure class="chart"><div class="chead"><h3>Nhập vào, xuất ra<span class="tag">T19</span></h3><p class="look">So bề dày hai bên nút Việt Nam. Dải đậm là các nước ASEAN.</p></div><iframe class="frame" src="charts/sankey_vnm_2023.html" height="700" loading="lazy" title="Nhập vào, xuất ra"></iframe><p class="fact"><strong>Con số:</strong> Nhập 332,1 tỷ, xuất 385,5 tỷ. Giá trị gia tăng trong nước chỉ 13,9%.</p></figure><figure class="chart"><div class="chead"><h3>Tiền tăng, cửa giảm<span class="tag">T20</span></h3><p class="look">Bám theo chấm viền đen qua bốn khung. Nó đi LÊN (tiền) nhưng từ 2005 đi SANG TRÁI (số thị trường).</p></div><iframe class="frame" src="charts/time_multiples.html" height="760" loading="lazy" title="Tiền tăng, cửa giảm"></iframe><p class="fact"><strong>Con số:</strong> Số thị trường: 98 → 200 (2005) → 166. Mất 34 thị trường trong khi tiền tăng 11,7 lần.</p></figure></div></section>
+
+<section class="act"><div class="wrap"><div class="legend"><h3>Bảng màu 10 ngành cấp 1 HS92 — dùng chung trên mọi biểu đồ</h3><ul class="swatches"><li><span class="sw" style="background:#CC6677"></span>Dệt may, giày dép, nội thất</li><li><span class="sw" style="background:#117733"></span>Nông sản, gỗ và giấy</li><li><span class="sw" style="background:#DDCC77"></span>Đá, thủy tinh, gốm sứ</li><li><span class="sw" style="background:#5D4037"></span>Khoáng sản và nhiên liệu</li><li><span class="sw" style="background:#332288"></span>Kim loại</li><li><span class="sw" style="background:#AA4499"></span>Hóa chất và nhựa</li><li><span class="sw" style="background:#999933"></span>Phương tiện vận tải</li><li><span class="sw" style="background:#44AA99"></span>Máy móc và thiết bị</li><li><span class="sw" style="background:#88CCEE"></span>Điện tử</li><li><span class="sw" style="background:#DDDDDD"></span>Khác</li></ul></div><div class="caveat"><h3>Năm giới hạn chúng tôi tự nói ra</h3><ul><li><b>Không có nguồn độc lập để kiểm chéo.</b> Atlas đã hòa giải số liệu hai chiều trước khi phát hành — 2.093/2.093 luồng lớn có hai bản khai trùng khít. Bộ dữ liệu này không cho phép tự đo sai số của nó.</li><li><b>Sankey không truy vết được lô hàng.</b> Hai bên nút Việt Nam là hai phép đo riêng đặt cạnh nhau, không phải một dòng chảy liên tục.</li><li><b>Betweenness của Việt Nam bằng 0 và đồng hạng với 57 nước khác</b> — nên con số thứ hạng không đọc được.</li><li><b>Cây sản phẩm chỉ vẽ tới tầng 2</b> (10 ngành, 97 nhóm), đúng phạm vi đã chốt. Tính toàn vẹn cả 4 tầng vẫn được kiểm riêng.</li><li><b>Năm mốc là 2023, không phải 2024.</b> Bản 2024 còn tạm, thiếu 1.781 cặp nước — riêng Việt Nam mất 37 bạn hàng.</li></ul></div></div></section>
+
+<footer><div class="wrap">
+  Nguồn dữ liệu: <a href="https://atlas.hks.harvard.edu/">The Atlas of Economic
+  Complexity</a>, Harvard Growth Lab, phân loại HS92, năm mốc 2023.
+  Trang dựng bằng <code>python src/build_web.py</code> từ các biểu đồ trong
+  <code>output/</code>.
+</div></footer>
+
+<button class="themebtn" id="themebtn" type="button">Đổi nền sáng/tối</button>
+</body>
+</html>

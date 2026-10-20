@@ -235,6 +235,16 @@ global-ecom/
 │   ├── compute_metrics.py     # bậc, độ mạnh, betweenness, cộng đồng (T18)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
+│   ├── compare_mirror.py         # chênh lệch gương, kiểm chất lượng (T08)
+│   ├── graph_common.py           # phần dùng chung của T15, T16, T17
+│   ├── make_degree_dist.py       # phân bố bậc log-log (T09)
+│   ├── make_node_link.py         # node-link mạng đã lọc (T15)
+│   ├── make_adjacency.py         # hai ma trận kề, so thứ tự (T16)
+│   ├── make_chord.py             # chord 9 khối, VN trọng tâm (T17)
+│   ├── make_sankey.py            # nhập -> VN -> xuất (T19)
+│   ├── make_time_multiples.py    # vị trí VN qua 4 mốc (T20)
+│   ├── make_streamgraph.py       # 10 ngành 1995-2023 (T21)
+│   ├── build_web.py              # dựng trang web từ output/ (T27)
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
@@ -243,7 +253,12 @@ global-ecom/
 │   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
 │   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
 │   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
-│   └── kien-thuc-nen-tang.md       # kiến thức kinh tế tối thiểu để đọc số
+│   ├── kien-thuc-nen-tang.md       # kiến thức kinh tế tối thiểu để đọc số
+│   ├── ket-luan-cho-thuyet-trinh.md # MỞ TRƯỚC KHI THUYẾT TRÌNH — số liệu + cách nói
+│   ├── phuong-phap-luan.md         # nguồn, làm sạch, giới hạn, ngưỡng (T25)
+│   ├── phat-hien.md                # 14 phát hiện F1-F14 (T26)
+│   └── cau-hoi-phan-bien.md        # 12 câu hỏi khó + câu trả lời (T29)
+├── web/              # trang web tương tác — SINH LẠI bằng build_web.py
 ├── .report/          # báo cáo LaTeX
 └── phan-cong-cong-viec.xlsx
 ```
@@ -305,12 +320,45 @@ python -m pip install -r requirements.txt
 
 python src/check_tree.py              # T11 kiểm cây HS92, thoát 1 nếu cây hỏng
 python src/compute_metrics.py         # T18 metrics.csv + bảng top 20
-python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
+python src/compare_mirror.py          # T08 chênh lệch gương
+
+# Mười biểu đồ. Chạy hết mất khoảng hai phút.
+python src/make_degree_dist.py        # T09 phân bố bậc log-log
+python src/make_hierarchy_charts.py              # T12, T13 treemap + sunburst 2023
+python src/make_hierarchy_charts.py --year 1995  # T12 bản 1995 để so
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
+python src/make_node_link.py          # T15 node-link mạng đã lọc
+python src/make_adjacency.py          # T16 hai ma trận kề
+python src/make_chord.py              # T17 chord 9 khối
+python src/make_sankey.py             # T19 nhập -> Việt Nam -> xuất
+python src/make_time_multiples.py     # T20 vị trí VN qua 4 mốc
+python src/make_streamgraph.py        # T21 10 ngành 1995-2023
+
+python src/build_web.py --open        # T27 lắp thành trang web tương tác
 ```
 
-Biểu đồ ra `output/` dưới hai dạng `.html` và `.png`; thư mục này bị
-`.gitignore` loại trừ.
+Biểu đồ ra `output/` dưới hai dạng `.html` (tương tác) và `.png` (cho slide và
+LaTeX); thư mục này bị `.gitignore` loại trừ.
+
+**Mỗi script vẽ tự in ra bằng chứng đỡ cho tiêu đề của chính nó.** Đây là quy
+ước của repo: không ai phải tin một câu tiêu đề, vì chạy lại script là thấy các
+con số dựng nên câu đó. Nếu sửa dữ liệu mà tiêu đề không còn đúng, số in ra sẽ
+lệch ngay.
+
+### Trang web tương tác (T27)
+
+```bash
+python src/build_web.py          # lắp output/*.html thành web/
+python -m http.server --directory web 8000
+```
+
+`build_web.py` KHÔNG vẽ lại gì — nó chép các biểu đồ đã sinh vào `web/charts/`
+và dựng `web/index.html` theo mạch bốn hồi (Quy mô → Cấu trúc → Vị trí Việt Nam
+→ Ý nghĩa). Trang hoàn toàn tĩnh: mở bằng cách bấm đúp vào file cũng chạy, không
+cần server. Đẩy lên GitHub Pages thì trỏ Pages vào thư mục `/web`.
+
+Nếu thiếu biểu đồ nào, script báo tên file thiếu và vẫn dựng trang với các mục
+còn lại — chạy script vẽ tương ứng rồi dựng lại.
 
 ### `metrics.csv` có hai dòng cho mỗi nước
 

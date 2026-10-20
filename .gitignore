@@ -72,3 +72,14 @@ output/
 
 # Goi anh nen de upload Overleaf — chi la ban sao cua img/.
 *.zip
+
+# Anh chup man hinh va ban ghi cua cong cu dieu khien trinh duyet (Playwright).
+# Sinh ra khi kiem tra trang web o T27, khong phai san pham.
+.playwright-mcp/
+web-*.png
+
+# web/ THI COMMIT, co chu y — tuy no sinh ra tu output/ bang build_web.py.
+# Ly do: GitHub Pages phuc vu thang tu repo, khong co buoc build. Neu khong
+# commit thi khong ai mo duoc trang neu chua tai 70 MB du lieu tho va chay het
+# pipeline. Doi lai: nho sinh lai bang `python src/build_web.py` sau khi sua
+# bieu do, neu khong trang se hien ban cu.

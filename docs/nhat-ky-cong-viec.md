@@ -251,3 +251,84 @@ Mỗi lần gộp một PR, sửa đúng ba chỗ, mất khoảng hai phút:
 
 Phát hiện mới thì **không** ghi vào đây — ghi vào `phat-hien-va-quyet-dinh.md` theo
 số A tiếp theo, rồi ở đây chỉ trỏ sang. Sổ này giữ mỏng để còn đọc được một lượt.
+
+---
+
+## 7. Đợt 21/10/2026 — làm nốt phần còn lại của cả nhóm
+
+Phúc và Dương Quang Huy đang bận việc khác, nên đợt này làm trọn các việc còn
+treo. Ghi lại ở đây để hai bạn **không phải đọc code mới nắm được**.
+
+### Việc đã xong
+
+| Mã | Việc | Sản phẩm | Ghi chú quan trọng |
+|---|---|---|---|
+| T08 | Kiểm chất lượng dữ liệu | `src/compare_mirror.py` | **Đổi cách làm** — xem bên dưới |
+| T09 | Phân bố bậc log-log | `output/degree_dist_out.*` | bác bỏ giả định scale-free |
+| T15 | Node-link | `output/node_link_2023.*` | cụm mã hóa bằng xám + hình dạng |
+| T16 | Hai ma trận kề | `output/adjacency_2023.*` | cùng 416 cạnh với T15 |
+| T17 | Chord | `output/chord_2023.*` | dùng đồ thị ĐẦY ĐỦ, không lọc |
+| T19 | Sankey | `output/sankey_vnm_2023.*` | giá trị gia tăng 13,9% |
+| T20 | Vị trí VN theo thời gian | `output/time_multiples.*` | tiền tăng, cửa giảm |
+| T21 | Streamgraph | `output/streamgraph_vnm_*.*` | hai bản: tỷ trọng và tuyệt đối |
+| T25 | Phương pháp luận | `docs/phuong-phap-luan.md` | |
+| T26 | Phát hiện | `docs/phat-hien.md` | 14 phát hiện F1–F14 |
+| T27 | Trang web | `web/` + `src/build_web.py` | tĩnh, chạy được trên Pages |
+| T29 | Câu phản biện | `docs/cau-hoi-phan-bien.md` | 12 câu + 3 câu phòng hờ |
+| T30 | README | `README.md` | đã bổ sung 10 script mới |
+
+Thêm một tài liệu không nằm trong danh sách task:
+**`docs/ket-luan-cho-thuyet-trinh.md`** — mở file này trước khi lên trình bày.
+Nó gom mọi con số theo từng người, kèm cách nói và các chỗ dễ nói quá lời.
+
+### Ba thay đổi về cách làm, cần cả nhóm biết
+
+**1. T08 đổi hướng, và đó là một phát hiện.** Phân công ghi "đối chiếu Atlas với
+BACI và Comtrade". Ba nguồn đó **không độc lập** — Atlas và BACI đều dẫn xuất từ
+Comtrade. Thay bằng phép **chênh lệch gương** ngay trong dữ liệu sẵn có. Kết
+quả: **2.093/2.093 luồng trùng khít 100,0%**, tức Atlas đã hòa giải số liệu
+trước khi phát hành, nên ta **không tự đo được sai số của nó**. Nói ra điều này
+trung thực hơn là trình bày một bảng ba cột số giống nhau.
+
+**2. Cộng đồng KHÔNG được tô màu.** Đã đo 7 bảng 3 màu ứng viên; bảng nào cũng
+tụt xuống ΔE 2,6–6,6 so với màu ngành gần nhất khi mô phỏng mù màu. Bảng 10
+ngành đã chiếm hết gam an toàn. Dùng **3 nấc xám + 3 hình dạng**, giữ ΔE 20,1 ở
+cả ba dạng mù màu. Hằng số ở `reference_data.py`, mục `COMMUNITY_FILL`.
+
+**3. Ba hình mạng lưới dùng ba tập cạnh khác nhau, có chủ ý.** T15 và T16 dùng
+đồ thị đã lọc (416 cạnh) vì phải so được với nhau. T17 và T20 dùng đồ thị đầy
+đủ — chord đã gộp thành 10 khối nên không cần lọc, còn T20 thì câu hỏi chính là
+*đếm bạn hàng*, mà ngưỡng lại cắt đúng cái đuôi cần đếm. Khác biệt này ghi trên
+chú thích từng hình.
+
+### Hai lỗi đã mắc và đã sửa — để không ai lặp lại
+
+**Ngưỡng tuyệt đối thiên vị nước lớn.** Bản đầu của chord áp ngưỡng 0,15% tổng
+thế giới cho mọi dải, và **xóa mất 4 trong 8 luồng của Việt Nam** — vì Việt Nam
+chỉ chiếm 1,8% xuất khẩu thế giới nên luồng "rất lớn với Việt Nam" vẫn "nhỏ với
+thế giới". Một hình tên là "lấy Việt Nam làm trọng tâm" lại giấu phần lớn luồng
+của Việt Nam. Đã sửa: dải có Việt Nam thì miễn ngưỡng. Đây đúng là cái bẫy mà
+phát hiện A5 đã ghi, gặp lại ở một chỗ khác.
+
+**Mẫu số sai trong chú thích chord.** Tổng độ dài cung đếm mỗi luồng hai lần
+(một lần phía xuất, một lần phía nhập), nên chú thích ghi "34,9 nghìn tỷ USD
+thương mại" trong khi tổng thật là 21,7. Đúng để chia cung, sai để làm mẫu số
+cho thị phần. Đã tách hai biến ra.
+
+### Dữ liệu: đã đủ
+
+`check_raw_data.py` báo **DAT**. Hai file từng thiếu (`cc_year.csv`,
+`hs92_country_year.csv`) đã tải về. Ba file đối chiếu chéo khớp 0,000%.
+`data/processed/` có đủ 10 file.
+
+### Còn lại cho cả nhóm
+
+- **T22 (đồng bộ thị giác)** — 10 biểu đồ đều đã dùng `reference_data.py`, dấu
+  thập phân tiếng Việt và viền trắng theo style guide. Còn việc rà lại bằng mắt
+  trên máy chiếu thật.
+- **T23 (rà soát chéo)** — **không tự làm được**, theo đúng nguyên tắc #4: không
+  ai tự duyệt sản phẩm của chính mình. Phúc và Dương Quang Huy cần review.
+- **T24 (kiểm khả năng đọc)** — `check_palette.py` thoát 0. Còn việc kiểm nhãn
+  chồng nhau ở khổ chiếu thật.
+- **T28 (slide)** — mỗi người tự làm phần mình, lấy số từ
+  `docs/ket-luan-cho-thuyet-trinh.md`.
