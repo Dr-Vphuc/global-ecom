@@ -1,0 +1,798 @@
+/* ==========================================================================
+   Book Layout Stylesheet: Ward, Grinstein, Keim (2nd Edition)
+   Chapter 9, Section 9.1 (Pages 320 - 326 / PDF 342 - 348)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+:root {
+  /* Book palette reverse-engineered from CRC Press original */
+  --book-blue: #273a80;         /* Running headers, folios, figure numbers, bullets */
+  --book-green: #385a29;        /* Section numbers and section titles */
+  --book-text: #1a1a1a;         /* Main body serif text */
+  --book-bg: #ffffff;           /* Physical page background */
+  --book-desk: #ecefe6;         /* Desk / canvas background */
+  --book-shadow: rgba(30, 45, 60, 0.18);
+  --book-border: #dcded8;
+  --accent-gold: #c29236;
+
+  /* Typography */
+  --font-serif: "Crimson Pro", "Minion Pro", "Palatino", "Georgia", "Times New Roman", serif;
+  --font-sans: "Gill Sans", "Gill Sans MT", "Source Sans 3", "Trebuchet MS", "Segoe UI", sans-serif;
+  --font-mono: "Fira Code", "Consolas", "Courier New", monospace;
+
+  /* Book Geometry (matching 540pt x 665pt aspect ratio ~ 0.811) */
+  --page-width: 760px;
+  --page-height: 938px;
+  --margin-left-gutter: 145px;
+  --main-text-width: 480px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-serif);
+  font-size: 15.5px;
+  line-height: 1.45;
+  color: var(--book-text);
+  background-color: var(--book-desk);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --------------------------------------------------------------------------
+   Top App Bar & Control Toolbar
+   -------------------------------------------------------------------------- */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--font-sans);
+}
+
+.header-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.book-badge {
+  background: linear-gradient(135deg, var(--book-blue), #162254);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.header-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.header-subtitle {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.control-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: #334155;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.control-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.control-btn.active {
+  background: var(--book-blue);
+  border-color: var(--book-blue);
+  color: #fff;
+}
+
+.control-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.page-navigator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.page-select {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--book-blue);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+/* --------------------------------------------------------------------------
+   Main Reading Canvas
+   -------------------------------------------------------------------------- */
+.reader-canvas {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  transition: transform 0.2s ease-out;
+  transform-origin: top center;
+}
+
+/* --------------------------------------------------------------------------
+   Authentic Book Page Container
+   -------------------------------------------------------------------------- */
+.book-page {
+  position: relative;
+  width: var(--page-width);
+  min-height: var(--page-height);
+  background: var(--book-bg);
+  box-shadow: 0 10px 35px var(--book-shadow), 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 2px;
+  padding: 56px 64px 60px 48px;
+  display: flex;
+  flex-direction: column;
+  color: var(--book-text);
+  overflow: hidden;
+  page-break-after: always;
+  break-after: page;
+}
+
+/* Subtle simulated paper edge & gutter gradient */
+.book-page.even-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.035), transparent);
+  pointer-events: none;
+}
+
+.book-page.odd-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.035), transparent);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Running Headers & Folios
+   -------------------------------------------------------------------------- */
+.running-header {
+  height: 28px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  color: var(--book-blue);
+  user-select: none;
+}
+
+.even-page .running-header .page-folio {
+  font-weight: 700;
+  font-size: 14px;
+  width: var(--margin-left-gutter);
+  text-align: left;
+}
+
+.even-page .running-header .header-text {
+  font-style: italic;
+  font-weight: 400;
+  text-align: right;
+  flex: 1;
+}
+
+.odd-page .running-header .header-text {
+  font-style: italic;
+  font-weight: 400;
+  text-align: left;
+  flex: 1;
+  padding-left: var(--margin-left-gutter);
+}
+
+.odd-page .running-header .page-folio {
+  font-weight: 700;
+  font-size: 14px;
+  text-align: right;
+}
+
+/* --------------------------------------------------------------------------
+   Book Content Grid (Asymmetric Wide Left Margin)
+   -------------------------------------------------------------------------- */
+.page-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Two-column layout unit: left margin (145px) + main column (rest) */
+.marginalia-row {
+  display: flex;
+  margin-bottom: 14px;
+  align-items: baseline;
+}
+
+.margin-col {
+  width: var(--margin-left-gutter);
+  min-width: var(--margin-left-gutter);
+  padding-right: 18px;
+  font-family: var(--font-sans);
+  text-align: left;
+}
+
+.main-col {
+  flex: 1;
+  max-width: var(--main-text-width);
+}
+
+/* --------------------------------------------------------------------------
+   Headings & Sections
+   -------------------------------------------------------------------------- */
+.section-9-1 {
+  margin-top: 26px;
+  margin-bottom: 12px;
+}
+
+.section-9-1 .margin-col {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--book-green);
+  line-height: 1.15;
+}
+
+.section-9-1 .main-col h2 {
+  font-family: var(--font-sans);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--book-green);
+  line-height: 1.25;
+}
+
+.subsection-row {
+  margin-top: 22px;
+  margin-bottom: 10px;
+}
+
+.subsection-row .margin-col {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--book-green);
+  line-height: 1.2;
+}
+
+.subsection-row .main-col h3 {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--book-green);
+  line-height: 1.25;
+}
+
+/* --------------------------------------------------------------------------
+   Paragraphs & Text Typography
+   -------------------------------------------------------------------------- */
+.book-p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  line-height: 1.48;
+  margin-bottom: 0;
+  text-indent: 1.7em;
+  font-size: 15px;
+}
+
+.book-p.no-indent {
+  text-indent: 0;
+}
+
+.book-p.italic-lead {
+  font-style: italic;
+  text-indent: 0;
+  margin-bottom: 8px;
+}
+
+.book-p em, .book-p i {
+  font-style: italic;
+}
+
+.book-p strong, .book-p b {
+  font-weight: 700;
+}
+
+.math-var {
+  font-style: italic;
+  font-family: var(--font-serif);
+}
+
+.cite-ref {
+  font-family: var(--font-serif);
+  font-size: 0.95em;
+  color: #1e3a8a;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.cite-ref:hover {
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Lists (Bullet Points & Numbered Lists)
+   -------------------------------------------------------------------------- */
+.book-bullet-list {
+  list-style: none;
+  margin: 10px 0 12px;
+  padding-left: calc(var(--margin-left-gutter) + 16px);
+  max-width: calc(var(--margin-left-gutter) + var(--main-text-width));
+}
+
+.book-bullet-list li {
+  position: relative;
+  margin-bottom: 5.5px;
+  text-align: justify;
+  line-height: 1.4;
+  font-size: 14.8px;
+}
+
+.book-bullet-list li::before {
+  content: "•";
+  position: absolute;
+  left: -14px;
+  top: -1px;
+  color: var(--book-blue);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.book-num-list {
+  list-style: none;
+  counter-reset: book-counter;
+  margin: 10px 0 14px;
+  padding-left: calc(var(--margin-left-gutter) + 20px);
+  max-width: calc(var(--margin-left-gutter) + var(--main-text-width));
+}
+
+.book-num-list li {
+  position: relative;
+  counter-increment: book-counter;
+  margin-bottom: 6px;
+  text-align: justify;
+  line-height: 1.4;
+  font-size: 14.8px;
+}
+
+.book-num-list li::before {
+  content: counter(book-counter) ".";
+  position: absolute;
+  left: -18px;
+  top: 0;
+  font-family: var(--font-serif);
+  color: var(--book-text);
+  font-weight: 400;
+}
+
+/* --------------------------------------------------------------------------
+   Figures, Images & Captions
+   -------------------------------------------------------------------------- */
+.figure-block {
+  margin: 12px 0 20px;
+  width: 100%;
+}
+
+.figure-caption-row {
+  display: flex;
+  margin-top: 10px;
+  align-items: baseline;
+}
+
+.figure-label {
+  width: var(--margin-left-gutter);
+  min-width: var(--margin-left-gutter);
+  padding-right: 18px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--book-blue);
+}
+
+.figure-text {
+  flex: 1;
+  max-width: var(--main-text-width);
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.35;
+  text-align: justify;
+}
+
+/* Pseudocode block formatting */
+.pseudocode-container {
+  padding-left: calc(var(--margin-left-gutter) - 45px);
+  margin-bottom: 8px;
+}
+
+.pseudocode-text {
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  line-height: 1.45;
+  color: #111827;
+  white-space: pre;
+  background: transparent;
+  overflow-x: auto;
+}
+
+/* Side-by-side figures (Fig 9.2, Fig 9.4) */
+.figures-side-by-side {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 28px;
+  padding-left: calc(var(--margin-left-gutter) - 60px);
+  margin: 14px 0 6px;
+}
+
+.fig-sub-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fig-sub-item img {
+  display: block;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.fig-9-2a img {
+  width: 225px;
+}
+
+.fig-9-2b img {
+  width: 220px;
+}
+
+.fig-9-4a img {
+  width: 240px;
+}
+
+.fig-9-4b img {
+  width: 225px;
+}
+
+/* Centered single figures (Fig 9.5, Fig 9.6) */
+.figure-single-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: var(--margin-left-gutter);
+  margin: 14px 0 8px;
+}
+
+.fig-9-5 img {
+  width: 280px;
+}
+
+.fig-9-6 img {
+  width: 380px;
+  border-radius: 1px;
+}
+
+/* Interactive Bilingual Tooltip feature */
+.bilingual-target {
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.bilingual-target:hover {
+  background-color: rgba(39, 58, 128, 0.06);
+  border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Modal Drawer: Glossary & Translation Info
+   -------------------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: none;
+  justify-content: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-drawer {
+  width: 520px;
+  max-width: 92vw;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  animation: slideLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-header {
+  padding: 18px 24px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer-title {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.drawer-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #64748b;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.drawer-close:hover {
+  color: #0f172a;
+}
+
+.drawer-content {
+  padding: 24px;
+  overflow-y: auto;
+  font-family: var(--font-sans);
+}
+
+.drawer-section {
+  margin-bottom: 26px;
+}
+
+.drawer-section h4 {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--book-blue);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meta-table, .glossary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.meta-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  line-height: 1.4;
+}
+
+.meta-label {
+  font-weight: 600;
+  color: #475569;
+  width: 130px;
+}
+
+.glossary-table th {
+  background: #f1f5f9;
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #334155;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.glossary-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.glossary-table tr:hover td {
+  background: #f8fafc;
+}
+
+.term-en {
+  font-weight: 600;
+  color: var(--book-blue);
+}
+
+.term-vi {
+  color: #1e293b;
+}
+
+/* --------------------------------------------------------------------------
+   Continuous Reading Mode Styles
+   -------------------------------------------------------------------------- */
+.reader-canvas.continuous-mode {
+  gap: 0;
+  padding-top: 24px;
+}
+
+.reader-canvas.continuous-mode .book-page {
+  box-shadow: none;
+  border-radius: 0;
+  border-bottom: 1px dashed #cbd5e1;
+  margin-bottom: 30px;
+  padding-bottom: 40px;
+}
+
+.reader-canvas.continuous-mode .book-page:last-child {
+  border-bottom: none;
+}
+
+/* --------------------------------------------------------------------------
+   Bilingual Side-by-Side Floating Bar
+   -------------------------------------------------------------------------- */
+.bilingual-preview-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1500;
+  background: rgba(15, 23, 42, 0.95);
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 800px;
+  width: 90vw;
+  font-family: var(--font-serif);
+  font-size: 14.5px;
+  line-height: 1.45;
+  display: none;
+  animation: slideUp 0.2s ease-out;
+}
+
+.bilingual-preview-bar.visible {
+  display: block;
+}
+
+.bilingual-preview-bar .en-heading {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #93c5fd;
+  margin-bottom: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Animations
+   -------------------------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideLeft {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideUp {
+  from { transform: translate(-50%, 20px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* --------------------------------------------------------------------------
+   Print Stylesheet (@media print)
+   -------------------------------------------------------------------------- */
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  .app-header, .bilingual-preview-bar, .modal-overlay {
+    display: none !important;
+  }
+
+  .reader-canvas {
+    padding: 0 !important;
+    gap: 0 !important;
+    transform: none !important;
+    max-width: 100% !important;
+  }
+
+  .book-page {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    padding: 12mm 15mm !important;
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .book-page::before {
+    display: none !important;
+  }
+}

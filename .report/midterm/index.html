@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phần 9.1: Hiển thị các cấu trúc phân cấp | Interactive Data Visualization</title>
+  <meta name="description" content="Bản dịch Section 9.1 Displaying Hierarchical Structures từ sách Interactive Data Visualization của Matthew O. Ward, Georges Grinstein, Daniel Keim. Trình bày chuẩn bố cục trang in 320-326 (PDF 342-348).">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Top App Navigation & Reading Controls Bar -->
+  <header class="app-header" id="appHeader">
+    <div class="header-title-group">
+      <span class="book-badge">Giáo trình Trực quan hóa</span>
+      <div>
+        <h1 class="header-title">Chương 9: Phần 9.1 — Hiển thị các cấu trúc phân cấp</h1>
+        <div class="header-subtitle">Matthew O. Ward · Georges Grinstein · Daniel Keim · Trang in 320–326 (PDF 342–348)</div>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- Page Navigator -->
+      <div class="page-navigator" title="Nhảy tới trang sách cụ thể">
+        <label for="pageSelect" style="font-size:12px; color:#64748b; font-weight:600;">Trang:</label>
+        <select id="pageSelect" class="page-select">
+          <option value="page-320">Trang 320 (PDF 342)</option>
+          <option value="page-321">Trang 321 (PDF 343)</option>
+          <option value="page-322">Trang 322 (PDF 344)</option>
+          <option value="page-323">Trang 323 (PDF 345)</option>
+          <option value="page-324">Trang 324 (PDF 346)</option>
+          <option value="page-325">Trang 325 (PDF 347)</option>
+          <option value="page-326">Trang 326 (PDF 348)</option>
+        </select>
+      </div>
+
+      <!-- Zoom Controls -->
+      <button id="zoomOutBtn" class="control-btn" title="Thu nhỏ (Zoom out)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
+      <button id="zoomResetBtn" class="control-btn" title="Đặt lại kích thước 100%">100%</button>
+      <button id="zoomInBtn" class="control-btn" title="Phóng to (Zoom in)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
+
+      <!-- View Mode Switcher -->
+      <button id="viewModeBtn" class="control-btn" title="Chuyển chế độ trang sách / đọc liên tục">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+        <span class="mode-label">Đọc cuộn</span>
+      </button>
+
+      <!-- Glossary & Meta Drawer Trigger -->
+      <button id="glossaryBtn" class="control-btn" title="Xem bảng đối chiếu thuật ngữ và thông tin bản dịch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span>Thuật ngữ &amp; Quy ước</span>
+      </button>
+
+      <!-- Print Button -->
+      <button id="printBtn" class="control-btn" title="In / Xuất PDF định dạng chuẩn trang sách">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        <span>In sách</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Book Pages Workspace -->
+  <main class="reader-canvas" id="readerCanvas">
+
+    <!-- ====================================================================
+         PAGE 320 (PDF PAGE 342) - Even Page
+         ==================================================================== -->
+    <article class="book-page even-page" id="page-320" data-page="320">
+      <!-- Running Header -->
+      <nav class="running-header" aria-label="Đầu trang 320">
+        <span class="page-folio">320</span>
+        <span class="header-text">9. Visualization Techniques for Trees, Graphs, and Networks</span>
+      </nav>
+
+      <div class="page-body">
+        <!-- Bulleted questions from intro -->
+        <ul class="book-bullet-list" style="margin-top: 2px;">
+          <li data-en="What is the shortest path from node a to node b?">Đường đi ngắn nhất từ nút <span class="math-var">a</span> đến nút <span class="math-var">b</span> là đường nào?</li>
+          <li data-en="How many paths are there from node a to node b?">Có bao nhiêu đường đi từ nút <span class="math-var">a</span> đến nút <span class="math-var">b</span>?</li>
+          <li data-en="What node is accessible from node a?">Những nút nào có thể tiếp cận được từ nút <span class="math-var">a</span>?</li>
+          <li data-en="What nodes are connected to both node a and node b?">Những nút nào nối với cả nút <span class="math-var">a</span> lẫn nút <span class="math-var">b</span>?</li>
+          <li data-en="How many edges are coming into node a?">Có bao nhiêu cạnh đi vào nút <span class="math-var">a</span>?</li>
+          <li data-en="Are these two graphs identical (isomorphic)?">Hai đồ thị này có đồng nhất với nhau (đẳng cấu) hay không?</li>
+          <li data-en="Is this subgraph of graph A in graph B?">Đồ thị con này của đồ thị <span class="math-var">A</span> có nằm trong đồ thị <span class="math-var">B</span> hay không?</li>
+          <li data-en="Is there a cycle in graph A (a non-empty path from a node to itself)?">Trong đồ thị <span class="math-var">A</span> có tồn tại chu trình hay không (một đường đi khác rỗng từ một nút quay về chính nó)?</li>
+          <li data-en="Is there a path from node a to node b that goes through exactly one other node (or at least one other node)?">Có tồn tại đường đi từ nút <span class="math-var">a</span> đến nút <span class="math-var">b</span> mà đi qua đúng một nút khác (hoặc ít nhất một nút khác) hay không?</li>
+          <li data-en="What are all the nodes with a specific value or range of values?">Tất cả những nút mang một giá trị cụ thể hoặc nằm trong một khoảng giá trị cho trước là những nút nào?</li>
+        </ul>
+
+        <!-- Intro concluding paragraphs -->
+        <div class="marginalia-row" style="margin-bottom: 6px;">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p no-indent" data-en="Note that for graphs that cannot fit into memory, answering some of these questions is very difficult.">Cần lưu ý rằng với những đồ thị không thể nạp vừa vào bộ nhớ, việc trả lời một số câu hỏi trong đó là rất khó.</p>
+            <p class="book-p" data-en="In this chapter we will examine a number of techniques that have been developed for visualizing relational information. This presentation, however, will just be the tip of the iceberg, as tree and graph visualization is a well-established field, with its own books, journals, conferences, software packages, and algorithms.">Trong chương này, chúng ta sẽ khảo sát một số kỹ thuật đã được phát triển để trực quan hóa thông tin quan hệ. Tuy nhiên, những gì được trình bày ở đây mới chỉ là phần nổi của tảng băng, bởi trực quan hóa cây và đồ thị vốn là một lĩnh vực đã định hình vững chắc, với hệ thống sách chuyên khảo, tạp chí, hội nghị, gói phần mềm và thuật toán riêng của nó.</p>
+          </div>
+        </div>
+
+        <!-- Section 9.1 Heading -->
+        <div class="marginalia-row section-9-1">
+          <div class="margin-col">9.1</div>
+          <div class="main-col">
+            <h2>Hiển thị các cấu trúc phân cấp</h2>
+          </div>
+        </div>
+
+        <!-- Lead paragraph of 9.1 (in italics in original book) -->
+        <div class="marginalia-row" style="margin-bottom: 4px;">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p italic-lead" data-en="Trees or hierarchies (we’ll use the terms interchangeably) are one of the most common structures to hold relational information. For this reason, many visualization techniques have been developed for display of such information. We can divide these techniques into two classes of algorithms: space-filling and non–space-filling. The rest of this section will provide details on implementing algorithms for visualizing this type of data.">Cây, hay cấu trúc phân cấp (chúng ta sẽ dùng hai thuật ngữ này thay thế cho nhau), là một trong những cấu trúc phổ biến nhất để lưu giữ thông tin quan hệ. Chính vì vậy, rất nhiều kỹ thuật trực quan hóa đã được phát triển để hiển thị loại thông tin này. Ta có thể chia các kỹ thuật đó thành hai lớp thuật toán: <strong>lấp đầy không gian</strong> và <strong>không lấp đầy không gian</strong>. Phần còn lại của mục này sẽ trình bày chi tiết cách cài đặt các thuật toán trực quan hóa loại dữ liệu này.</p>
+          </div>
+        </div>
+
+        <!-- Section 9.1.1 Heading -->
+        <div class="marginalia-row subsection-row">
+          <div class="margin-col">9.1.1</div>
+          <div class="main-col">
+            <h3>Các phương pháp lấp đầy không gian</h3>
+          </div>
+        </div>
+
+        <!-- Body paragraph under 9.1.1 -->
+        <div class="marginalia-row">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p no-indent" data-en="As the name implies, space-filling techniques make maximal use of the display space. This is accomplished by using juxtapositioning to imply relations, as opposed to, for example, conveying relations with edges joining data objects. The two most common approaches to generating space-filling hierarchies are rectangular and radial layouts.">Đúng như tên gọi, các kỹ thuật lấp đầy không gian tận dụng tối đa không gian hiển thị. Điều này đạt được bằng cách dùng phép đặt kề để hàm ý quan hệ, thay vì biểu đạt quan hệ bằng những cạnh nối các đối tượng dữ liệu như ở các cách tiếp cận khác. Hai hướng tiếp cận phổ biến nhất để sinh ra các cấu trúc phân cấp lấp đầy không gian là bố cục chữ nhật và bố cục xuyên tâm.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ====================================================================
+         PAGE 321 (PDF PAGE 343) - Odd Page
+         ==================================================================== -->
+    <article class="book-page odd-page" id="page-321" data-page="321">
+      <!-- Running Header -->
+      <nav class="running-header" aria-label="Đầu trang 321">
+        <span class="header-text">9.1. Displaying Hierarchical Structures</span>
+        <span class="page-folio">321</span>
+      </nav>
+
+      <div class="page-body">
+        <div class="marginalia-row" style="margin-bottom: 0;">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p" style="text-indent: 1.7em;" data-en="Treemaps [206] and their many variants are an alternative representation of a Venn diagram and are the most popular form of the rectangular space-filling layout. In the basic treemap, a rectangle is recursively divided into slices, alternating horizontal and vertical slicing, based on the populations of the subtrees at a given level. Pseudocode for this process is given in Figure 9.1, and an example is shown in Figure 9.2.">Treemap <span class="cite-ref">[206]</span> cùng vô số biến thể của nó là một cách biểu diễn thay thế cho biểu đồ Venn, và là dạng phổ biến nhất của bố cục chữ nhật lấp đầy không gian. Trong treemap cơ bản, một hình chữ nhật được chia đệ quy thành các lát, luân phiên cắt theo phương ngang và phương dọc, dựa trên số lượng phần tử của các cây con ở tầng đang xét. Mã giả của quá trình này được cho ở Hình 9.1, và một ví dụ được trình bày ở Hình 9.2.</p>
+            <p class="book-p" data-en="As mentioned, many variants on treemaps have been proposed and developed since they were introduced, including squarified treemaps [51] (to reduce the occurrence of long, thin rectangles) and nested treemaps [206] (to emphasize the hierarchical structure).">Như đã đề cập, nhiều biến thể của treemap đã được đề xuất và phát triển kể từ khi kỹ thuật này ra đời, trong đó có <em>treemap vuông hóa</em> <span class="cite-ref">[51]</span> (nhằm giảm bớt sự xuất hiện của những hình chữ nhật dài và mảnh) và <em>treemap lồng nhau</em> <span class="cite-ref">[206]</span> (nhằm làm nổi bật cấu trúc phân cấp).</p>
+            <p class="book-p" data-en="The methods described above are structured using horizontal and vertical divisions to convey the hierarchy. A number of other approaches are possible, however, such as those that divide space radially. Radial space-filling hierarchy visualizations, sometimes referred to as sunburst displays [393], have the root of the hierarchy in the center of the display and use nested rings to convey the layers of the hierarchy. Each ring is divided based on the number of nodes at that level. These techniques follow a similar strategy to treemaps, in that the number of terminal nodes in a subtree determines the amount of screen space that will be allocated for it. However, unlike treemaps, which assign most screen space to conveying the terminal nodes, radial techniques also show the intermediate nodes. The process is described in pseudocode in Figure 9.3, and an example is shown in Figure 9.4.">Các phương pháp mô tả ở trên được tổ chức bằng những phép chia theo phương ngang và phương dọc để biểu đạt cấu trúc phân cấp. Tuy nhiên, còn nhiều hướng tiếp cận khác cũng khả dĩ, chẳng hạn những hướng chia không gian theo hướng xuyên tâm. Các kỹ thuật trực quan hóa phân cấp lấp đầy không gian theo hướng xuyên tâm, đôi khi được gọi là <em>biểu đồ sunburst</em> <span class="cite-ref">[393]</span>, đặt nút gốc của cấu trúc phân cấp ở tâm màn hình và dùng các vành tròn lồng nhau để biểu đạt các tầng của cấu trúc. Mỗi vành được chia dựa trên số nút ở tầng tương ứng. Các kỹ thuật này đi theo một chiến lược tương tự treemap, ở chỗ số nút lá trong một cây con sẽ quyết định lượng không gian màn hình được cấp phát cho cây con đó. Tuy nhiên, khác với treemap vốn dành phần lớn không gian màn hình để thể hiện các nút lá, các kỹ thuật xuyên tâm còn thể hiện cả những nút trung gian. Quá trình này được mô tả bằng mã giả ở Hình 9.3, và một ví dụ được trình bày ở Hình 9.4.</p>
+            <p class="book-p" data-en="For these and other space-filling techniques, color can be used to convey many attributes, such as a value associated with the node (e.g., classification) or it may reinforce the hierarchical relationships, e.g., siblings and parents may have similarities in color, as seen in Figure 9.4. Symbols and other markings may also be embedded in the rectangular or circular segments to communicate other data features.">Với những kỹ thuật lấp đầy không gian này cũng như các kỹ thuật khác, màu sắc có thể được dùng để biểu đạt nhiều thuộc tính, chẳng hạn một giá trị gắn với nút (ví dụ: phân loại), hoặc để củng cố các quan hệ phân cấp — chẳng hạn các nút anh em và nút cha có thể mang màu sắc tương đồng, như thấy ở Hình 9.4. Các ký hiệu và dấu hiệu khác cũng có thể được nhúng vào các phân đoạn hình chữ nhật hoặc hình tròn để truyền đạt những đặc trưng dữ liệu khác.</p>
+          </div>
+        </div>
+
+        <!-- Section 9.1.2 Heading -->
+        <div class="marginalia-row subsection-row" style="margin-top: 24px;">
+          <div class="margin-col">9.1.2</div>
+          <div class="main-col">
+            <h3>Các phương pháp không lấp đầy không gian</h3>
+          </div>
+        </div>
+
+        <!-- Body paragraph under 9.1.2 -->
+        <div class="marginalia-row">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p no-indent" data-en="The most common representation used to visualize tree or hierarchical relationships is a node-link diagram. Organizational charts, family trees, and tournament pairings are just some of the common applications for such diagrams. The drawing of such trees is influenced the most by two factors: the fan-out degree (e.g., the number of siblings a parent node can have) and the depth (e.g., the furthest node from the root). Trees that are significantly constrained in one or both of these aspects, such as a binary tree or a tree with only three or four levels, tend to be much easier to draw than those with fewer constraints.">Cách biểu diễn phổ biến nhất dùng để trực quan hóa quan hệ cây hay quan hệ phân cấp là <em>sơ đồ nút–liên kết</em>. Sơ đồ tổ chức, cây gia phả và bảng ghép cặp thi đấu chỉ là một vài trong số những ứng dụng thường gặp của loại sơ đồ này. Việc vẽ những cây như vậy chịu ảnh hưởng nhiều nhất bởi hai yếu tố: <em>bậc phân nhánh</em> (ví dụ: số nút anh em mà một nút cha có thể có) và <em>độ sâu</em> (ví dụ: nút nằm xa nút gốc nhất). Những cây bị ràng buộc chặt ở một hoặc cả hai khía cạnh này — chẳng hạn cây nhị phân, hay cây chỉ có ba đến bốn tầng — thường dễ vẽ hơn nhiều so với những cây ít bị ràng buộc hơn.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ====================================================================
+         PAGE 322 (PDF PAGE 344) - Even Page
+         ==================================================================== -->
+    <article class="book-page even-page" id="page-322" data-page="322">
+      <!-- Running Header -->
+      <nav class="running-header" aria-label="Đầu trang 322">
+        <span class="page-folio">322</span>
+        <span class="header-text">9. Visualization Techniques for Trees, Graphs, and Networks</span>
+      </nav>
+
+      <div class="page-body">
+        <!-- Figure 9.1: Pseudocode for Treemap -->
+        <section class="figure-block" id="fig-9-1" aria-labelledby="caption-9-1">
+          <div class="pseudocode-container">
+            <pre class="pseudocode-text">Start: Main Program
+    Width = width of rectangle
+    Height = height of rectangle
+    Node = root node of the tree
+    Origin = position of rectangle, e.g., [0,0]
+    Orientation = direction of cuts, alternating between horizontal and vertical
+    Treemap(Node, Orientation, Origin, Width, Height)
+End: Main Program
+
+Treemap(node n, orientation o, position orig, hsize w, vsize h)
+    if n is a terminal node (i.e., it has no children)
+        draw_rectangle(orig, w, h)
+        return
+    for each child of n (child_i), get number of terminal nodes in subtree
+    sum up number of terminal nodes
+    compute percentage of terminal nodes in n from each subtree (percent_i)
+    if orientation is horizontal
+        for each subtree
+            compute offset of origin based on origin and width (offset_i)
+            treemap(child_i, vertical, orig + offset_i, w * percent_i, h)
+    else
+        for each subtree
+            compute offset of origin based on origin and height (offset_i)
+            treemap(child_i, horizontal, orig + offset_i, w, h * percent_i)
+End: Treemap</pre>
+          </div>
+          <div class="figure-caption-row" id="caption-9-1">
+            <div class="figure-label">Figure 9.1.</div>
+            <div class="figure-text" data-en="Pseudocode for drawing a hierarchy using a treemap.">Mã giả vẽ một cấu trúc phân cấp bằng treemap.</div>
+          </div>
+        </section>
+
+        <!-- Figure 9.2: Hierarchy and Treemap Display (Side by Side) -->
+        <section class="figure-block" id="fig-9-2" aria-labelledby="caption-9-2" style="margin-top: 40px;">
+          <div class="figures-side-by-side">
+            <div class="fig-sub-item fig-9-2a">
+              <img src="assets/images/fig9-2a-hierarchy.png" alt="Cấu trúc phân cấp mẫu cho Treemap" width="225">
+            </div>
+            <div class="fig-sub-item fig-9-2b">
+              <img src="assets/images/fig9-2b-treemap.png" alt="Biểu đồ Treemap tương ứng" width="220">
+            </div>
+          </div>
+          <div class="figure-caption-row" id="caption-9-2" style="margin-top: 22px;">
+            <div class="figure-label">Figure 9.2.</div>
+            <div class="figure-text" data-en="A sample hierarchy and the corresponding treemap display.">Một cấu trúc phân cấp mẫu và biểu đồ treemap tương ứng.</div>
+          </div>
+        </section>
+      </div>
+    </article>
+
+    <!-- ====================================================================
+         PAGE 323 (PDF PAGE 345) - Odd Page
+         ==================================================================== -->
+    <article class="book-page odd-page" id="page-323" data-page="323">
+      <!-- Running Header -->
+      <nav class="running-header" aria-label="Đầu trang 323">
+        <span class="header-text">9.1. Displaying Hierarchical Structures</span>
+        <span class="page-folio">323</span>
+      </nav>
+
+      <div class="page-body">
+        <!-- Figure 9.3: Pseudocode for Sunburst -->
+        <section class="figure-block" id="fig-9-3" aria-labelledby="caption-9-3">
+          <div class="pseudocode-container">
+            <pre class="pseudocode-text">Start: Main Program
+    Start = start angle for a node (initially 0)
+    End = end angle for a node (initially 360)
+    Origin = position of center of sunburst, e.g., [0,0]
+    Level = current level of hierarchy (initially 0)
+    Width = thickness of each radial band - based on max depth and display size
+    Sunburst(Node, Start, End, Level)
+End: Main Program
+
+Sunburst(node n, angle st, angle en, level l)
+    if n is a terminal node (i.e., it has no children)
+        draw_radial_section(Origin, st, en, l * Width, (l+1) * Width)
+        return
+    for each child of n (child_i), get number of terminal nodes in subtree
+    sum up number of terminal nodes
+    compute percentage of terminal nodes in n from each subtree (percent_i)
+    for each subtree
+        compute start/end angle based on size of subtrees, order, and angle range
+        Sunburst(child_i, st_i, en_i, l+1)
+End: Sunburst</pre>
+          </div>
+          <div class="figure-caption-row" id="caption-9-3">
+            <div class="figure-label">Figure 9.3.</div>
+            <div class="figure-text" data-en="Pseudocode for drawing a hierarchy using a sunburst display.">Mã giả vẽ một cấu trúc phân cấp bằng biểu đồ sunburst.</div>
+          </div>
+        </section>
+
+        <!-- Figure 9.4: Hierarchy and Sunburst Display (Side by Side) -->
+        <section class="figure-block" id="fig-9-4" aria-labelledby="caption-9-4" style="margin-top: 36px;">
+          <div class="figures-side-by-side">
+            <div class="fig-sub-item fig-9-4a">
+              <img src="assets/images/fig9-4a-hierarchy.png" alt="Cấu trúc phân cấp mẫu cho Sunburst" width="240">
+            </div>
+            <div class="fig-sub-item fig-9-4b">
+              <img src="assets/images/fig9-4b-sunburst.png" alt="Biểu đồ Sunburst tương ứng" width="225">
+            </div>
+          </div>
+          <div class="figure-caption-row" id="caption-9-4" style="margin-top: 22px;">
+            <div class="figure-label">Figure 9.4.</div>
+            <div class="figure-text" data-en="A sample hierarchy and the corresponding sunburst display.">Một cấu trúc phân cấp mẫu và biểu đồ sunburst tương ứng.</div>
+          </div>
+        </section>
+      </div>
+    </article>
+
+    <!-- ====================================================================
+         PAGE 324 (PDF PAGE 346) - Even Page
+         ==================================================================== -->
+    <article class="book-page even-page" id="page-324" data-page="324">
+      <!-- Running Header -->
+      <nav class="running-header" aria-label="Đầu trang 324">
+        <span class="page-folio">324</span>
+        <span class="header-text">9. Visualization Techniques for Trees, Graphs, and Networks</span>
+      </nav>
+
+      <div class="page-body">
+        <div class="marginalia-row" style="margin-bottom: 6px;">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p no-indent" data-en="When designing an algorithm for drawing any node-link diagram (not just trees), one must consider three categories of often-contradictory guidelines: drawing conventions, constraints, and aesthetics. Conventions may include restricting edges to be either a single straight line, a series of rectilinear lines, polygonal lines, or curves. Other conventions might be to place nodes on a fixed grid, or to have all sibling nodes share the same vertical position. Constraints may include requiring a particular node to be at the center of the display, or that a group of nodes be located close to each other, or that certain links must either go from top to bottom or left to right. Each of the above guidelines can be used to drive the algorithm design.">Khi thiết kế thuật toán vẽ bất kỳ sơ đồ nút–liên kết nào (không riêng gì cây), ta phải cân nhắc ba nhóm nguyên tắc thường mâu thuẫn với nhau: <em>quy ước vẽ</em>, <em>ràng buộc</em> và <em>tính thẩm mỹ</em>. Các quy ước có thể bao gồm việc giới hạn cạnh chỉ được là một đoạn thẳng đơn, một chuỗi các đoạn thẳng vuông góc, các đường gấp khúc đa giác, hoặc các đường cong. Những quy ước khác có thể là đặt các nút trên một lưới cố định, hoặc buộc mọi nút anh em phải có cùng vị trí theo phương dọc. Các ràng buộc có thể bao gồm yêu cầu một nút cụ thể phải nằm ở tâm màn hình, hoặc một nhóm nút phải được đặt gần nhau, hoặc một số liên kết nhất định bắt buộc phải đi từ trên xuống dưới hoặc từ trái sang phải. Mỗi nguyên tắc nêu trên đều có thể được dùng để dẫn dắt việc thiết kế thuật toán.</p>
+            <p class="book-p" data-en="Aesthetics, however, often have significant impact on the interpretability of a tree or graph drawing, yet often result in conflicting guidelines. Some typical aesthetic rules include:">Tuy nhiên, tính thẩm mỹ thường có tác động đáng kể đến khả năng diễn giải của một hình vẽ cây hay đồ thị, song lại thường dẫn đến những nguyên tắc xung đột nhau. Một số quy tắc thẩm mỹ điển hình bao gồm:</p>
+          </div>
+        </div>
+
+        <!-- Aesthetic Rules Bulleted List -->
+        <ul class="book-bullet-list">
+          <li data-en="minimize line crossings,">giảm thiểu số giao cắt đường,</li>
+          <li data-en="maintain a pleasing aspect ratio,">duy trì một tỉ lệ khung hình dễ nhìn,</li>
+          <li data-en="minimize the total area of the drawing,">giảm thiểu tổng diện tích của hình vẽ,</li>
+          <li data-en="minimize the total length of the edges,">giảm thiểu tổng độ dài các cạnh,</li>
+          <li data-en="minimize the number of bends in the edges,">giảm thiểu số điểm gấp khúc trên các cạnh,</li>
+          <li data-en="minimize the number of distinct angles or curvatures used,">giảm thiểu số lượng góc hoặc độ cong khác nhau được sử dụng,</li>
+          <li data-en="strive for a symmetric structure.">hướng tới một cấu trúc đối xứng.</li>
+        </ul>
+
+        <div class="marginalia-row" style="margin-top: 8px; margin-bottom: 4px;">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p no-indent" data-en="For trees, especially balanced ones, it is relatively easy to design algorithms that adhere to many, if not most, of these guidelines. For example, a simple tree drawing procedure is given below (sample output is shown in Figure 9.5):">Đối với cây, đặc biệt là cây cân bằng, việc thiết kế thuật toán tuân thủ nhiều — nếu không muốn nói là hầu hết — các nguyên tắc trên là tương đối dễ dàng. Chẳng hạn, một thủ tục vẽ cây đơn giản được trình bày dưới đây (kết quả mẫu được thể hiện ở Hình 9.5):</p>
+          </div>
+        </div>
+
+        <!-- Numbered procedure list (1 to 5) -->
+        <ol class="book-num-list">
+          <li data-en="Slice the drawing area into equal-height slabs, based on the depth of the tree.">Cắt vùng vẽ thành các dải có chiều cao bằng nhau, dựa trên độ sâu của cây.</li>
+          <li data-en="For each level of the tree, determine how many nodes need to be drawn.">Với mỗi tầng của cây, xác định cần vẽ bao nhiêu nút.</li>
+          <li data-en="Divide each slice into equal-sized rectangles based on the number of nodes at that level.">Chia mỗi dải thành các hình chữ nhật có kích thước bằng nhau, dựa trên số nút ở tầng đó.</li>
+          <li data-en="Draw each node in the center of its corresponding rectangle.">Vẽ mỗi nút vào tâm hình chữ nhật tương ứng của nó.</li>
+          <li data-en="Draw a link between the center-bottom of each node to the center-top of its child node(s).">Vẽ một liên kết từ điểm giữa cạnh dưới của mỗi nút đến điểm giữa cạnh trên của (các) nút con của nó.</li>
+        </ol>
+      </div>
+    </article>
+
+    <!-- ====================================================================
+         PAGE 325 (PDF PAGE 347) - Odd Page
+         ==================================================================== -->
+    <article class="book-page odd-page" id="page-325" data-page="325">
+      <!-- Running Header -->
+      <nav class="running-header" aria-label="Đầu trang 325">
+        <span class="header-text">9.1. Displaying Hierarchical Structures</span>
+        <span class="page-folio">325</span>
+      </nav>
+
+      <div class="page-body">
+        <!-- Figure 9.5: Node-Link Diagram -->
+        <section class="figure-block" id="fig-9-5" aria-labelledby="caption-9-5">
+          <div class="figure-single-centered fig-9-5">
+            <img src="assets/images/fig9-5-node-link.png" alt="Sơ đồ nút–liên kết đơn giản với khoảng cách đều nhau" width="280">
+          </div>
+          <div class="figure-caption-row" id="caption-9-5" style="margin-top: 14px;">
+            <div class="figure-label">Figure 9.5.</div>
+            <div class="figure-text" data-en="An example of visualizing hierarchies with a simple node-link diagram, using equal spacing per level.">Một ví dụ trực quan hóa cấu trúc phân cấp bằng sơ đồ nút–liên kết đơn giản, sử dụng khoảng cách đều nhau ở mỗi tầng.</div>
+          </div>
+        </section>
+
+        <div class="marginalia-row" style="margin-top: 18px; margin-bottom: 4px;">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p" style="text-indent: 1.7em;" data-en="Many enhancements can be made to this rather basic algorithm in order to improve space utilization and move child nodes closer to their parents. Some of these include:">Có thể thực hiện nhiều cải tiến cho thuật toán khá cơ bản này nhằm nâng cao hiệu quả sử dụng không gian và đưa các nút con lại gần nút cha hơn. Một số cải tiến đó gồm:</p>
+          </div>
+        </div>
+
+        <!-- Enhancements Bulleted List -->
+        <ul class="book-bullet-list">
+          <li data-en="Rather than using even spacing and centering, divide each level based on the number of terminal nodes belonging to each subtree.">Thay vì dùng khoảng cách đều và căn giữa, hãy chia mỗi tầng dựa trên số nút lá thuộc về mỗi cây con.</li>
+          <li data-en="Spread terminal nodes evenly across the drawing area and center parent nodes above them.">Trải đều các nút lá trên toàn vùng vẽ và căn các nút cha vào chính giữa, phía trên chúng.</li>
+          <li data-en="Add some buffer space between adjacent nonsibling nodes to emphasize relationships.">Thêm một khoảng đệm giữa các nút liền kề không phải anh em để làm nổi bật quan hệ.</li>
+          <li data-en="If possible, reorder the subtrees of a node to achieve more symmetry and balance.">Nếu có thể, sắp xếp lại thứ tự các cây con của một nút để đạt được độ đối xứng và cân đối cao hơn.</li>
+          <li data-en="Position the root node in the center of the display and lay out child nodes radially, rather than vertically.">Đặt nút gốc ở tâm màn hình và bố trí các nút con theo hướng xuyên tâm, thay vì theo phương dọc.</li>
+        </ul>
+
+        <div class="marginalia-row" style="margin-top: 10px;">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p" style="text-indent: 1.7em;" data-en="For large trees, a popular approach is to use the third dimension, supplemented with tools for rotation, translation, and zooming. Perhaps the most well-known of such techniques is called a cone tree [341]. In this layout, the children of a node are arranged radially at evenly spaced angles and then offset perpendicular to the plane. The two parameters critical to this process are the radius and offset distance; varying these influences the density of the display and the level of occlusion. Minimally, they should be set so that separate branches of the tree do not fall into the same section of 3D space. One method to ensure this is to have the radius inversely proportional to">Đối với những cây lớn, một hướng tiếp cận phổ biến là sử dụng chiều thứ ba, bổ sung thêm các công cụ xoay, tịnh tiến và thu phóng. Có lẽ kỹ thuật nổi tiếng nhất trong số đó được gọi là <em>cone tree</em> (cây hình nón) <span class="cite-ref">[341]</span>. Trong bố cục này, các nút con của một nút được sắp xếp theo hướng xuyên tâm tại những góc cách đều nhau, rồi được dịch chuyển theo phương vuông góc với mặt phẳng. Hai tham số then chốt của quá trình này là bán kính và khoảng dịch chuyển; thay đổi chúng sẽ ảnh hưởng đến mật độ của hình hiển thị và mức độ che khuất. Ở mức tối thiểu, chúng phải được đặt sao cho các nhánh riêng biệt của cây không rơi vào cùng một vùng của không gian ba chiều. Một cách để bảo đảm điều này là cho bán kính tỉ lệ nghịch với</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ====================================================================
+         PAGE 326 (PDF PAGE 348) - Even Page
+         ==================================================================== -->
+    <article class="book-page even-page" id="page-326" data-page="326">
+      <!-- Running Header -->
+      <nav class="running-header" aria-label="Đầu trang 326">
+        <span class="page-folio">326</span>
+        <span class="header-text">9. Visualization Techniques for Trees, Graphs, and Networks</span>
+      </nav>
+
+      <div class="page-body">
+        <!-- Figure 9.6: Cone Tree Display -->
+        <section class="figure-block" id="fig-9-6" aria-labelledby="caption-9-6">
+          <div class="figure-single-centered fig-9-6">
+            <img src="assets/images/fig9-6-cone-tree.png" alt="Mô hình hiển thị cấu trúc phân cấp bằng Cone Tree 3D" width="380">
+          </div>
+          <div class="figure-caption-row" id="caption-9-6" style="margin-top: 14px;">
+            <div class="figure-label">Figure 9.6.</div>
+            <div class="figure-text" data-en="An example of a hierarchy displayed with a cone tree [341]. (Image © 1991 Association of Computing Machinery. Reprinted by permission, courtesy of PARC, Inc.)">Một ví dụ về cấu trúc phân cấp được hiển thị bằng cone tree <span class="cite-ref">[341]</span>. (Hình ảnh © 1991 Association of Computing Machinery. In lại với sự cho phép, do PARC, Inc. cung cấp.)</div>
+          </div>
+        </section>
+
+        <!-- Concluding sentence of Section 9.1 -->
+        <div class="marginalia-row" style="margin-top: 24px;">
+          <div class="margin-col"></div>
+          <div class="main-col">
+            <p class="book-p no-indent" data-en="the depth of a node in the tree. In this manner, nodes close to the root are significantly separated, and those near the bottom of the tree are closer together. An example is shown in Figure 9.6.">độ sâu của nút trong cây. Theo cách đó, những nút gần nút gốc sẽ được tách xa nhau đáng kể, còn những nút ở gần đáy cây thì nằm sát nhau hơn. Một ví dụ được thể hiện ở Hình 9.6.</p>
+          </div>
+        </div>
+
+        <!-- Section 9.1 Completion note -->
+        <div class="marginalia-row" style="margin-top: 45px; border-top: 1px solid #e2e8f0; padding-top: 18px;">
+          <div class="margin-col">
+            <span style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase;">Kết thúc</span>
+          </div>
+          <div class="main-col">
+            <p style="font-family: var(--font-sans); font-size:12.5px; color:#64748b; line-height:1.5;">
+              Hết nội dung <strong>Mục 9.1 (Displaying Hierarchical Structures)</strong> thuộc phạm vi bài dịch giữa kỳ. Phần tiếp theo trong sách gốc là <em>Mục 9.2: Displaying Arbitrary Graphs/Networks</em>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Bilingual English Sentence Inspector Bar (Hover on any translated text) -->
+  <aside class="bilingual-preview-bar" id="bilingualPreviewBar" aria-live="polite">
+    <div class="en-heading">Bản gốc tiếng Anh đối chiếu:</div>
+    <div id="bilingualContent">...</div>
+  </aside>
+
+  <!-- Modal Drawer: Metadata, Guidelines & Full Glossary -->
+  <div class="modal-overlay" id="glossaryModal" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="modal-drawer">
+      <div class="drawer-header">
+        <h3 class="drawer-title" id="drawerTitle">Thông tin bản dịch &amp; Bảng đối chiếu thuật ngữ</h3>
+        <button class="drawer-close" id="drawerClose" aria-label="Đóng cửa sổ">&times;</button>
+      </div>
+      <div class="drawer-content">
+        <!-- Translator info -->
+        <section class="drawer-section">
+          <h4>Thông tin học liệu &amp; Bài dịch</h4>
+          <table class="meta-table">
+            <tbody>
+              <tr>
+                <td class="meta-label">Người dịch:</td>
+                <td><strong>Nguyễn Khắc Huy (R1)</strong></td>
+              </tr>
+              <tr>
+                <td class="meta-label">Học liệu:</td>
+                <td>Matthew O. Ward, Georges Grinstein, Daniel Keim — <em>Interactive Data Visualization: Foundations, Techniques, and Applications</em>, Second Edition. CRC Press.</td>
+              </tr>
+              <tr>
+                <td class="meta-label">Chương / Mục:</td>
+                <td>Chương 9: Mục 9.1 (Displaying Hierarchical Structures, gồm 9.1.1 &amp; 9.1.2)</td>
+              </tr>
+              <tr>
+                <td class="meta-label">Phạm vi trang:</td>
+                <td>Trang in 320–326 (tương ứng trang 342–348 trong file PDF)</td>
+              </tr>
+              <tr>
+                <td class="meta-label">Quy ước mã giả:</td>
+                <td>Giữ nguyên tiếng Anh (Hình 9.1 &amp; 9.3) theo chuẩn mã lệnh, dịch toàn bộ chú thích.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Glossary Table -->
+        <section class="drawer-section">
+          <h4>Bảng đối chiếu 23 thuật ngữ chuyên ngành</h4>
+          <table class="glossary-table">
+            <thead>
+              <tr>
+                <th>Thuật ngữ tiếng Anh gốc</th>
+                <th>Bản dịch tiếng Việt</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="term-en">hierarchy / hierarchical structure</td><td class="term-vi">cấu trúc phân cấp</td></tr>
+              <tr><td class="term-en">tree</td><td class="term-vi">cây</td></tr>
+              <tr><td class="term-en">node</td><td class="term-vi">nút</td></tr>
+              <tr><td class="term-en">edge</td><td class="term-vi">cạnh</td></tr>
+              <tr><td class="term-en">link</td><td class="term-vi">liên kết</td></tr>
+              <tr><td class="term-en">root node</td><td class="term-vi">nút gốc</td></tr>
+              <tr><td class="term-en">child node</td><td class="term-vi">nút con</td></tr>
+              <tr><td class="term-en">parent node</td><td class="term-vi">nút cha</td></tr>
+              <tr><td class="term-en">sibling node</td><td class="term-vi">nút anh em</td></tr>
+              <tr><td class="term-en">terminal node</td><td class="term-vi">nút lá</td></tr>
+              <tr><td class="term-en">intermediate node</td><td class="term-vi">nút trung gian</td></tr>
+              <tr><td class="term-en">subtree</td><td class="term-vi">cây con</td></tr>
+              <tr><td class="term-en">depth</td><td class="term-vi">độ sâu</td></tr>
+              <tr><td class="term-en">level</td><td class="term-vi">tầng</td></tr>
+              <tr><td class="term-en">space-filling</td><td class="term-vi">lấp đầy không gian</td></tr>
+              <tr><td class="term-en">non–space-filling</td><td class="term-vi">không lấp đầy không gian</td></tr>
+              <tr><td class="term-en">display space</td><td class="term-vi">không gian hiển thị</td></tr>
+              <tr><td class="term-en">juxtapositioning</td><td class="term-vi">phép đặt kề</td></tr>
+              <tr><td class="term-en">treemap</td><td class="term-vi">treemap</td></tr>
+              <tr><td class="term-en">squarified treemap</td><td class="term-vi">treemap vuông hóa</td></tr>
+              <tr><td class="term-en">nested treemap</td><td class="term-vi">treemap lồng nhau</td></tr>
+              <tr><td class="term-en">sunburst display</td><td class="term-vi">biểu đồ sunburst</td></tr>
+              <tr><td class="term-en">Venn diagram</td><td class="term-vi">biểu đồ Venn</td></tr>
+              <tr><td class="term-en">radial layout</td><td class="term-vi">bố cục xuyên tâm</td></tr>
+              <tr><td class="term-en">node-link diagram</td><td class="term-vi">sơ đồ nút–liên kết</td></tr>
+              <tr><td class="term-en">fan-out degree</td><td class="term-vi">bậc phân nhánh</td></tr>
+              <tr><td class="term-en">cone tree</td><td class="term-vi">cone tree (cây hình nón)</td></tr>
+              <tr><td class="term-en">drawing conventions</td><td class="term-vi">quy ước vẽ</td></tr>
+              <tr><td class="term-en">constraints</td><td class="term-vi">ràng buộc</td></tr>
+              <tr><td class="term-en">aesthetics</td><td class="term-vi">tính thẩm mỹ</td></tr>
+              <tr><td class="term-en">line crossings</td><td class="term-vi">giao cắt đường</td></tr>
+              <tr><td class="term-en">aspect ratio</td><td class="term-vi">tỉ lệ khung hình</td></tr>
+              <tr><td class="term-en">bends in the edges</td><td class="term-vi">điểm gấp khúc trên cạnh</td></tr>
+              <tr><td class="term-en">occlusion</td><td class="term-vi">sự che khuất</td></tr>
+              <tr><td class="term-en">pseudocode</td><td class="term-vi">mã giả</td></tr>
+              <tr><td class="term-en">binary tree</td><td class="term-vi">cây nhị phân</td></tr>
+              <tr><td class="term-en">balanced tree</td><td class="term-vi">cây cân bằng</td></tr>
+              <tr><td class="term-en">isomorphic</td><td class="term-vi">đẳng cấu</td></tr>
+              <tr><td class="term-en">cycle</td><td class="term-vi">chu trình</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/book.js"></script>
+</body>
+</html>
