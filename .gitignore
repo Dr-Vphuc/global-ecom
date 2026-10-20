@@ -49,6 +49,14 @@ env/
 # "Permission denied", chu khong chi bo qua mot file.
 ~$*
 
+# Mo hinh 3D va anh xuat ra tu notebooks/ — sinh lai duoc bang
+# src/export_cone_tree_glb.py va chay lai notebook, nen khong commit.
+# Rieng file .ipynb KHONG chan: de no hien trong git status cho ca nhom thay
+# va tu quyet dinh co dua vao repo hay khong.
+notebooks/exports/
+notebooks/*.pdf
+notebooks/*.png
+
 # He dieu hanh / IDE
 .DS_Store
 Thumbs.db

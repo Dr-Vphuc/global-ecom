@@ -20,5 +20,9 @@ plotly>=5.18
 matplotlib>=3.7
 kaleido>=0.2.1         # xuat bieu do plotly ra PNG/SVG cho bao cao LaTeX
 
+# Notebook (plotly can nbformat de hien bieu do trong notebook)
+ipykernel>=6.0
+nbformat>=4.2
+
 # Doc file phan cong
 openpyxl>=3.1

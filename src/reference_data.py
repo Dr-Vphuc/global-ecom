@@ -3,6 +3,7 @@
 
 Chứa:
   - COUNTRY_VI : ISO3 -> (tên tiếng Việt, vùng, châu lục)
+  - CONTINENT_VI, REGION_VI : tên tiếng Việt của châu lục và vùng trong COUNTRY_VI
   - ASEAN_ISO3 : danh sách mã nước ASEAN
   - FOCUS_ISO3 : nước được tô đậm trong biểu đồ (cột is_focus của nodes.csv)
   - NON_COUNTRY : các mã KHÔNG phải quốc gia thật
@@ -297,6 +298,25 @@ COUNTRY_VI = {
     # ----- Không phải quốc gia -----
     "USP": ("Đối tác dịch vụ không xác định", "Other", "Other"),
     "ANS": ("Quốc gia không khai báo", "Other", "Other"),
+}
+
+# Tên tiếng Việt của 2 tầng trên nước trong COUNTRY_VI (dùng cho cây địa lý của treemap).
+CONTINENT_VI = {
+    "Africa": "Châu Phi", "Asia": "Châu Á", "Americas": "Châu Mỹ", "Europe": "Châu Âu",
+    "Oceania": "Châu Đại Dương", "Antarctica": "Châu Nam Cực", "Other": "Không phải quốc gia",
+}
+REGION_VI = {
+    "South-East Asia": "Đông Nam Á", "East Asia": "Đông Á", "South Asia": "Nam Á",
+    "Central Asia": "Trung Á", "West Asia": "Tây Á",
+    "Northern Europe": "Bắc Âu", "Western Europe": "Tây Âu", "Eastern Europe": "Đông Âu",
+    "Southern Europe": "Nam Âu",
+    "Northern Africa": "Bắc Phi", "Western Africa": "Tây Phi", "Middle Africa": "Trung Phi",
+    "Eastern Africa": "Đông Phi", "Southern Africa": "Nam Phi",
+    "Northern America": "Bắc Mỹ", "Central America": "Trung Mỹ", "Caribbean": "Caribe",
+    "South America": "Nam Mỹ",
+    "Australia and New Zealand": "Úc và New Zealand", "Melanesia": "Melanesia",
+    "Micronesia": "Micronesia", "Polynesia": "Polynesia",
+    "Antarctica": "Vùng cực", "Other": "Không phải quốc gia",
 }
 
 
