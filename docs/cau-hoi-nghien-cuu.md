@@ -46,14 +46,22 @@ Philippines +0,76. Bán nhiều nhất khối, nhưng không bán thứ phức t
 
 **③ Ba thứ hạng lệch nhau — đó chính là câu chuyện.**
 
-| Việt Nam xếp hạng theo… | Hạng (trên 230 nước) |
-|---|---|
-| Giá trị xuất khẩu | **16** |
-| Số bạn hàng | 68 |
-| Độ phức tạp kinh tế (ECI) | 78 |
+| Việt Nam xếp hạng theo… | Hạng | Trên |
+|---|---|---|
+| Giá trị xuất khẩu | **16** | 231 nước trong mạng 2023 |
+| Số bạn hàng (bậc ra) | 66 | 231 nước trong mạng 2023 |
+| Độ phức tạp kinh tế (ECI) | 78 | 230 nước Atlas chấm ECI |
 
-Tiền thì hạng 16, mà mạng lưới và chất lượng hàng thì hạng gần 70–80.
+Tiền thì hạng 16, mà mạng lưới và chất lượng hàng thì hạng 66 và 78.
 Nhiều tiền chảy qua **ít kênh**, và là kênh của hàng chưa phức tạp.
+
+<small>Hai mẫu số khác nhau nên ghi riêng: bậc và giá trị đo trên đồ thị thương
+mại 2023 (231 nước), còn ECI lấy thẳng hạng của Atlas trên 230 nước họ chấm
+được. Bản nháp trước gộp cả ba vào "trên 230" là sai mẫu số. Hạng bạn hàng
+trước ghi 68, nay ghi 66: 166 bạn hàng là con số **ba nước cùng có**, nên khối
+đồng hạng đó chiếm chỗ 66–68. Lấy 66 theo quy ước hạng cạnh tranh — cùng điểm
+thì cùng hạng — là quy ước mà `src/compute_metrics.py` dùng cho mọi cột hạng.
+Đo lại bằng: `python src/compute_metrics.py`.</small>
 
 **④ Nhìn kỹ hơn nữa thì thấy vì sao.** Điện–điện tử chiếm **29,9%** xuất khẩu
 nhưng RCA chỉ 2,23. Hai nhóm phức tạp nhất bảng có RCA **dưới 1** — tức hiện diện
