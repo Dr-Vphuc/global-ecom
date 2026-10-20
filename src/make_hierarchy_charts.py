@@ -158,9 +158,10 @@ def build_nodes(tree, exports):
         values.append(0)  # plotly tự cộng từ con
         colors.append(R.SECTOR_PALETTE[sector_no])
         hovers.append(
-            "<b>%s</b><br>%.1f tỷ USD — %.1f%% tổng xuất khẩu<extra></extra>"
+            "<b>%s</b><br>%s — %s tổng xuất khẩu<extra></extra>"
             % (R.SECTOR_NAME_VI.get(sector_no, node["short"]),
-               sector_total[sid] / 1e9, sector_total[sid] / total * 100)
+               R.fmt_usd(sector_total[sid]),
+               R.fmt_pct(sector_total[sid] / total * 100))
         )
 
     # Tầng 2 — nhóm HS2
@@ -178,10 +179,10 @@ def build_nodes(tree, exports):
         values.append(v)
         colors.append(R.SECTOR_PALETTE[sector_no])
         hovers.append(
-            "<b>%s</b> (HS %s)<br>%.1f tỷ USD — %.1f%% tổng xuất khẩu"
+            "<b>%s</b> (HS %s)<br>%s — %s tổng xuất khẩu"
             "<br>Ngành: %s<extra></extra>"
             % (R.HS2_NAME_VI.get(node["code"], node["name"]), node["code"],
-               v / 1e9, v / total * 100,
+               R.fmt_usd(v), R.fmt_pct(v / total * 100),
                R.SECTOR_NAME_VI.get(sector_no, ""))
         )
 
@@ -194,10 +195,12 @@ def build_nodes(tree, exports):
     for i, (lab, val) in enumerate(zip(labels, values)):
         if i < n_sectors:
             sid = int(ids[i][1:])
-            texts.append("<b>%s</b><br>%.1f%%" % (lab, sector_total[sid] / total * 100))
+            texts.append("<b>%s</b><br>%s"
+                         % (lab, R.fmt_pct(sector_total[sid] / total * 100)))
         else:
             share = val / total * 100
-            texts.append("<b>%s</b><br>%.1f%%" % (lab, share) if share >= LABEL_MIN_SHARE else "")
+            texts.append("<b>%s</b><br>%s" % (lab, R.fmt_pct(share))
+                         if share >= LABEL_MIN_SHARE else "")
 
     return dict(ids=ids, labels=labels, parents=parents, values=values,
                 colors=colors, hovers=hovers, texts=texts, total=total,
@@ -212,6 +215,10 @@ def _layout(title, subtitle):
             x=0.01, xanchor="left", font=dict(size=R.FONT_SIZES["title"] + 4),
         ),
         font=dict(family=", ".join(R.FONT_STACK), size=R.FONT_SIZES["legend"]),
+        # Dấu thập phân và dấu phân nhóm cho MỌI con số plotly TỰ định dạng:
+        # vạch trục, %{...:.1f} trong hovertemplate. fmt_vn chỉ lo những chuỗi
+        # Python dựng sẵn; chuỗi nào plotly dựng thì nằm ở đây.
+        separators=",.",
         margin=dict(t=85, l=8, r=8, b=28),
         paper_bgcolor="#FFFFFF",
         annotations=[dict(
@@ -293,7 +300,7 @@ def main():
     print("Đọc xuất khẩu %s năm %d..." % (args.country, args.year))
     exports = load_exports(args.country, args.year)
     d = build_nodes(tree, exports)
-    print("  %d nhóm hàng có xuất khẩu, tổng %.1f tỷ USD" % (len(exports), d["total"] / 1e9))
+    print("  %d nhóm hàng có xuất khẩu, tổng %s" % (len(exports), R.fmt_usd(d["total"])))
 
     print("Dựng biểu đồ:")
     save(make_treemap(d, country_vi, args.year), "treemap_%s_%d" % (args.country.lower(), args.year))
