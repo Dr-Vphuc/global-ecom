@@ -12,6 +12,8 @@ Phân công chi tiết, hợp đồng dữ liệu và tiến độ nằm trong `
 phát hiện đã đo được, mọi quyết định đã chốt kèm lý do, và năm hạn chế phải nêu
 thẳng. README này chỉ nói cách chạy repo.
 
+📌 **Muốn biết đã làm được gì, ai làm, sản phẩm nằm ở file nào → `docs/nhat-ky-cong-viec.md`.**
+
 ---
 
 ## Dữ liệu thô: đã sửa, và bài học
@@ -235,7 +237,13 @@ global-ecom/
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
-├── docs/             # phát hiện, quyết định, nguồn dữ liệu, kiến thức nền
+├── docs/
+│   ├── nhat-ky-cong-viec.md        # đã làm gì, nằm ở đâu — mở trước khi soạn slide
+│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A9, quyết định B1–B12, hạn chế D1–D5
+│   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
+│   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
+│   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
+│   └── kien-thuc-nen-tang.md       # kiến thức kinh tế tối thiểu để đọc số
 ├── .report/          # báo cáo LaTeX
 └── phan-cong-cong-viec.xlsx
 ```
