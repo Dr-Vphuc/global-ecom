@@ -3,6 +3,7 @@
 
 Chứa:
   - COUNTRY_VI : ISO3 -> (tên tiếng Việt, vùng, châu lục)
+  - CONTINENT_VI, REGION_VI : tên tiếng Việt của châu lục và vùng trong COUNTRY_VI
   - ASEAN_ISO3 : danh sách mã nước ASEAN
   - FOCUS_ISO3 : nước được tô đậm trong biểu đồ (cột is_focus của nodes.csv)
   - NON_COUNTRY : các mã KHÔNG phải quốc gia thật
@@ -299,6 +300,25 @@ COUNTRY_VI = {
     "ANS": ("Quốc gia không khai báo", "Other", "Other"),
 }
 
+# Tên tiếng Việt của 2 tầng trên nước trong COUNTRY_VI (dùng cho cây địa lý của treemap).
+CONTINENT_VI = {
+    "Africa": "Châu Phi", "Asia": "Châu Á", "Americas": "Châu Mỹ", "Europe": "Châu Âu",
+    "Oceania": "Châu Đại Dương", "Antarctica": "Châu Nam Cực", "Other": "Không phải quốc gia",
+}
+REGION_VI = {
+    "South-East Asia": "Đông Nam Á", "East Asia": "Đông Á", "South Asia": "Nam Á",
+    "Central Asia": "Trung Á", "West Asia": "Tây Á",
+    "Northern Europe": "Bắc Âu", "Western Europe": "Tây Âu", "Eastern Europe": "Đông Âu",
+    "Southern Europe": "Nam Âu",
+    "Northern Africa": "Bắc Phi", "Western Africa": "Tây Phi", "Middle Africa": "Trung Phi",
+    "Eastern Africa": "Đông Phi", "Southern Africa": "Nam Phi",
+    "Northern America": "Bắc Mỹ", "Central America": "Trung Mỹ", "Caribbean": "Caribe",
+    "South America": "Nam Mỹ",
+    "Australia and New Zealand": "Úc và New Zealand", "Melanesia": "Melanesia",
+    "Micronesia": "Micronesia", "Polynesia": "Polynesia",
+    "Antarctica": "Vùng cực", "Other": "Không phải quốc gia",
+}
+
 
 # ---------------------------------------------------------------------------
 # Bảng màu 10 ngành cấp 1 HS92 — ĐÃ CHỐT ở T04.
@@ -413,6 +433,54 @@ FONT_SIZES = {
     "annotation": 8,
     "footnote": 7,    # dòng nguồn dữ liệu dưới cùng
 }
+
+# ---------------------------------------------------------------------------
+# Định dạng số theo kiểu Việt Nam — T04, mục 6.3 của docs/style-guide.md.
+#
+# Dấu PHẨY là dấu thập phân, dấu CHẤM phân nhóm nghìn: 27.535 cạnh, 385,5 tỷ
+# USD, 0,518. Python in ngược lại ("%.1f" % 385.5 -> "385.5"), nên mọi con số
+# hiện trên hình phải đi qua ba hàm dưới đây.
+#
+# Vì sao để ở đây chứ không để mỗi script tự lo: style guide đặt ra quy tắc
+# nhưng trước đó không cấp hàm nào để làm theo, nên script nào cũng phải tự
+# nghĩ cách — và cách dễ nhất là %.1f, tức là sai. Quy tắc không có công cụ đi
+# kèm thì chỉ là lời khuyên.
+#
+# Không dùng locale: locale("vi_VN") không chắc có trên máy người khác, và nó
+# là trạng thái toàn cục — một thư viện khác đổi locale là số in ra đổi theo.
+# ---------------------------------------------------------------------------
+def fmt_vn(x, nd=1):
+    """Số thành chuỗi kiểu Việt Nam. fmt_vn(27535, 0) -> '27.535'."""
+    s = "%.*f" % (nd, x)
+    am = s.startswith("-")
+    if am:
+        s = s[1:]
+    nguyen, _, le = s.partition(".")
+    nhom = []
+    while len(nguyen) > 3:
+        nhom.insert(0, nguyen[-3:])
+        nguyen = nguyen[:-3]
+    nhom.insert(0, nguyen)
+    s = ".".join(nhom) + ("," + le if le else "")
+    return ("-" + s) if am else s
+
+
+def fmt_pct(x, nd=1):
+    """Phần trăm. fmt_pct(29.94) -> '29,9%'. Nhận SỐ PHẦN TRĂM, không phải tỉ lệ."""
+    return fmt_vn(x, nd) + "%"
+
+
+def fmt_usd(usd, nd=1):
+    """Tiền, nhận USD thô. Dưới 1.000 tỷ ghi 'tỷ USD', từ đó trở lên 'nghìn tỷ USD'.
+
+    fmt_usd(385_539_000_000) -> '385,5 tỷ USD'
+    fmt_usd(21_810_000_000_000, 2) -> '21,81 nghìn tỷ USD'
+    """
+    ty = usd / 1e9
+    if abs(ty) < 1000:
+        return fmt_vn(ty, nd) + " tỷ USD"
+    return fmt_vn(ty / 1000.0, nd) + " nghìn tỷ USD"
+
 
 # Các mốc thời gian dùng cho small multiples (T20).
 MILESTONE_YEARS = [1995, 2005, 2015, 2023]

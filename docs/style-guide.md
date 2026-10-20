@@ -165,8 +165,19 @@ Ma trận kề (T16) là ngoại lệ: vuông, 6,30 × 6,30.
    Ví dụ: *"Xuất khẩu 2023, tỷ USD, 97 nhóm hàng HS92 cấp 2"*.
 3. **Số theo kiểu Việt Nam**: dấu phẩy thập phân, dấu chấm phân nhóm nghìn —
    `27.535 cạnh`, `385,5 tỷ USD`, `0,518`. Không viết `27,535` hay `385.5`.
+   **Dùng hàm, đừng tự định dạng** — `"%.1f" % x` của Python ra dấu chấm, tức
+   là sai:
+
+   ```python
+   from reference_data import fmt_vn, fmt_pct, fmt_usd
+   fmt_vn(27535, 0)              # '27.535'
+   fmt_vn(0.5183, 3)             # '0,518'
+   fmt_pct(29.94)                # '29,9%'
+   fmt_usd(385_539_000_000)      # '385,5 tỷ USD'
+   fmt_usd(21_810_000_000_000, 2)  # '21,81 nghìn tỷ USD'
+   ```
 4. **Đơn vị tiền**: dưới 1.000 tỷ thì "tỷ USD", trên thì "nghìn tỷ USD".
-   Không dùng "billion", "trillion", "tr.USD".
+   Không dùng "billion", "trillion", "tr.USD". `fmt_usd()` tự chọn đơn vị.
 5. **Nhãn đặt thẳng vào hình** thay cho chú giải, khi còn chỗ. Chú giải bắt
    người đọc liếc qua liếc lại.
 6. **Dòng nguồn dưới cùng mọi hình**:
@@ -184,7 +195,8 @@ Ma trận kề (T16) là ngoại lệ: vuông, 6,30 × 6,30.
 - [ ] Mảng tô có viền trắng 1px
 - [ ] Tiêu đề là một câu nói kết luận
 - [ ] Có năm, có đơn vị, có dòng nguồn
-- [ ] Số viết theo kiểu Việt Nam
+- [ ] Số viết theo kiểu Việt Nam — qua `fmt_vn` / `fmt_pct` / `fmt_usd`,
+      không `%.1f`
 - [ ] Việt Nam được làm nổi bằng viền / độ dày, không bằng màu riêng
 - [ ] Nếu là dữ liệu giả: đã ghi cảnh báo lên hình
 - [ ] Chữ nhỏ nhất trong hình ≥ 7pt sau khi xuất

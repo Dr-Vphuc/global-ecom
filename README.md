@@ -228,7 +228,9 @@ global-ecom/
 │   ├── build_intermediate.py  # atlas/ -> processed/ (5 file)
 │   ├── analyze_network.py     # thống kê mạng + ngưỡng lọc (T09, T10)
 │   ├── make_mock.py           # sinh dữ liệu giả (T05)
-│   └── check_palette.py       # kiểm định bảng màu: mù màu, tương phản (T04)
+│   ├── check_palette.py       # kiểm định bảng màu: mù màu, tương phản (T04)
+│   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
+│   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/             # phát hiện, quyết định, nguồn dữ liệu, kiến thức nền
 ├── .report/          # báo cáo LaTeX
 └── phan-cong-cong-viec.xlsx
@@ -246,6 +248,26 @@ python src/analyze_network.py       # 3. thống kê mạng + bảng ngưỡng (
 python src/make_mock.py             # 4. sinh dữ liệu giả để vẽ song song
 python src/check_palette.py         # 5. kiểm định bảng màu (T04), thoát 1 nếu hỏng
 ```
+
+### Hai script cho slide, không thuộc pipeline
+
+Dùng cho mục "cây nón 3D" của bài thuyết trình, chạy riêng khi cần:
+
+```bash
+python src/export_cone_tree_glb.py notebooks/exports   # cần numpy + pandas
+python src/pptx_flat_3d_lighting.py slide.pptx --glb notebooks/exports/cone_tree.glb
+```
+
+`export_cone_tree_glb.py` xuất cây nón ASEAN (10 nước × 10 ngành) ra một file
+`.glb` để chèn vào PowerPoint bằng *Chèn > Mô hình 3D*. Màu lá lấy từ
+`SECTOR_PALETTE`. Vật liệu đặt màu ở `emissive`, `baseColor` đen và
+`metallic = 1` nên không phản chiếu đèn.
+
+`pptx_flat_3d_lighting.py` xử lý một chuyện PowerPoint không cho tắt trong
+giao diện: mỗi mô hình 3D bị tự gắn ba đèn điểm `am3d:ptLight` tạo vùng lóa
+trên hình cầu. Script xóa các phần tử đó trong `ppt/slides/slideN.xml`, giữ
+đèn môi trường, và ghi ra file mới — **không ghi đè file gốc**. Chỉ dùng thư
+viện chuẩn.
 
 ### File sinh ra trong `data/processed/`
 
