@@ -227,8 +227,12 @@ global-ecom/
 │   ├── reference_data.py      # tên nước tiếng Việt, vùng, hằng số chung
 │   ├── build_intermediate.py  # atlas/ -> processed/ (5 file)
 │   ├── analyze_network.py     # thống kê mạng + ngưỡng lọc (T09, T10)
+│   ├── check_tree.py          # kiểm toàn vẹn cây HS92 (T11)
 │   ├── make_mock.py           # sinh dữ liệu giả (T05)
 │   ├── check_palette.py       # kiểm định bảng màu: mù màu, tương phản (T04)
+│   ├── compute_metrics.py     # bậc, độ mạnh, betweenness, cộng đồng (T18)
+│   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
+│   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/             # phát hiện, quyết định, nguồn dữ liệu, kiến thức nền
@@ -281,14 +285,45 @@ viện chuẩn.
 | `network_stats.csv` | mỗi năm một dòng: nút, cạnh, mật độ, đối ứng, Gini | 30 |
 | `degree_distribution.csv` | phân bố bậc dạng dài, có `ccdf` — sẵn cho log-log | 1.094 |
 | `threshold_coverage.csv` | 21 phương án lọc cạnh, bằng chứng cho T10 | 21 |
+| `metrics.csv` | chỉ số mạng theo nước, mỗi nước 2 dòng — xem dưới | 304 |
+| `metrics_top20.csv` | top 20 nước xuất khẩu kèm chỉ số mạng, cho báo cáo | 20 |
 
-Cả tám file đều bị `.gitignore` loại trừ — sinh lại bằng lệnh trên, không commit.
+Cả mười file đều bị `.gitignore` loại trừ — sinh lại bằng lệnh trên, không commit.
 
-Phần phân tích mạng và vẽ biểu đồ cần thư viện ngoài:
+## Biểu đồ và chỉ số — cần thư viện ngoài
 
 ```bash
 python -m pip install -r requirements.txt
+
+python src/check_tree.py              # T11 kiểm cây HS92, thoát 1 nếu cây hỏng
+python src/compute_metrics.py         # T18 metrics.csv + bảng top 20
+python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
+python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 ```
+
+Biểu đồ ra `output/` dưới hai dạng `.html` và `.png`; thư mục này bị
+`.gitignore` loại trừ.
+
+### `metrics.csv` có hai dòng cho mỗi nước
+
+Mạng đầy đủ năm 2023 có mật độ **0,518** — quá nửa số cặp nước trên đời có
+thương mại trực tiếp. Trên một đồ thị dày như thế, gần như không đường đi ngắn
+nhất nào phải vòng qua nước thứ ba, nên **betweenness sụp về 0 ở 74,5% số
+nước**: nó không còn đo được gì. Vì vậy cột `graph` phân biệt hai đồ thị:
+
+| `graph` | Là gì | Lấy gì từ đó |
+|---|---|---|
+| `full` | toàn bộ 27.535 cạnh | **độ mạnh** (tiền) và thị phần thế giới |
+| `filtered` | 416 cạnh qua ngưỡng T10 | **betweenness và cộng đồng** — đây đúng là đồ thị T15–T17 sẽ vẽ |
+
+Hệ quả phải nhớ: `strength_out` ở dòng `filtered` là con số **đã bị cắt cụt**,
+không phải kim ngạch xuất khẩu. Muốn tiền thì lấy dòng `full` — cột
+`world_export_share` cố tình để rỗng ở dòng `filtered` để không ai dán nhầm.
+
+Cộng đồng dò bằng Louvain trên bản vô hướng, hạt giống cố định `--seed 42`.
+Script tự chạy lại 20 hạt giống khác để báo độ ổn định; với năm 2023 phân hoạch
+**ổn định tuyệt đối** — 3 cụm, modularity 0,337, 100% số cặp nước giữ nguyên
+quan hệ cùng cụm hay khác cụm.
 
 ## Tải dữ liệu thô
 

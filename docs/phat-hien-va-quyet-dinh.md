@@ -202,6 +202,88 @@ hiện cũng đáng kể lại: không phải nhìn một năm, mà nhìn **hìn
 chuỗi**, thấy một cú gãy không khớp với bất kỳ sự kiện kinh tế nào, rồi lần
 ngược về file thô để xác nhận.
 
+### A7. Betweenness đo được gì, và nó phụ thuộc vào một lựa chọn tùy ý
+
+`data/processed/metrics.csv` · `src/compute_metrics.py`
+
+Hệ quả trực tiếp của A3. Mật độ 0,518 nghĩa là quá nửa số cặp nước đã nối
+thẳng, nên gần như không đường đi ngắn nhất nào phải vòng qua nước thứ ba:
+
+| | Mạng đầy đủ | Mạng đã lọc |
+|---|---|---|
+| Nút / cạnh | 231 / 27.535 | 73 / 416 |
+| Số nước có betweenness = 0 | **172 (74,5%)** | 58 (79,5%) |
+
+**Trên mạng đầy đủ, betweenness gần như không phân biệt được ai với ai.** Nên
+mọi chỉ số cấu trúc của đồ án tính trên **mạng đã lọc** — cũng chính là mạng
+T15–T17 sẽ vẽ, nên số trong bảng khớp được với hình. Riêng **độ mạnh (tiền)
+vẫn phải lấy từ mạng đầy đủ**: kim ngạch xuất khẩu là đại lượng có thật, không
+được phụ thuộc vào ngưỡng do ta tự chọn.
+
+Chỗ thứ hai đáng nói hơn. networkx hiểu trọng số là **khoảng cách**, mà giá trị
+thương mại thì ngược lại, nên phải nghịch đảo — và **chính phép nghịch đảo đó
+đổi kết luận**:
+
+| | Số nước có betweenness > 0 | Việt Nam |
+|---|---|---|
+| Có trọng số (1/giá trị) | 15 / 73 | **0,000** |
+| Không trọng số | 37 / 73 | 0,005 — hạng 15/73 |
+
+Có trọng số thì mọi đường ngắn nhất dồn hết vào ba luồng khổng lồ (CHN 0,550 ·
+DEU 0,304 · USA 0,200) và Việt Nam **đúng bằng 0**; bỏ trọng số thì Việt Nam là
+một cầu nối nhỏ nhưng có thật. Hai con số đều đúng, chúng trả lời hai câu hỏi
+khác nhau. `metrics.csv` giữ **cả hai cột**, và bất kỳ hình hay câu nào dùng
+betweenness đều phải ghi rõ đang dùng cột nào.
+
+Kèm theo đó: hạng betweenness đọc một mình là **bẫy**. Việt Nam "hạng 16/73"
+nghe như đứng thứ 16, thật ra là đồng hạng với 57 nước cùng bằng 0. Nên
+`metrics.csv` có luôn cột `n_tied_betweenness`.
+
+### A8. ASEAN không hiện ra như một cộng đồng
+
+`data/processed/metrics.csv` · Louvain, `--seed 42`
+
+Phân hoạch **ổn định tuyệt đối**: 20 hạt giống khác nhau đều ra 3 cụm,
+modularity 0,337, 100% số cặp nước giữ nguyên quan hệ cùng cụm hay khác cụm.
+Nên kết quả dưới đây không phải may rủi của một lần chạy.
+
+**Cả 10 nước ASEAN rơi vào cùng một cụm — cụm 0 — chung với Trung Quốc, Nhật
+Bản, Hàn Quốc, Ấn Độ, vùng Vịnh và Úc.** Thuật toán không tìm thấy ASEAN. Nó
+tìm thấy một khối Á–Thái Bình Dương lấy Trung Quốc làm tâm, và ASEAN tan vào
+trong đó.
+
+Đo thẳng trên `edges.csv` thì thấy vì sao: trong 385,5 tỷ USD Việt Nam xuất năm
+2023, chỉ **7,8%** đi sang 9 nước ASEAN còn lại, trong khi **ba thị trường đầu
+chiếm 52,4%** (Hoa Kỳ 95,2 tỷ · Trung Quốc 86,1 tỷ · Hàn Quốc 20,8 tỷ). Láng
+giềng về địa lý, không phải láng giềng về thương mại.
+
+**Hệ quả cho hình vẽ.** Tô màu theo cụm ở T15 sẽ **không** làm ASEAN nổi lên —
+cả khối chìm trong một màu cùng Trung Quốc. Việt Nam phải được làm nổi bằng
+viền đậm theo quyết định B12, chứ không trông cậy vào màu cụm.
+
+### A9. Tiền tăng gấp đôi, số kênh thì ít đi
+
+`data/processed/edges.csv` · so 2015 với 2023
+
+| Việt Nam | 2015 | 2023 | |
+|---|---|---|---|
+| Xuất khẩu | 169,4 tỷ USD | 385,5 tỷ USD | **×2,28** |
+| Số bạn hàng xuất | 181 | 166 | **−15** |
+
+Con số −15 chỉ có nghĩa khi đặt cạnh phần còn lại của thế giới, nên đã đếm:
+trong 230 nước có mặt cả hai năm, **130 nước tăng** số bạn hàng, 85 giảm, 15
+giữ nguyên; **trung vị là +1**. Mạng nói chung dày thêm (27.323 → 27.535 cạnh).
+Việt Nam đi **ngược** xu thế đó.
+
+Đây không phải lỗ hổng dữ liệu — nếu Atlas bỏ sót nước nhỏ thì cả bảng cùng
+giảm, mà thực tế đa số tăng. Và nó nói đúng câu trung tâm của báo cáo bằng một
+cặp số duy nhất: **gấp 2,28 lần tiền, qua ít kênh hơn 15 kênh.** Dùng được
+thẳng cho T20 (small multiples theo thời gian).
+
+Chưa trả lời được **vì sao**: dữ liệu này không cho biết mất bạn hàng nào, hay
+mất vì thương mại thật sự dừng hay vì dồn qua trung gian. Nếu viết vào báo cáo
+thì viết đúng phần đo được, đừng đoán phần còn lại.
+
 ---
 
 ## B. Quyết định đã chốt
