@@ -100,8 +100,8 @@ def main():
         name = R.COUNTRY_VI.get(iso, (iso,))[0]
         mark = "  ◆" if iso == "VNM" else ""
         titles.append("<b>%s</b>%s<br><span style='font-size:%dpx;color:#666'>"
-                      "%.1f tỷ USD</span>"
-                      % (name, mark, R.FONT_SIZES["footnote"], total / 1e9))
+                      "%s</span>"
+                      % (name, mark, R.FONT_SIZES["footnote"], R.fmt_usd(total)))
 
     fig = make_subplots(
         rows=rows_n, cols=cols,
@@ -124,12 +124,16 @@ def main():
             ),
             # Nhãn chỉ hiện khi ngành chiếm từ 6% trở lên: ở kích thước một phần
             # tư màn hình, dưới ngưỡng đó chữ không còn đọc được.
-            text=["<b>%s</b><br>%.0f%%" % (x["name"], x["share"]) if x["share"] >= 6 else ""
-                  for x in rows],
+            text=["<b>%s</b><br>%s" % (x["name"], R.fmt_pct(x["share"], 0))
+                  if x["share"] >= 6 else "" for x in rows],
             texttemplate="%{text}",
             textposition="middle center",
-            hovertemplate=("<b>%{label}</b><br>%{value:.3s} USD — %{percentRoot:.1%}"
-                           "<extra></extra>"),
+            # Hover dựng sẵn từng ô, không để plotly tự định dạng: %{value:.3s}
+            # ra "18.4G USD" — sai dấu thập phân, và dùng tiền tố SI mà mục 6.4
+            # của style guide không cho dùng.
+            hovertemplate=["<b>%s</b><br>%s — %s tổng xuất khẩu<extra></extra>"
+                           % (x["name"], R.fmt_usd(x["value"]), R.fmt_pct(x["share"]))
+                           for x in rows],
             tiling=dict(packing="squarify"),
             sort=True,
         ), row=r, col=c)
@@ -146,6 +150,7 @@ def main():
             x=0.01, xanchor="left", font=dict(size=R.FONT_SIZES["title"] + 4),
         ),
         font=dict(family=", ".join(R.FONT_STACK), size=R.FONT_SIZES["legend"]),
+        separators=",.",
         margin=dict(t=110, l=8, r=8, b=34),
         paper_bgcolor="#FFFFFF",
     )
@@ -175,8 +180,8 @@ def main():
     print("\nCơ cấu theo ngành, %d:" % args.year)
     for iso, rows, total in panels:
         top = rows[0]
-        print("  %-4s %7.1f tỷ  — lớn nhất: %-28s %4.1f%%"
-              % (iso, total / 1e9, top["name"], top["share"]))
+        print("  %-4s %14s  — lớn nhất: %-28s %6s"
+              % (iso, R.fmt_usd(total), top["name"], R.fmt_pct(top["share"])))
 
     # Hai con số đỡ cho tiêu đề. In ra để bất kỳ ai cũng kiểm lại được bằng
     # chính script này, thay vì phải tin vào câu tiêu đề.
@@ -186,15 +191,16 @@ def main():
     print("\nNgành 1 (dệt may, giày dép, nội thất) — cơ sở của tiêu đề:")
     rank = sorted(share_of, key=lambda c: -share_of[c].get(TEXTILE, 0))
     for iso in rank:
-        print("  %-4s %5.1f%%" % (iso, share_of[iso].get(TEXTILE, 0)))
+        print("  %-4s %6s" % (iso, R.fmt_pct(share_of[iso].get(TEXTILE, 0))))
     if len(rank) >= 2:
         a, b = share_of[rank[0]].get(TEXTILE, 0), share_of[rank[1]].get(TEXTILE, 0)
         if b > 0:
-            print("  -> %s gấp %.1f lần %s" % (rank[0], a / b, rank[1]))
+            print("  -> %s gấp %s lần %s" % (rank[0], R.fmt_vn(a / b), rank[1]))
 
     print("\nTổng bốn ngành chế tạo (dệt may, vận tải, máy móc, điện tử):")
     for iso in sorted(share_of, key=lambda c: -sum(share_of[c].get(n, 0) for n in MANUF)):
-        print("  %-4s %5.1f%%" % (iso, sum(share_of[iso].get(n, 0) for n in MANUF)))
+        print("  %-4s %6s"
+              % (iso, R.fmt_pct(sum(share_of[iso].get(n, 0) for n in MANUF))))
 
 
 if __name__ == "__main__":
