@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 21/10/2026** · 15/30 việc Xong · `main` ở commit `bff256d` (gộp PR #12)
+**Cập nhật 21/10/2026** · 15/30 việc Xong · `main` ở commit `fdc1798` (gộp PR #13)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -8,7 +8,8 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A9), chốt điều gì (B1–B12) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A9), chốt điều gì (B1–B14) | `docs/phat-hien-va-quyet-dinh.md` |
+| Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
 | Chạy lại pipeline thế nào, số liệu đã đo | `README.md` |
 | Câu hỏi nghiên cứu, thông điệp, đối tượng | `docs/cau-hoi-nghien-cuu.md` |
 | Màu, font, cỡ hình, quy ước nhãn | `docs/style-guide.md` |
@@ -113,6 +114,8 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | 20/10 | #10 | chỉ số mạng theo nước, trên **hai** đồ thị; phát hiện A7, A8, A9 | T18 |
 | 20/10 | #11 | **sổ nhật ký công việc** (chính sổ này); README chỉ đường sang nó | — |
 | 21/10 | #12 | biểu đồ log-log phân bố bậc + ba con số bác giả thuyết scale-free; A3 thêm mức lệch 1995 | T09 |
+| 21/10 | #13 | node-link mạng đã lọc (271 cặp nước); **bảng màu cụm riêng** đã qua kiểm mù màu; B13, B14 | T15 |
+| 21/10 | #14 | `CLAUDE.md` + skill `/viec-tiep`: mọi context mới tự biết luật repo và chuẩn "hình thế nào là xong" | — |
 
 ¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
