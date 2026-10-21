@@ -90,6 +90,14 @@ người mù màu phân biệt. ΔE nhỏ nhất tụt từ **11,6 xuống 2,1**
 
 1. **Màu = ngành hàng. Chỉ thế thôi.** Không dùng lại 10 màu này để chỉ vùng
    địa lý, cụm Louvain hay bất cứ thứ gì khác trong cùng một bài.
+
+   Thứ gì cần màu mà không phải ngành thì **mở bảng riêng, và bảng riêng cũng
+   phải qua đúng bộ kiểm này**. Hiện có một bảng như thế: `COMMUNITY_PALETTE`
+   — 3 màu cho cụm Louvain ở node-link T15, khóa theo *thứ hạng cỡ cụm* chứ
+   không theo số hiệu Louvain. Đã đo: ΔE nhỏ nhất trong bảng 24,7 mắt thường
+   và 13,5 ở dạng mù màu khó nhất, còn khoảng cách tới màu ngành gần nhất là
+   **20,0** — đủ xa để không ai tưởng một cụm là một ngành. Chạy
+   `python src/check_palette.py` là thấy cả hai bảng cùng lúc.
 2. **Mảng tô luôn có viền trắng 1px.** Bắt buộc với bốn màu nhạt, nên làm với
    cả mười cho đồng bộ.
 3. **Làm nổi Việt Nam bằng hình dạng, không bằng màu.**

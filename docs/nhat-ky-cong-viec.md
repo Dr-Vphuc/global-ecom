@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 21/10/2026** · 14/30 việc Xong · `main` ở commit `8ddf70d` (gộp PR #11)
+**Cập nhật 21/10/2026** · 15/30 việc Xong · `main` ở commit `bff256d` (gộp PR #12)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -67,14 +67,14 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T10 | Chốt ngưỡng lọc cạnh, biện minh bằng số | Xong | `threshold_coverage.csv`, quy tắc ở README §"Quy tắc lọc cạnh" |
 | T11 | Kiểm chất lượng cây HS92 4 tầng | Xong | `src/check_tree.py` |
 
-### Giai đoạn 3 — Trực quan hóa (4/10 Xong)
+### Giai đoạn 3 — Trực quan hóa (5/10 Xong)
 
 | Mã | Việc | Trạng thái | Sản phẩm thật |
 |---|---|---|---|
 | T12 | Treemap cơ cấu xuất khẩu VN, 2 mốc | Xong | `src/make_hierarchy_charts.py --year 1995\|2023` → `output/treemap_vnm_1995.*`, `_2023.*` |
 | T13 | Sunburst 4 tầng cây sản phẩm | Xong | cùng script → `output/sunburst_vnm_1995.*`, `_2023.*` |
 | T14 | Small multiples so VN với Thái–Mã–Indo | Xong | `src/make_small_multiples.py` → `output/small_multiples_vnm-tha-mys-idn_2023.*` |
-| T15 | Node-link mạng đã lọc, mã hóa bậc + cộng đồng | **Chưa** | — (T18 đã mở đường: có bậc và cộng đồng để mã hóa) |
+| T15 | Node-link mạng đã lọc, mã hóa bậc + cộng đồng | Xong | `src/make_node_link.py` → `output/node_link_2023.*` · bảng màu cụm mới ở `reference_data.py`, kiểm bằng `check_palette.py` |
 | T16 | Hai ma trận kề, một theo alphabet một theo cụm | **Chưa** | — (thứ tự cụm lấy ở `metrics.csv` dòng `filtered`) |
 | T17 | Chord diagram giữa các khối, VN làm trọng tâm | **Chưa** | — |
 | T18 | Chỉ số mạng: bậc, độ mạnh, betweenness, cộng đồng | Xong | `src/compute_metrics.py` → `metrics.csv` (304 dòng), `metrics_top20.csv` |
@@ -112,6 +112,7 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | 20/10 | #9 | 13 chỗ in số trên 4 biểu đồ đầu đi qua hàm định dạng | tiền đề cho T22 |
 | 20/10 | #10 | chỉ số mạng theo nước, trên **hai** đồ thị; phát hiện A7, A8, A9 | T18 |
 | 20/10 | #11 | **sổ nhật ký công việc** (chính sổ này); README chỉ đường sang nó | — |
+| 21/10 | #12 | biểu đồ log-log phân bố bậc + ba con số bác giả thuyết scale-free; A3 thêm mức lệch 1995 | T09 |
 
 ¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
@@ -139,7 +140,8 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 | ECI · hạng | +0,579 · **78**/230 | cùng dòng, cột `eci`, `eci_rank` |
 | 3 thị trường đầu | **52,41%** (Hoa Kỳ 95,2 · Trung Quốc 86,1 · Hàn Quốc 20,8 tỷ USD) | đếm trên `edges.csv` |
 | 9 nước ASEAN còn lại | **7,77%** | đếm trên `edges.csv` |
-| Mạng đã lọc (T10) | 73 nút · 416 cạnh · 67,84% giá trị | `threshold_coverage.csv` dòng `CHOSEN` |
+| Mạng đã lọc (T10) | 73 nút · 416 cạnh (= **271 cặp nước**) · 67,84% giá trị | `threshold_coverage.csv` dòng `CHOSEN` |
+| Việt Nam trên đồ thị đã lọc | **12 cặp**, dày nhất là Trung Quốc **219,2 tỷ USD** (gấp 2,3 lần Hoa Kỳ) | `python src/make_node_link.py` (in ra cuối) |
 | Bác giả thuyết scale-free | R² **0,51** · lệch tới **41,3 lần** | `python src/make_degree_loglog.py` (in ra cuối) |
 | Lệch khỏi phân bố đều | **0,056** (năm 1995 còn 0,180) | cùng lệnh, chạy thêm `--year 1995` |
 
@@ -212,14 +214,12 @@ D1–D5. Nói trước thì là giới hạn đã nhận; để hội đồng ph
 
 ## 5. Việc còn lại, theo thứ tự nên làm
 
-1. **T15 node-link** — 416 cạnh, không mũi tên (B5), kích thước theo bậc và màu theo
-   cụm lấy từ `metrics.csv` dòng `filtered`, viền đen 1,5px cho Việt Nam (B12).
-2. **T16 hai ma trận kề** — hình vuông 6,30 × 6,30, `SEQUENTIAL_SCALE`, thứ tự cụm
-   lấy cùng chỗ.
-3. **T17 chord**, rồi **T19 Sankey**, **T20 small multiples theo thời gian**,
+1. **T16 hai ma trận kề** — hình vuông 6,30 × 6,30, `SEQUENTIAL_SCALE`, thứ tự cụm
+   lấy ở `metrics.csv` dòng `filtered` (cùng chỗ T15 đã dùng).
+2. **T17 chord**, rồi **T19 Sankey**, **T20 small multiples theo thời gian**,
    **T21 streamgraph**.
-4. **Hỏi R3** về T19–T21 trước khi tự làm hộ — nhánh `huyhihi` chưa có commit nào.
-5. **T08** khi có tài khoản; **T25** viết sẵn được ngay vì hạn chế đã ghi đủ.
+3. **Hỏi R3** về T19–T21 trước khi tự làm hộ — nhánh `huyhihi` chưa có commit nào.
+4. **T08** khi có tài khoản; **T25** viết sẵn được ngay vì hạn chế đã ghi đủ.
 
 Hai quyết định còn treo:
 
