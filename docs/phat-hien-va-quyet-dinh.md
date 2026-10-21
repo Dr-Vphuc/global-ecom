@@ -278,9 +278,18 @@ trong đó.
 chiếm 52,4%** (Hoa Kỳ 95,2 tỷ · Trung Quốc 86,1 tỷ · Hàn Quốc 20,8 tỷ). Láng
 giềng về địa lý, không phải láng giềng về thương mại.
 
-**Hệ quả cho hình vẽ.** Tô màu theo cụm ở T15 sẽ **không** làm ASEAN nổi lên —
+**Hệ quả cho hình vẽ.** Tô màu theo cụm ở T15 **không** làm ASEAN nổi lên —
 cả khối chìm trong một màu cùng Trung Quốc. Việt Nam phải được làm nổi bằng
 viền đậm theo quyết định B12, chứ không trông cậy vào màu cụm.
+
+Hình đã vẽ: `output/node_link_2023.{html,png}` · `src/make_node_link.py`. Nhìn
+vào hình thì thấy đúng như vậy: 9 nhãn ASEAN nằm rải rác trong khối xanh, không
+thành mảng riêng ở đâu cả. Trên đồ thị đã lọc, Việt Nam còn **12 cặp nước** vượt
+ngưỡng (trong 166 bạn hàng thật), và cặp dày nhất là **Trung Quốc — 219,2 tỷ
+USD hai chiều**, gấp **2,3 lần** cặp đứng thứ hai là Hoa Kỳ (95,2 tỷ, và chỉ một
+chiều lọt ngưỡng). Ba cụm nên gọi theo nước mạnh nhất chứ đừng gọi theo châu
+lục: cụm "Trung Quốc" có 41 nước nhưng gồm cả Úc, Brazil, Nam Phi và vùng Vịnh —
+29/41 là châu Á, phần còn lại là bạn hàng của khối đó.
 
 ### A9. Tiền tăng gấp đôi, số kênh thì ít đi
 
@@ -325,6 +334,8 @@ Ghi lại kèm **lý do**, để sau này không ai phải mở lại tranh lu�
 | B10 | **Chuỗi thời gian dừng ở 2023** | `PROVISIONAL_YEARS = [2024]`; vẽ tiếp 2024 thì phải ghi rõ là số tạm — xem A6 |
 | B11 | **Bảng màu 10 ngành: thang Tol muted, đổi Khoáng sản sang nâu đậm** | bảng Tableau 10 dùng tạm trước đó có Nông sản và Phương tiện vận tải trùng hẳn nhau với người mù lục (ΔE = 0,7). Bảng mới: ΔE nhỏ nhất 16,1 mắt thường, 11,6 qua cả ba dạng mù màu — `src/check_palette.py`, chi tiết ở `style-guide.md` |
 | B12 | **Làm nổi Việt Nam bằng hình dạng, không bằng màu** | đã thử thêm màu thứ 11: mọi màu cam/đỏ khác 10 màu ngành ở mắt thường (ΔE 22–27) đều tụt xuống ΔE 4–8 khi mô phỏng mù màu. Viền đen 1,5px + nhãn đậm thay cho màu riêng |
+| B13 | **Node-link gộp hai chiều thành MỘT cạnh** | 416 cạnh có hướng rút còn 271 cặp nước. Đối ứng 0,84 nên vẽ hai nửa cạnh song song chỉ làm dày hình mà không thêm thông tin. Độ dày = **tổng giá trị hai chiều của phần vượt ngưỡng**, không phải tổng thương mại hai nước — có cặp chỉ một chiều lọt ngưỡng |
+| B14 | **Cụm Louvain dùng bảng màu RIÊNG, khóa theo thứ hạng cỡ cụm** | quy tắc §3.1 cấm mượn 10 màu ngành sang chỉ cụm. `COMMUNITY_PALETTE` đã qua cùng bộ kiểm: ΔE 24,7 mắt thường, 13,5 ở dạng mù màu khó nhất, và cách màu ngành gần nhất 20,0. Khóa theo cỡ cụm vì số hiệu Louvain là nhãn tùy ý, chạy lại có thể hoán vị |
 
 ### B4 chi tiết — quy tắc lọc cạnh
 

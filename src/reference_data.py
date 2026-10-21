@@ -389,6 +389,34 @@ SECTOR_NAME_VI = {
 SEQUENTIAL_SCALE = ["#FFFFE5", "#FEE391", "#FE9929", "#CC4C02", "#662506"]
 
 # ---------------------------------------------------------------------------
+# Màu cụm Louvain — T15, node-link.
+#
+# Quy tắc §3.1 của style guide: 10 màu ngành CHỈ để chỉ ngành hàng, không được
+# mượn sang chỉ cụm. Nên cụm có bảng riêng, và bảng riêng cũng phải qua đúng
+# bộ kiểm của T04. Đã đo bằng `src/check_palette.py`:
+#
+#   ΔE2000 nhỏ nhất trong bảng  24,7 mắt thường · 20,7 protan · 17,0 deutan
+#                               · 13,5 tritan      (ngưỡng 15 / 10)
+#   ΔE2000 tới màu ngành gần nhất  20,0            (ngưỡng 15)
+#
+# Khóa là THỨ HẠNG CỠ CỤM chứ không phải số hiệu Louvain: số hiệu là nhãn tùy
+# ý, chạy lại với hạt giống khác có thể hoán vị, còn "cụm đông nhất" thì không.
+# ---------------------------------------------------------------------------
+COMMUNITY_PALETTE = {
+    0: "#2166AC",   # cụm đông nhất
+    1: "#D55E00",   # cụm thứ hai
+    2: "#B2182B",   # cụm thứ ba
+}
+
+COMMUNITY_NAME_VI = {
+    0: "Cụm đông nhất",
+    1: "Cụm thứ hai",
+    2: "Cụm thứ ba",
+}
+
+COMMUNITY_COLOR_FALLBACK = "#999999"   # cụm thứ tư trở đi, nếu năm khác có
+
+# ---------------------------------------------------------------------------
 # Làm nổi Việt Nam — BẰNG HÌNH DẠNG, KHÔNG BẰNG MÀU.
 #
 # Đã thử thêm màu thứ 11 để nhấn Việt Nam. Không còn chỗ: mọi màu cam/đỏ đủ

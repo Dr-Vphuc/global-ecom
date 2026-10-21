@@ -238,6 +238,7 @@ global-ecom/
 │   ├── check_palette.py       # kiểm định bảng màu: mù màu, tương phản (T04)
 │   ├── compute_metrics.py     # bậc, độ mạnh, betweenness, cộng đồng (T18)
 │   ├── make_degree_loglog.py     # log-log phân bố bậc, kiểm scale-free (T09)
+│   ├── make_node_link.py         # node-link mạng đã lọc, 73 nút (T15)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
@@ -311,6 +312,7 @@ python -m pip install -r requirements.txt
 python src/check_tree.py              # T11 kiểm cây HS92, thoát 1 nếu cây hỏng
 python src/compute_metrics.py         # T18 metrics.csv + bảng top 20
 python src/make_degree_loglog.py      # T09 log-log phân bố bậc
+python src/make_node_link.py          # T15 node-link mạng đã lọc
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 ```
