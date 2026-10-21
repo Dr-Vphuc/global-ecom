@@ -359,6 +359,49 @@ Hình đã vẽ: `output/adjacency_{alpha,cluster}_{1995,2023}.{html,png}`.
 
 ---
 
+### A11. Việt Nam rời quỹ đạo ASEAN, vào hành lang Đông Á – châu Mỹ
+
+Chord T17 chia 73 nước thành 8 khối (Việt Nam tách riêng, ASEAN còn lại, Đông Á,
+Châu Á còn lại, rồi bốn châu). Nhìn riêng các dải chạm vào Việt Nam:
+
+| Bạn hàng của Việt Nam | 1995 | 2023 |
+|---|---|---|
+| Đông Á | 59,1% | **70,9%** |
+| ASEAN còn lại | **33,4%** | 8,4% |
+| Châu Mỹ | *không có luồng nào vượt ngưỡng* | **18,5%** |
+| Châu Âu | 7,5% | 2,3% |
+| Số khối nối tới | 3 trên 7 | 4 trên 7 |
+| Tổng giá trị | 6,6 tỷ USD | 514,9 tỷ USD — **gấp 78 lần** |
+
+Năm 1995, bạn hàng lớn thứ hai của Việt Nam là **chính ASEAN** (33,4%). Đến 2023
+chỗ đó thuộc về **châu Mỹ** (18,5%) — một khối mà năm 1995 Việt Nam **không có
+lấy một luồng nào vượt ngưỡng** — còn ASEAN tụt xuống 8,4%. Luồng lớn nhất đổi
+từ *Singapore bán sang Việt Nam 1,8 tỷ* thành *Trung Quốc bán sang Việt Nam
+133,0 tỷ*.
+
+Đặt cạnh **A8** (ASEAN không hiện ra như một cộng đồng) thì hai phát hiện này nói
+cùng một điều, từ hai phép đo độc lập: **lát cắt "Việt Nam – ASEAN" của đề tài là
+một câu hỏi, không phải một tiền đề.** Việt Nam hội nhập vào hành lang Đông Á –
+châu Mỹ chứ không hội nhập vào ASEAN. Đây là chất liệu tốt cho báo cáo, nhưng
+phải nói thẳng chứ đừng để người đọc tưởng nhóm đã giả định ngược lại.
+
+Hai con số nền đi kèm, đo trên cùng phân hoạch:
+
+- **Thương mại nội khối lỏng đi:** 60,5% → **48,4%** giá trị nằm trong nội bộ một
+  khối. Cùng chiều với A10 (83,8% → 69,7% trên phân hoạch Louvain) — hai phân
+  hoạch khác nhau, cùng một kết luận.
+- **Trọng tâm dịch sang Đông Á:** cung Đông Á nở từ 23,9% lên 30,1% tổng giá trị
+  chạm vào các khối, trong khi cung châu Âu co từ 37,9% xuống 27,6%.
+
+Cảnh báo khi trích: mọi tỉ lệ ở đây tính trên **phần vượt ngưỡng**, không phải
+toàn bộ thương mại. Quy tắc B4 giữ lại top-3 bạn hàng của nước trọng tâm nên các
+luồng nhỏ của Việt Nam không bị xoá ở **cả hai năm** — so sánh vẫn cùng một thước.
+
+Lấy lại số: `PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_chord.py --year 1995`
+Hình đã vẽ: `output/chord_bloc_{1995,2023}.{html,png}`.
+
+---
+
 ## B. Quyết định đã chốt
 
 Ghi lại kèm **lý do**, để sau này không ai phải mở lại tranh luận.
@@ -381,6 +424,7 @@ Ghi lại kèm **lý do**, để sau này không ai phải mở lại tranh lu�
 | B14 | **Cụm Louvain dùng bảng màu RIÊNG, khóa theo thứ hạng cỡ cụm** | quy tắc §3.1 cấm mượn 10 màu ngành sang chỉ cụm. `COMMUNITY_PALETTE` đã qua cùng bộ kiểm: ΔE 24,7 mắt thường, 13,5 ở dạng mù màu khó nhất, và cách màu ngành gần nhất 20,0. Khóa theo cỡ cụm vì số hiệu Louvain là nhãn tùy ý, chạy lại có thể hoán vị |
 | B15 | **Ma trận kề chỉ ghi nhãn 13 nước, không ghi 73** | đo được: cạnh vùng vẽ **250,3pt** trên khung 453,6pt (= 6,30 inch), chia cho 73 nước còn **3,4pt mỗi nhãn** — dưới sàn **7pt** của style guide §7, và không có cách bố trí nào cứu được vì 73 × 7pt = 511pt đã dài hơn cả cạnh khung. Tập 13 nhãn = **10 nước ASEAN** (lát cắt của đề tài, B2) **+ nước mạnh nhất mỗi cụm** (chỗ duy nhất đặt tên được cho một khối) → **19,3pt mỗi nhãn**, đạt sàn. Xem chi tiết bên dưới |
 | B16 | **Khung hình của T16 tính bằng POINT, không bằng pixel** | `FIG_WIDTH_FULL * 72 = 453,6` thay cho `FIG_WIDTH_FULL * FIG_DPI_SCREEN = 1260`. Lý do: không quy đổi được thì không kiểm được sàn 7pt, mà sàn 7pt là một dòng trong checklist §7. Hệ quả đã đo, và là một lỗi có thật của các hình trước: xem bên dưới |
+| B17 | **Khối trong chord mã hoá bằng VỊ TRÍ, không bằng màu** | đã đo chứ không phỏng đoán: sau 10 màu ngành (T04) và 3 màu cụm (T15), tìm tham lam maximin trên lưới 868 màu in được thì hai màu đầu của một bảng mới còn cách ΔE 27,2 và 18,7 — nhưng chúng là `#00FF00` và `#FF00FF`, tức thuật toán đã phải bới vào góc gamut — và **màu thứ ba chỉ còn 14,2, dưới sàn 15**. Hết chỗ cho bảng màu thứ ba. Trên một vòng tròn thì khối đã có vị trí cố định và nhãn riêng nên hue không cần thiết: cung và dải dùng độ sáng, Việt Nam nổi lên bằng viền đen theo B12. Chạy lại: `src/probe_colour_space.py` |
 
 ### B4 chi tiết — quy tắc lọc cạnh
 
@@ -473,6 +517,33 @@ lại được chứ không phải một ước lượng.
 **Chưa sửa các hình cũ** — đó là việc của T22 (áp hệ thống thị giác lên toàn bộ
 biểu đồ), không phải của T16, và sửa thì phải vẽ lại cả năm hình cùng lúc để
 chúng còn cùng một cỡ chữ. Ghi ở đây để T22 không phải phát hiện lại.
+
+---
+
+### B17 chi tiết — không gian màu đã hết chỗ, và đo được là hết
+
+`src/probe_colour_space.py` chọn tham lam maximin trên lưới 868 màu nằm trong
+khoảng độ sáng in được: mỗi bước lấy màu cách xa nhất **mọi màu đã bị chiếm** (10
+màu ngành + 3 màu cụm) và mọi màu đã chọn trước đó. Nếu cách tốt nhất vẫn dưới
+ngưỡng thì không phải do chọn kém — là hết chỗ thật.
+
+| Màu thứ | Màu tìm được | Cách màu đã chiếm (ΔE2000) | Ngưỡng |
+|---|---|---|---|
+| 1 | `#00FF00` | 27,2 | 15 |
+| 2 | `#FF00FF` | 18,7 | 15 |
+| 3 | `#0000FF` | **14,2** | 15 — **hỏng** |
+| 4 | `#FF0000` | **14,0** | 15 — **hỏng** |
+
+Hai điều đọc ra từ bảng này. Thứ nhất, hai màu đầu *đạt ngưỡng* nhưng là lục và
+hồng cánh sen bão hoà hết cỡ — thuật toán đã phải chạy ra sát mép gamut, nghĩa là
+chỗ trống chỉ còn ở những nơi không ai muốn in. Thứ hai, chỉ cần tới màu thứ ba
+là tụt dưới sàn. Một bảng màu 8 khối thì không có cửa.
+
+Hệ quả cho cả đồ án, không riêng T17: **từ đây, thứ gì cần phân biệt mà không
+phải ngành hàng hay cụm Louvain thì phải dùng kênh khác hue** — vị trí, hình
+dạng, độ sáng, hoặc nhãn. Quy tắc §3.1 của style guide ("màu = ngành hàng, chỉ
+thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa mà là một ràng buộc đo
+được.
 
 ---
 

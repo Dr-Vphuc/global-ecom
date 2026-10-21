@@ -242,6 +242,27 @@ Hai quyết định mới đi kèm, cả hai đều từ phép đo: **B15** ch�
 mỗi nhãn, dưới sàn 7pt của style guide; **B16** đặt khung hình bằng point chứ
 không bằng pixel, vì không quy đổi được thì không kiểm được cái sàn ấy.
 
+### Chord: Việt Nam nối vào đâu, và không nối vào đâu (T17)
+
+`src/make_chord.py` gộp 73 nước thành **8 khối** suy thẳng từ `nodes.csv`: Việt
+Nam tách riêng, ASEAN còn lại, Đông Á tách khỏi phần Á còn lại, rồi bốn châu.
+Không có bảng gán tay — script tự kiểm **mọi nước thuộc đúng một khối** và in
+bảng đối chiếu (2023: 73 nước, 73 đã gán, 0 chưa gán, 0 khối chồng nhau).
+
+Bề dày dải là **tổng hai chiều** của phần vượt ngưỡng, theo **B13** như T15 —
+nên hình này **không** nói chiều của luồng. Chiều là việc của T19 (Sankey), và
+cố ý để dành cho nó.
+
+| Bạn hàng của Việt Nam | 1995 | 2023 |
+|---|---|---|
+| Đông Á | 59,1% | **70,9%** |
+| ASEAN còn lại | **33,4%** | 8,4% |
+| Châu Mỹ | *không luồng nào vượt ngưỡng* | **18,5%** |
+| Tổng giá trị | 6,6 tỷ USD | 514,9 tỷ USD |
+
+Khối phân biệt bằng **vị trí**, không bằng màu — xem **B17**: không gian màu đã
+hết chỗ cho bảng thứ ba, và điều đó đo được bằng `src/probe_colour_space.py`.
+
 ## Quyết định đã chốt
 
 | | |
@@ -278,6 +299,8 @@ global-ecom/
 │   ├── make_degree_loglog.py     # log-log phân bố bậc, kiểm scale-free (T09)
 │   ├── make_node_link.py         # node-link mạng đã lọc, 73 nút (T15)
 │   ├── make_adjacency_matrix.py  # hai ma trận kề: alphabet vs cụm (T16)
+│   ├── make_chord.py          # chord 8 khối, Việt Nam làm trọng tâm (T17)
+│   ├── probe_colour_space.py  # còn chỗ cho bảng màu mới không (B17)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
@@ -354,6 +377,8 @@ python src/make_degree_loglog.py      # T09 log-log phân bố bậc
 python src/make_node_link.py          # T15 node-link mạng đã lọc
 python src/make_adjacency_matrix.py   # T16 hai ma trận kề, alphabet vs cụm
 python src/make_adjacency_matrix.py --year 1995   # năm đối chứng
+python src/make_chord.py              # T17 chord 8 khối, VN làm trọng tâm
+python src/make_chord.py --year 1995  # năm đối chứng
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 ```

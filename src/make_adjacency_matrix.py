@@ -274,29 +274,8 @@ def order_cluster(isos, comm, stren):
 # ---------------------------------------------------------------------------
 # Chữ
 # ---------------------------------------------------------------------------
-def wrap_pt(text, font_pt, width_pt, ratio=0.52):
-    """Ngắt dòng theo BỀ RỘNG THẬT tính bằng point, không theo số ký tự đoán mò.
-
-    `ratio` là bề rộng trung bình một ký tự so với cỡ chữ, đo xấp xỉ cho
-    Segoe UI / Arial. Khung hình chỉ rộng 453,6pt nên một dòng 13pt chỉ chứa
-    khoảng 67 ký tự — ngắt sai là tiêu đề tràn ra ngoài mép.
-    """
-    limit = max(8, int(width_pt / (font_pt * ratio)))
-    lines, cur = [], ""
-    for word in text.split(" "):
-        probe = (cur + " " + word).strip()
-        if len(probe) <= limit or not cur:
-            cur = probe
-        else:
-            lines.append(cur)
-            cur = word
-    if cur:
-        lines.append(cur)
-    return "<br>".join(lines)
-
-
-def n_lines(wrapped):
-    return wrapped.count("<br>") + 1
+wrap_pt = R.wrap_pt      # dùng chung, xem reference_data (B16)
+n_lines = R.n_lines
 
 
 def spread(rows, pitch_pt, gap_pt, n):
