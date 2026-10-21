@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 20/10/2026** · 13/30 việc Xong · `main` ở commit `adeefdb` (gộp PR #10)
+**Cập nhật 21/10/2026** · 14/30 việc Xong · `main` ở commit `8ddf70d` (gộp PR #11)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -56,14 +56,14 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T04 | Hệ thống thị giác: màu, font, cỡ hình, nhãn | Xong | `docs/style-guide.md`, `src/check_palette.py` |
 | T05 | Dữ liệu giả đúng schema để vẽ trước | Xong | `src/make_mock.py` → `data/mock/` |
 
-### Giai đoạn 2 — Dữ liệu (4/6 Xong, 1 đang làm)
+### Giai đoạn 2 — Dữ liệu (5/6 Xong)
 
 | Mã | Việc | Trạng thái | Sản phẩm thật |
 |---|---|---|---|
 | T06 | Tải Atlas từ Harvard Dataverse | Xong | `src/download_atlas.py` (dữ liệu thô **không** vào git) |
 | T07 | Làm sạch, xuất file trung gian, gắn vùng địa lý | Xong | `src/build_intermediate.py` → `nodes/edges/tree/country_product/country_year.csv` |
 | T08 | Đối chiếu Atlas với BACI và Comtrade | **Chưa** | *cần tài khoản CEPII + khóa API Comtrade — chỉ thành viên nhóm làm được* |
-| T09 | Thống kê mô tả mạng lưới theo từng năm | **Đang làm** | `network_stats.csv` (30 năm) xong; **còn thiếu biểu đồ phân bố bậc log-log** |
+| T09 | Thống kê mô tả mạng lưới theo từng năm | Xong | `network_stats.csv` (30 năm) + `src/make_degree_loglog.py` → `output/degree_loglog_2023.*` (và `_1995.*`) |
 | T10 | Chốt ngưỡng lọc cạnh, biện minh bằng số | Xong | `threshold_coverage.csv`, quy tắc ở README §"Quy tắc lọc cạnh" |
 | T11 | Kiểm chất lượng cây HS92 4 tầng | Xong | `src/check_tree.py` |
 
@@ -111,6 +111,7 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | 20/10 | #8 | hai script 3D cho slide; **hàm định dạng số tiếng Việt**; file phân công bắt kịp thực tế | — |
 | 20/10 | #9 | 13 chỗ in số trên 4 biểu đồ đầu đi qua hàm định dạng | tiền đề cho T22 |
 | 20/10 | #10 | chỉ số mạng theo nước, trên **hai** đồ thị; phát hiện A7, A8, A9 | T18 |
+| 20/10 | #11 | **sổ nhật ký công việc** (chính sổ này); README chỉ đường sang nó | — |
 
 ¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
@@ -139,6 +140,8 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 | 3 thị trường đầu | **52,41%** (Hoa Kỳ 95,2 · Trung Quốc 86,1 · Hàn Quốc 20,8 tỷ USD) | đếm trên `edges.csv` |
 | 9 nước ASEAN còn lại | **7,77%** | đếm trên `edges.csv` |
 | Mạng đã lọc (T10) | 73 nút · 416 cạnh · 67,84% giá trị | `threshold_coverage.csv` dòng `CHOSEN` |
+| Bác giả thuyết scale-free | R² **0,51** · lệch tới **41,3 lần** | `python src/make_degree_loglog.py` (in ra cuối) |
+| Lệch khỏi phân bố đều | **0,056** (năm 1995 còn 0,180) | cùng lệnh, chạy thêm `--year 1995` |
 
 Hai cái bẫy khi đọc bảng này:
 
@@ -176,10 +179,14 @@ tiền lấy từ mạng đầy đủ vì kim ngạch là đại lượng thật
 ngưỡng ta tự chọn. → A7.
 
 **4. Mạng lưới thương mại có scale-free không?**
-**Không**, và đã kiểm chứ không đoán: độ lệch CCDF lớn nhất so với phân bố đều chỉ
-0,056. Biểu đồ log-log của T09 sẽ **không ra đường thẳng** — đó là kết quả đúng, không
-phải lỗi dữ liệu. Lý do dễ hiểu: mỗi nước chỉ có khoảng 230 đối tác khả dĩ, nên bậc bị
-chặn trên, khác hẳn mạng web hay mạng trích dẫn. → A3.
+**Không**, và đã kiểm chứ không đoán. Biểu đồ log-log của T09
+(`output/degree_loglog_2023.png`) **không ra đường thẳng**, và hình tự mang bằng chứng
+đi kèm: đường thẳng khớp nhất chỉ đạt **R² = 0,51**, có chỗ lệch **41,3 lần**, và nếu
+kéo về phía bậc thấp nó đòi CCDF vượt 100% — vô nghĩa, vì CCDF là tỉ lệ. Ngược lại,
+CCDF thật chỉ lệch **0,056** khỏi một phân bố **đều**. Lý do dễ hiểu: mỗi nước chỉ có
+khoảng 230 đối tác khả dĩ, nên bậc bị chặn trên, khác hẳn mạng web hay mạng trích dẫn.
+Nếu bị hỏi tiếp "thế 1995 thì sao": lệch 0,180 — **mạng không chỉ dày thêm mà còn đều
+ra**, trong khi Gini giá trị cạnh đứng yên. → A3.
 
 **5. Thuật toán phát hiện cộng đồng có tìm ra ASEAN không?**
 Không. Cả 10 nước ASEAN rơi vào **cùng một cụm** với Trung Quốc, Nhật, Hàn, Ấn và vùng
@@ -205,17 +212,14 @@ D1–D5. Nói trước thì là giới hạn đã nhận; để hội đồng ph
 
 ## 5. Việc còn lại, theo thứ tự nên làm
 
-1. **T09 — biểu đồ log-log** (việc duy nhất đang dở). Dữ liệu đã có sẵn cột `ccdf`
-   trong `degree_distribution.csv`. Nhớ: đường **không** thẳng, và phải ghi chú ngay
-   trên hình rằng đó là kết quả, không phải lỗi.
-2. **T15 node-link** — 416 cạnh, không mũi tên (B5), kích thước theo bậc và màu theo
+1. **T15 node-link** — 416 cạnh, không mũi tên (B5), kích thước theo bậc và màu theo
    cụm lấy từ `metrics.csv` dòng `filtered`, viền đen 1,5px cho Việt Nam (B12).
-3. **T16 hai ma trận kề** — hình vuông 6,30 × 6,30, `SEQUENTIAL_SCALE`, thứ tự cụm
+2. **T16 hai ma trận kề** — hình vuông 6,30 × 6,30, `SEQUENTIAL_SCALE`, thứ tự cụm
    lấy cùng chỗ.
-4. **T17 chord**, rồi **T19 Sankey**, **T20 small multiples theo thời gian**,
+3. **T17 chord**, rồi **T19 Sankey**, **T20 small multiples theo thời gian**,
    **T21 streamgraph**.
-5. **Hỏi R3** về T19–T21 trước khi tự làm hộ — nhánh `huyhihi` chưa có commit nào.
-6. **T08** khi có tài khoản; **T25** viết sẵn được ngay vì hạn chế đã ghi đủ.
+4. **Hỏi R3** về T19–T21 trước khi tự làm hộ — nhánh `huyhihi` chưa có commit nào.
+5. **T08** khi có tài khoản; **T25** viết sẵn được ngay vì hạn chế đã ghi đủ.
 
 Hai quyết định còn treo:
 

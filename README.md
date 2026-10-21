@@ -153,9 +153,13 @@ một phân bố đều hoàn toàn nhiều nhất **0,056**. Nghĩa là mạng 
 bậc đặc trưng và cũng *không có* hub theo nghĩa tô-pô: không tồn tại một nhóm
 nhỏ các nước nối với tất cả trong khi phần còn lại nối với vài nước.
 
-Hệ quả thực tế cho báo cáo: **biểu đồ log-log của T09 sẽ không ra đường thẳng.**
-Sách giáo khoa hay minh hoạ mạng scale-free bằng một đường thẳng dốc; ở đây
-đường CCDF sẽ đi ngang rồi rơi dốc đứng ở mép phải. Đó không phải lỗi dữ liệu —
+Hệ quả thực tế cho báo cáo: **biểu đồ log-log của T09 không ra đường thẳng.**
+Hình đã vẽ xong — `output/degree_loglog_2023.png`, dựng bằng
+`src/make_degree_loglog.py`. Sách giáo khoa hay minh hoạ mạng scale-free bằng
+một đường thẳng dốc; ở đây đường CCDF đi ngang rồi rơi dốc đứng ở mép phải.
+Đo cụ thể: đường thẳng khớp nhất trên thang log-log chỉ đạt **R² = 0,51**, có
+chỗ lệch **41,3 lần**, và nếu kéo về phía bậc thấp nó còn đòi CCDF vượt 100% ở
+mọi bậc dưới 31 — một đòi hỏi vô nghĩa, vì CCDF là tỉ lệ. Đó không phải lỗi dữ liệu —
 đó là kết quả, và nó chính là lý do **phải lọc theo trọng số; lọc theo bậc vô
 nghĩa** vì bậc không phân biệt được nước nào quan trọng.
 
@@ -233,6 +237,7 @@ global-ecom/
 │   ├── make_mock.py           # sinh dữ liệu giả (T05)
 │   ├── check_palette.py       # kiểm định bảng màu: mù màu, tương phản (T04)
 │   ├── compute_metrics.py     # bậc, độ mạnh, betweenness, cộng đồng (T18)
+│   ├── make_degree_loglog.py     # log-log phân bố bậc, kiểm scale-free (T09)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
@@ -305,6 +310,7 @@ python -m pip install -r requirements.txt
 
 python src/check_tree.py              # T11 kiểm cây HS92, thoát 1 nếu cây hỏng
 python src/compute_metrics.py         # T18 metrics.csv + bảng top 20
+python src/make_degree_loglog.py      # T09 log-log phân bố bậc
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 ```

@@ -94,6 +94,11 @@ này, nhưng nêu ra được là đủ.
 | Mật độ | 0,416 | **0,518** |
 | Đối ứng | 0,824 | **0,837** |
 | Gini trọng số cạnh | 0,955 | **0,957** |
+| Lệch khỏi phân bố đều ¹ | 0,180 | **0,056** |
+
+¹ khoảng lệch lớn nhất giữa CCDF thật và CCDF của một phân bố đều hoàn toàn
+trên dải bậc. Càng gần 0 thì các nước càng trải đều. Đo bằng
+`src/make_degree_loglog.py`.
 
 Bậc xuất khẩu 2023 (số bạn hàng): min 0 · p25 62 · **trung vị 116** · p75 177 ·
 p90 210 · max 226.
@@ -107,9 +112,25 @@ Ba hệ quả:
    mạng trích dẫn thường dưới 1%. Đây là lý do không thể vẽ thẳng 27.535 cạnh.
 2. **Không có hub theo nghĩa tô-pô.** Không tồn tại nhóm nhỏ nối với tất cả
    trong khi phần còn lại nối với vài nước — vì gần như ai cũng nối với nhiều.
-3. **Biểu đồ log-log của T09 sẽ không ra đường thẳng.** Nó đi ngang rồi rơi dốc
+3. **Biểu đồ log-log của T09 không ra đường thẳng.** Nó đi ngang rồi rơi dốc
    đứng ở mép phải. **Đó không phải lỗi dữ liệu, đó là kết quả.** Phải nói rõ
    câu này trong báo cáo, kèm con số 0,056, nếu không người đọc sẽ tưởng vẽ sai.
+
+Hình đã vẽ: `output/degree_loglog_2023.{html,png}` · `src/make_degree_loglog.py`.
+Để không ai phải tin vào mắt mình, hình vẽ kèm **đường thẳng khớp nhất** (bình
+phương tối thiểu trên log-log) và ba con số của phép khớp đó, năm 2023:
+
+| Phép khớp lũy thừa, bậc xuất khẩu 2023 | |
+|---|---|
+| R² | **0,51** — đường thẳng chỉ giải thích được một nửa biến thiên |
+| chỗ lệch tệ nhất | **41,3 lần** |
+| đòi CCDF > 100% ở | mọi bậc dưới **31** — một đòi hỏi vô nghĩa, vì CCDF là tỉ lệ |
+
+Và một kết quả mới thấy khi dựng hình: **mạng không chỉ dày thêm, nó còn đều
+ra.** Năm 1995 phân bố còn lệch 0,180 khỏi mức đều — vẫn còn hẳn một lớp nước ít
+bạn hàng; năm 2023 chỉ còn 0,056. Đặt cạnh Gini trọng số cạnh gần như đứng yên
+(0,955 → 0,957), ra một câu gọn cho phần kết luận: **ba mươi năm toàn cầu hoá
+san phẳng chuyện “ai nối với ai”, nhưng không san phẳng chuyện “luồng nào lớn”.**
 
 ### A4. Giá trị thì cực kỳ tập trung — và tập trung ổn định
 
