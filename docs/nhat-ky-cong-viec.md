@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 21/10/2026** · 15/30 việc Xong · `main` ở commit `fdc1798` (gộp PR #13)
+**Cập nhật 21/10/2026** · 16/30 việc Xong · `main` ở commit `fdc1798` (gộp PR #13)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -8,7 +8,7 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A9), chốt điều gì (B1–B14) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A10), chốt điều gì (B1–B16) | `docs/phat-hien-va-quyet-dinh.md` |
 | Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
 | Chạy lại pipeline thế nào, số liệu đã đo | `README.md` |
 | Câu hỏi nghiên cứu, thông điệp, đối tượng | `docs/cau-hoi-nghien-cuu.md` |
@@ -68,7 +68,7 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T10 | Chốt ngưỡng lọc cạnh, biện minh bằng số | Xong | `threshold_coverage.csv`, quy tắc ở README §"Quy tắc lọc cạnh" |
 | T11 | Kiểm chất lượng cây HS92 4 tầng | Xong | `src/check_tree.py` |
 
-### Giai đoạn 3 — Trực quan hóa (5/10 Xong)
+### Giai đoạn 3 — Trực quan hóa (6/10 Xong)
 
 | Mã | Việc | Trạng thái | Sản phẩm thật |
 |---|---|---|---|
@@ -76,7 +76,7 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T13 | Sunburst 4 tầng cây sản phẩm | Xong | cùng script → `output/sunburst_vnm_1995.*`, `_2023.*` |
 | T14 | Small multiples so VN với Thái–Mã–Indo | Xong | `src/make_small_multiples.py` → `output/small_multiples_vnm-tha-mys-idn_2023.*` |
 | T15 | Node-link mạng đã lọc, mã hóa bậc + cộng đồng | Xong | `src/make_node_link.py` → `output/node_link_2023.*` · bảng màu cụm mới ở `reference_data.py`, kiểm bằng `check_palette.py` |
-| T16 | Hai ma trận kề, một theo alphabet một theo cụm | **Chưa** | — (thứ tự cụm lấy ở `metrics.csv` dòng `filtered`) |
+| T16 | Hai ma trận kề, một theo alphabet một theo cụm | Xong | `src/make_adjacency_matrix.py --year 2023\|1995` → `output/adjacency_alpha_*.{html,png}`, `adjacency_cluster_*.*` · phát hiện **A10**, quyết định **B15**, **B16** |
 | T17 | Chord diagram giữa các khối, VN làm trọng tâm | **Chưa** | — |
 | T18 | Chỉ số mạng: bậc, độ mạnh, betweenness, cộng đồng | Xong | `src/compute_metrics.py` → `metrics.csv` (304 dòng), `metrics_top20.csv` |
 | T19 | Sankey nhập → VN → xuất (kiểm giả thuyết trung chuyển) | **Chưa** | — |
@@ -147,6 +147,10 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 | Việt Nam trên đồ thị đã lọc | **12 cặp**, dày nhất là Trung Quốc **219,2 tỷ USD** (gấp 2,3 lần Hoa Kỳ) | `python src/make_node_link.py` (in ra cuối) |
 | Bác giả thuyết scale-free | R² **0,51** · lệch tới **41,3 lần** | `python src/make_degree_loglog.py` (in ra cuối) |
 | Lệch khỏi phân bố đều | **0,056** (năm 1995 còn 0,180) | cùng lệnh, chạy thêm `--year 1995` |
+| Giá trị nằm trong khối cụm | **69,7%** (năm 1995 còn là **83,8%**) | `python src/make_adjacency_matrix.py --year 2023\|1995` (khối kiểm chứng) |
+| Xếp lại hàng/cột theo cụm | khoảng cách tới đường chéo **0,398 → 0,258**, giảm **35,1%** (ngẫu nhiên 0,341) | cùng lệnh |
+| Ba khối năm 2023 · năm 1995 | **41 / 25 / 7** quanh Trung Quốc, Đức, Hoa Kỳ · **34 / 27 / 2** quanh **Hoa Kỳ**, Đức, Brazil | cùng lệnh, mục "Các khối" |
+| Hàng/cột Việt Nam trên ma trận | **8 ô xuất + 10 ô nhập** (năm 1995: **3 + 3**) | cùng lệnh, dòng cuối |
 
 Hai cái bẫy khi đọc bảng này:
 
@@ -217,12 +221,13 @@ D1–D5. Nói trước thì là giới hạn đã nhận; để hội đồng ph
 
 ## 5. Việc còn lại, theo thứ tự nên làm
 
-1. **T16 hai ma trận kề** — hình vuông 6,30 × 6,30, `SEQUENTIAL_SCALE`, thứ tự cụm
-   lấy ở `metrics.csv` dòng `filtered` (cùng chỗ T15 đã dùng).
-2. **T17 chord**, rồi **T19 Sankey**, **T20 small multiples theo thời gian**,
-   **T21 streamgraph**.
+1. **T17 chord** giữa các khối — ba khối và cỡ của chúng đã đo sẵn ở **A10**,
+   dùng lại được thẳng; đừng tính lại Louvain bằng công thức khác.
+2. Rồi **T19 Sankey**, **T20 small multiples theo thời gian**, **T21 streamgraph**.
 3. **Hỏi R3** về T19–T21 trước khi tự làm hộ — nhánh `huyhihi` chưa có commit nào.
 4. **T08** khi có tài khoản; **T25** viết sẵn được ngay vì hạn chế đã ghi đủ.
+5. **T22** phải sửa lỗi đơn vị point/pixel ghi ở **B16** cho T09 và T12–T15 —
+   hiện cỡ chữ in thật của chúng nhỏ hơn khai báo khoảng 2,8 lần.
 
 Hai quyết định còn treo:
 
