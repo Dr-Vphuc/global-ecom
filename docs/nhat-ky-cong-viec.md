@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 22/10/2026** · 23/31 việc Xong · `main` ở commit `1d1d82c` (gộp PR #15)
+**Cập nhật 22/10/2026** · 24/31 việc Xong · `main` ở commit `1d1d82c` (gộp PR #15)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -8,8 +8,9 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A14), chốt điều gì (B1–B20) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A15), chốt điều gì (B1–B22) | `docs/phat-hien-va-quyet-dinh.md` |
 | **Mạch thuyết trình — năm nhịp, kết bằng đề xuất** | `docs/phat-hien-va-quyet-dinh.md` §E |
+| Các mục của báo cáo cuối đã viết | `.report/final/` — một file một mục (**B21**) |
 | Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
 | Chạy lại pipeline thế nào, số liệu đã đo | `README.md` |
 | Câu hỏi nghiên cứu, thông điệp, đối tượng | `docs/cau-hoi-nghien-cuu.md` |
@@ -85,16 +86,16 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T21 | Streamgraph 10 ngành, 1995–2023 | Xong | `src/make_streamgraph.py` → `stream_sectors_1995_2023` · hai tầng, không dùng nền lượn |
 | **T31** | **Mặt phẳng quyết định RCA × PCI — hình mang ĐỀ XUẤT** | Xong | `src/make_decision_plane.py` → `decision_plane_{2015,2023}` · phát hiện **A14**, quyết định **B18** |
 
-### Giai đoạn 4 — Tích hợp (2/5) · Giai đoạn 5 — Hoàn thiện (0/4)
+### Giai đoạn 4 — Tích hợp (3/5) · Giai đoạn 5 — Hoàn thiện (0/4)
 
 | Mã | Việc | Trạng thái | Ghi chú đã có sẵn cho việc đó |
 |---|---|---|---|
 | T22 | Áp hệ thống thị giác lên toàn bộ biểu đồ 3 người | Xong | sửa lỗi đơn vị **B16** cho T09, T12–T15 và bố cục lại cả năm; `R.xuat_png` là chỗ duy nhất định nghĩa phép xuất (**B19**) |
 | T23 | Rà soát chéo, mỗi người review 2 hình của người khác | Chưa | checklist ở `style-guide.md` §7 |
 | T24 | Kiểm khả năng đọc: nhãn, chú giải, tương phản, mù màu | Xong | `src/check_readability.py` — 5 phép kiểm, chạy được trong CI, hiện **ĐẠT** |
-| T25 | Viết phần Phương pháp luận | Chưa | **phải nêu**: hạn chế D1–D5, nút `3501` lệch cây HS92, mã `XXXX dưới 99` |
-| T26 | Viết phần Phát hiện | Chưa | nguyên mục A1–A9 của sổ phát hiện là bản thảo |
-| T27 | Ráp báo cáo cuối theo mạch 4 hồi | Chưa | mạch chuyện đề xuất ở sổ phát hiện §E |
+| T25 | Viết phần Phương pháp luận | Xong | `.report/final/02-phuong-phap-luan.md` — 12 mục, mỗi số kèm lệnh lấy lại · phát hiện **A15** (đồ thị lọc đổi dấu cán cân), quyết định **B21**, **B22** |
+| T26 | Viết phần Phát hiện | Chưa | nguyên mục A1–A15 của sổ phát hiện là bản thảo |
+| T27 | Ráp báo cáo cuối theo mạch 5 nhịp | Chưa | mạch chuyện đề xuất ở sổ phát hiện §E; các mục rời nằm ở `.report/final/` (**B21**) |
 | T28 | Slide thuyết trình | Chưa | §0 sổ này là bản nháp lời mở |
 | T29 | Diễn tập + 10 câu phản biện | Chưa | §4 sổ này có 7 câu kèm câu trả lời |
 | T30 | Dọn repo, README tái lập được | Chưa | README đã có mục tải dữ liệu + chạy pipeline |
@@ -167,6 +168,9 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 | Đông Á trong rổ của Việt Nam | 59,1% → **70,9%** | cùng lệnh, mục "Việt Nam nối với" |
 | Thương mại nội khối (8 khối địa lý) | 60,5% → **48,4%** | cùng lệnh, dòng "Nội khối" |
 | Còn chỗ cho bảng màu thứ ba không | **không** — màu thứ ba chỉ cách ΔE **14,2**, dưới sàn 15 | `python src/probe_colour_space.py` |
+| Nếu Sankey dùng đồ thị đã lọc | cán cân **đổi dấu**: +53,45 tỷ (thặng dư) → **−15,17 tỷ** (thâm hụt); 166→8 nước bán ra, 149→10 nước mua vào | `src/make_sankey.py` + lọc `edges.csv` theo `above_threshold` |
+| Ô `Chưa phân loại` trong rổ hàng | **11,83%** = 45,60 tỷ USD, RCA 2,4408, PCI −1,206 — là mã `XXXX` của Atlas, đã loại khỏi đề xuất | `src/make_decision_plane.py` · `src/check_tree.py` |
+| Cây HS92 kiểm ra sạch không | **31 mục: 29 ĐẠT, 1 lỗi, 1 lưu ý** — `3501` nằm dưới `34` thay vì `35`, cùng ngành 6 nên không hình nào lệch | `python src/check_tree.py` |
 
 Hai cái bẫy khi đọc bảng này:
 
@@ -237,23 +241,23 @@ D1–D5. Nói trước thì là giới hạn đã nhận; để hội đồng ph
 
 ## 5. Việc còn lại, theo thứ tự nên làm
 
-Toàn bộ phần hình đã xong. **Việc còn lại chủ yếu là viết và ráp**, và cả ba việc
-đầu đều đã có sẵn vật liệu — không việc nào phải bắt đầu từ trang trắng.
+Toàn bộ phần hình đã xong, và **Phương pháp luận (T25) cũng xong** — mục đầu tiên
+của báo cáo cuối đã nằm trong `.report/final/`. Việc còn lại là viết và ráp, không
+việc nào phải bắt đầu từ trang trắng.
 
-1. **T25 Phương pháp luận** — viết được ngay. Phải nêu đủ: hạn chế **D1–D5**, nút
-   `3501` lệch cây HS92 (`src/check_tree.py`), mã `XXXX dưới 99`, và **vì sao
-   T19 dùng đồ thị đầy đủ còn T15–T17 dùng đồ thị đã lọc** — nếu không, người
-   chấm sẽ tưởng số liệu mâu thuẫn (đúng cái bẫy A5).
-2. **T26 phần Phát hiện** — mục A1–A14 của sổ phát hiện chính là bản thảo.
-3. **T27 ráp báo cáo + T28 slide** — đi theo **§E**, năm nhịp, kết bằng đề xuất.
-   §E đã ghi sẵn từng nhịp dùng hình nào.
-4. **T23 rà soát chéo** — mỗi người review 2 hình của người khác, checklist ở
+1. **T26 phần Phát hiện** — mục A1–A15 của sổ phát hiện chính là bản thảo. Viết
+   vào `.report/final/03-phat-hien.md` theo **B21** (một file một mục, Markdown).
+2. **T27 ráp báo cáo + T28 slide** — đi theo **§E**, năm nhịp, kết bằng đề xuất.
+   §E đã ghi sẵn từng nhịp dùng hình nào. T27 chốt luôn thứ tự mục, vì số hiệu
+   `02-`, `03-` hiện là tạm.
+3. **T23 rà soát chéo** — mỗi người review 2 hình của người khác, checklist ở
    `style-guide.md` §7. Chạy `src/check_readability.py` trước cho đỡ mất công.
-5. **T29 diễn tập + 10 câu phản biện** — §4 sổ này đã có 7 câu kèm câu trả lời.
+4. **T29 diễn tập + 10 câu phản biện** — §4 sổ này đã có 7 câu kèm câu trả lời.
    Ba câu còn thiếu nên nhắm vào chỗ yếu nhất của đề xuất: *"sao không chọn
    điện tử?"*, *"RCA dưới 1 thì lấy gì chắc nó vượt?"*, *"ECI đo hàng đi qua hay
-   hàng ở lại?"* — câu cuối đã có sẵn câu trả lời ở D2/D5.
-6. **T30 dọn repo**; **T08** chỉ làm được khi có tài khoản CEPII + Comtrade.
+   hàng ở lại?"* — câu cuối đã có sẵn câu trả lời ở D2/D5, và §2.5 của Phương
+   pháp luận đã viết thành đoạn.
+5. **T30 dọn repo**; **T08** chỉ làm được khi có tài khoản CEPII + Comtrade.
 
 **Chỗ yếu cần biết trước khi lên trình bày.** Đề xuất ở T31 dựa trên RCA và PCI
 — hai chỉ số **đo rổ hàng gộp**, nên chúng nói *cái gì đi qua Việt Nam*, chưa hẳn
