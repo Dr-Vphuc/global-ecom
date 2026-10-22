@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 22/10/2026** · 23/31 việc Xong · `main` ở commit `7b226c7` (gộp PR #14)
+**Cập nhật 22/10/2026** · 23/31 việc Xong · `main` ở commit `1d1d82c` (gộp PR #15)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
