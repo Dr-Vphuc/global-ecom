@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 22/10/2026** · 25/31 việc Xong · `main` ở commit `5a23c08` (gộp PR #16)
+**Cập nhật 22/10/2026** · 25/31 việc Xong · `main` ở commit `8235561` (gộp PR #17)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -8,7 +8,7 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A16), chốt điều gì (B1–B22) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A17), chốt điều gì (B1–B23) | `docs/phat-hien-va-quyet-dinh.md` |
 | **Mạch thuyết trình — năm nhịp, kết bằng đề xuất** | `docs/phat-hien-va-quyet-dinh.md` §E |
 | Các mục của báo cáo cuối đã viết | `.report/final/` — một file một mục (**B21**) |
 | Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
@@ -42,8 +42,17 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 > điều các biểu đồ phải cho người xem thấy.
 
 Ba con số đỡ cho câu đó: xuất khẩu Việt Nam **hạng 16/231** về giá trị, nhưng
-**hạng 66/231** về số bạn hàng và **hạng 78/230** về chỉ số phức tạp kinh tế (ECI
-+0,579). Bán nhiều, bán tới ít chỗ, bán thứ không khó làm.
+**hạng 78/230** về chỉ số phức tạp kinh tế (ECI +0,579) và **hạng 30/97** về mức
+tập trung giá trị trong nhóm nước xuất trên 10 tỷ USD. Bán nhiều, bán thứ không
+khó làm, và dồn tiền vào ít cửa. *(Dòng này trước ghi "hạng 66/231 về số bạn
+hàng" — đã bỏ theo A16, vì đó là phép đo không bền.)*
+
+**Và đồ án không dừng ở mô tả.** Kết bằng một đề xuất: dồn ưu tiên vào **thiết bị
+quang học – đo lường – y tế** (RCA 0,905; PCI +0,934) và **máy móc công nghiệp**
+(0,954; +0,783) — hai nhóm khó nhất trong rổ mà Việt Nam đã có chỗ đứng — thay vì
+đào sâu thêm vào lắp ráp điện tử. Đề xuất ấy do một **quy tắc viết trong code**
+chọn ra, và quy tắc đó chạy lại ở 2007 thì chỉ đúng vào điện tử trước đợt bùng
+nổ, chạy ở 2015 thì sắt thép tám năm sau chạm RCA 1,00 (A14, A17).
 
 ---
 
@@ -99,11 +108,11 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T22 | Áp hệ thống thị giác lên toàn bộ biểu đồ 3 người | Xong | sửa lỗi đơn vị **B16** cho T09, T12–T15 và bố cục lại cả năm; `R.xuat_png` là chỗ duy nhất định nghĩa phép xuất (**B19**) |
 | T23 | Rà soát chéo, mỗi người review 2 hình của người khác | Chưa | checklist ở `style-guide.md` §7 |
 | T24 | Kiểm khả năng đọc: nhãn, chú giải, tương phản, mù màu | Xong | `src/check_readability.py` — 5 phép kiểm, chạy được trong CI, hiện **ĐẠT** |
-| T25 | Viết phần Phương pháp luận | Xong | `.report/final/02-phuong-phap-luan.md` — 12 mục, mỗi số kèm lệnh lấy lại · phát hiện **A15** (đồ thị lọc đổi dấu cán cân), quyết định **B21**, **B22** |
-| T26 | Viết phần Phát hiện | Xong | `.report/final/03-phat-hien.md` — 9 mục theo mạch lập luận · phát hiện **A16** (phép đếm bạn hàng không bền), sửa **A13** và **A4**, sửa tiêu đề T20 |
-| T27 | Ráp báo cáo cuối theo mạch 5 nhịp | Chưa | mạch chuyện đề xuất ở sổ phát hiện §E; các mục rời nằm ở `.report/final/` (**B21**) |
+| T25 | Viết phần Phương pháp luận | Xong | `.report/final/02-phuong-phap-luan.md` — 12 mục (T27 chuyển 5 mục sang phụ lục), mỗi số kèm lệnh lấy lại · phát hiện **A15** (đồ thị lọc đổi dấu cán cân), quyết định **B21**, **B22** |
+| T26 | Viết phần Phát hiện | Xong | 9 mục, T27 tách thành bốn hồi `03-quy-mo` … `06-y-nghia` · phát hiện **A16** (phép đếm bạn hàng không bền), sửa **A13** và **A4**, sửa tiêu đề T20 |
+| T27 | Ráp báo cáo cuối theo mạch 5 nhịp | Xong | 10 file mục trong `.report/final/` + `src/build_report.py` → `output/bao-cao-cuoi.{md,html}`; viết mới **Tóm tắt, Mở đầu, Quy mô, Đề xuất, Kết luận**; chốt số hiệu mục (**B23**); phát hiện **A17** |
 | T28 | Slide thuyết trình | Chưa | §0 sổ này là bản nháp lời mở |
-| T29 | Diễn tập + 10 câu phản biện | Chưa | §4 sổ này có 7 câu kèm câu trả lời |
+| T29 | Diễn tập + 10 câu phản biện | Chưa | §4 sổ này có **9** câu kèm câu trả lời |
 | T30 | Dọn repo, README tái lập được | Chưa | README đã có mục tải dữ liệu + chạy pipeline |
 
 ---
@@ -127,6 +136,7 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | 21/10 | #14 | `CLAUDE.md` + skill `/viec-tiep`: mọi context mới tự biết luật repo và chuẩn "hình thế nào là xong" | — |
 | 22/10 | #15 | **toàn bộ phần R3**: T19 Sankey, T20 small multiples, T21 dòng chảy, T22 sửa lỗi đơn vị cho 5 hình cũ, T24 kiểm khả năng đọc, **T31 hình mang đề xuất**; A12–A14, B18–B20, §E viết lại | T19–T22, T24, T31 |
 | 22/10 | #16 | **phần Phương pháp luận** của báo cáo cuối (12 mục); A15 — dùng đồ thị đã lọc cho Sankey sẽ đổi dấu cán cân; B21, B22 | T25 |
+| 22/10 | #17 | **phần Phát hiện** của báo cáo cuối (9 mục); **A16 — phép đếm bạn hàng không bền, thay bằng tập trung giá trị (HHI)**; sửa A13 (đỉnh thật 2002/208) và A4 (67,84% chứ không phải 68,50%); sửa tiêu đề hình T20 vì nó in một câu sai | T26 |
 
 ¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
@@ -156,6 +166,10 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 | Tập trung đầu vào (HHI) | **0,1979** — gấp 1,6 lần đầu ra; top-3 nhà cung cấp **61,3%** | cùng lệnh, `--direction nhap` |
 | Hạng tập trung so với thế giới | **30/97** nước xuất trên 10 tỷ USD (2015 còn **dưới** trung vị) | đếm trên `edges.csv` |
 | Số bạn hàng xuất — ⚠️ phép đo KHÔNG bền | 98 → **208 (đỉnh 2002)** → 181 → **166**; nhưng trên 100 triệu USD thì **13 → 83** | `src/make_time_multiples.py` (khối A16) |
+| Thế giới lớn lên bao nhiêu | **4,51×** (4.803,3 → 21.656,9 tỷ USD) — Việt Nam nhanh hơn **16,7 lần** | `src/analyze_network.py` · `edges.csv` |
+| Hạng xuất khẩu của Việt Nam | **61/211** (1995) → **16/230** (2023); nhiều nhất ASEAN, trên Malaysia 353,9 và Singapore 346,6 tỷ | đếm trên `edges.csv` |
+| RCA có tự đi lên không — nền so sánh | **không**: chỉ **45,4%** trong 97 nhóm tăng 2015→2023, trung vị **−0,0178**; riêng PCI > 0 thì 62,8% | `country_product.csv` (A17) |
+| Quy tắc chọn chạy ở năm 2007 | chỉ ra **điện tử** khi RCA mới 0,573 và xuất 3,4 tỷ → 2023 là 2,230 và **115,4 tỷ USD** | `src/make_decision_plane.py --year 2007 --since 1999` |
 | Điện tử trong rổ hàng | 0,6% (1995) → **29,9%** (2023) | `src/make_streamgraph.py` |
 | Nông sản trong rổ hàng | 42,9% → 11,6% | cùng lệnh |
 | Máy móc công nghiệp RCA | 0,46 (2015) → **0,95** (2023), PCI +0,78 | `src/make_decision_plane.py` |
@@ -192,7 +206,7 @@ Hai cái bẫy khi đọc bảng này:
 
 ---
 
-## 4. Tám câu chắc chắn bị hỏi — câu trả lời đã có sẵn
+## 4. Chín câu chắc chắn bị hỏi — câu trả lời đã có sẵn
 
 Đây là **vật liệu cho T29**, chưa phải T29: T29 cần 10 câu và phải diễn tập thành tiếng.
 
@@ -258,34 +272,49 @@ từ 65/211 lên **24/231**. Điều thật sự xảy ra là **tiền dồn l�
 đóng lại: HHI đáy 0,0662 (2013) → **0,1226** (2023), top-3 nhận **52,41%**. → A16,
 và tiêu đề T20 đã sửa theo.
 
+**9. RCA của hai nhóm được đề xuất còn dưới 1 — lấy gì chắc nó vượt?**
+**Không chắc, và báo cáo nói đúng như vậy — nhưng có nền so sánh.** Thứ nhất, quy
+tắc chọn đã chạy trên hai năm quá khứ và cả hai lần đều chỉ đúng chỗ: chạy ở 2007
+nó chọn **điện tử** khi nhóm đó mới xuất 3,4 tỷ USD với RCA 0,573 (2023: 2,230 và
+115,4 tỷ); chạy ở 2015 nó chọn thiết bị quang học và sắt thép, và **sắt thép đã
+chạm RCA 1,003**. Thứ hai, RCA **không tự đi lên**: trong 97 nhóm hàng chỉ 45,4%
+tăng giữa 2015 và 2023, trung vị **−0,0178**, còn nhóm đã có RCA ≥ 1,5 thì chỉ 25%
+tăng tiếp. Thứ ba — và phải nói thẳng — điều kiện mang sức dự báo là **PCI > 0**
+(62,8% số nhóm tăng, so với 31,5% ở hàng dễ), chứ không phải dải RCA 0,5–1,5; còn
+lớp thoả trọn quy tắc thì chỉ 6 nhóm, quá nhỏ để kết luận thống kê. → A17, §7.2.
+
 ---
 
 ## 5. Việc còn lại, theo thứ tự nên làm
 
-Toàn bộ phần hình đã xong, và **hai mục đầu của báo cáo cuối cũng xong** — Phương
-pháp luận (T25) và Phát hiện (T26) đã nằm trong `.report/final/`. Việc còn lại là
-viết và ráp, không việc nào phải bắt đầu từ trang trắng.
+Toàn bộ phần hình đã xong, và **báo cáo cuối đã ráp xong** — 10 mục trong
+`.report/final/`, ráp bằng `src/build_report.py` ra `output/bao-cao-cuoi.{md,html}`,
+khoảng 19 trang thân + 3 trang phụ lục. Việc còn lại là trình bày và rà soát,
+không việc nào phải bắt đầu từ trang trắng.
 
-1. **T27 ráp báo cáo + T28 slide** — đi theo **§E**, năm nhịp, kết bằng đề xuất.
-   §E đã ghi sẵn từng nhịp dùng hình nào. T27 chốt luôn thứ tự mục, vì số hiệu
-   `02-`, `03-` hiện là tạm; và cả hai file đó đều **dài hơn** số trang file phân
-   công dự tính, kèm kế hoạch cắt sẵn ở đầu file — T27 cắt theo kế hoạch đó.
-   Mục còn thiếu của báo cáo: **phần Đề xuất** (§3.8 đã ghi sẵn bốn điều kiện mà
-   nó phải thoả) và phần Mở đầu.
+1. **T28 slide** — báo cáo đã ráp xong, slide đi theo đúng mạch đó: năm nhịp
+   của **§E**, kết bằng đề xuất ở §7 của báo cáo. Nguồn chữ có sẵn: `00-tom-tat.md`
+   là bản một trang, §1.3 là bảng năm nhịp, §7.3 là hai câu đề xuất. Mỗi người
+   trình bày phần mình sở hữu (checklist nộp bài, mục 3).
 2. **T23 rà soát chéo** — mỗi người review 2 hình của người khác, checklist ở
    `style-guide.md` §7. Chạy `src/check_readability.py` trước cho đỡ mất công.
-3. **T29 diễn tập + 10 câu phản biện** — §4 sổ này đã có **8** câu kèm câu trả
-   lời (câu 8 là câu mới của A16: *"Việt Nam có đang mất bạn hàng không?"*). Cần
-   thêm **2 câu**, chọn trong ba chỗ yếu nhất của đề xuất: *"sao không chọn điện
-   tử?"*, *"RCA dưới 1 thì lấy gì chắc nó vượt?"*, *"ECI đo hàng đi qua hay hàng ở
-   lại?"* — câu cuối đã có sẵn câu trả lời ở D2/D5 và §2.5 Phương pháp luận.
+   **Đã thấy một lỗi khi ráp:** phụ đề treemap in câu *"Bấm vào một nhóm để xem…"*
+   — một lời hướng dẫn tương tác nằm trên ảnh tĩnh trong báo cáo nộp. Sửa ở T23.
+3. **T29 diễn tập + 10 câu phản biện** — §4 sổ này đã có **9** câu kèm câu trả
+   lời (câu 9 là câu của A17: *"RCA dưới 1 thì lấy gì chắc nó vượt?"*). Cần thêm
+   **1 câu**, chọn trong hai chỗ yếu còn lại: *"sao không chọn điện tử?"* hoặc
+   *"ECI đo hàng đi qua hay hàng ở lại?"* — câu sau đã có sẵn câu trả lời ở D2/D5
+   và §2.4 của báo cáo.
 4. **T30 dọn repo**; **T08** chỉ làm được khi có tài khoản CEPII + Comtrade.
 
 **Chỗ yếu cần biết trước khi lên trình bày.** Đề xuất ở T31 dựa trên RCA và PCI
 — hai chỉ số **đo rổ hàng gộp**, nên chúng nói *cái gì đi qua Việt Nam*, chưa hẳn
 *cái gì ở lại*. Không có bảng vào–ra thì không tách được, và phải nói thẳng điều
 đó chứ đừng để người chấm hỏi ra (D2, D5). Điểm mạnh bù lại: quy tắc chọn của
-T31 **đã được thử trên năm 2015** và trúng — xem A14.
+T31 **đã chạy lại trên hai năm quá khứ** và cả hai lần đều chỉ đúng chỗ (2007 →
+điện tử, 2015 → sắt thép vượt ngưỡng), trên một nền mà RCA **không** tự đi lên —
+xem A14 và A17. Nhưng A17 cũng đo được rằng sức dự báo nằm ở điều kiện **PCI > 0**
+chứ không ở dải RCA, và lớp thoả trọn quy tắc chỉ có 6 nhóm; nói đúng chừng đó.
 
 Hai quyết định còn treo:
 

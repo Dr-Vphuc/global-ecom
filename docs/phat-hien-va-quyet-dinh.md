@@ -497,7 +497,7 @@ thủy sản (RCA 2,75; PCI −1,59), cà phê (4,21; −1,38), trái cây (2,88
 PCI **−1,206**. Đó là HS2 `99` với nút con duy nhất `XXXX` (*Trade data
 discrepancies*) của Atlas, không phải một ngành để đầu tư: quy tắc chọn đã loại
 thẳng (`sector != UNCLASSIFIED`), nếu không thì ô có RCA cao đáng kể trên mặt
-phẳng lại là một ô dữ liệu không phân loại được. Xem §2.8 phần Phương pháp luận.
+phẳng lại là một ô dữ liệu không phân loại được. Xem §A.3 của báo cáo.
 
 Lấy lại số: `src/make_decision_plane.py` · Hình: `output/decision_plane_2023.png`
 
@@ -528,7 +528,7 @@ chiều. Quy tắc rút ra, dùng cho cả báo cáo:
 > **Không so trực tiếp con số của hai nhóm hình.**
 
 Lấy lại số: `src/make_sankey.py` (khối KIỂM CHỨNG) và `data/processed/edges.csv`
-lọc theo cột `above_threshold`. Viết hẳn thành §2.7 của phần Phương pháp luận.
+lọc theo cột `above_threshold`. Viết hẳn thành §2.5 của báo cáo.
 
 ---
 
@@ -598,7 +598,58 @@ bốn năm được vẽ (trước đây in sai *"đỉnh 2005"*), và khối KI
 sàn — để không ai dùng lại phép đo không bền mà không thấy ngay nó không bền.
 
 Lấy lại số: `PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_time_multiples.py`
-· viết thành §3.6 của phần Phát hiện.
+· viết thành §5.3 của báo cáo.
+
+---
+
+### A17. Quy tắc chọn đề xuất có nền so sánh — RCA không tự đi lên
+
+**Đo khi ráp báo cáo (T27), 2026-10-22.** A14 nói quy tắc chọn ở
+`make_decision_plane.py` đã được thử lại trên 2015 và trúng. Câu đó đúng nhưng
+thiếu **nền so sánh**: nếu cả rổ hàng cùng tăng RCA thì chọn gì cũng "trúng". Đã
+đo nền đó, và đã chạy quy tắc thêm một năm quá khứ nữa.
+
+**Ba lần chạy, ba lần chỉ đúng chỗ:**
+
+| Chạy ở năm | Lệnh | Chọn ra | Tám năm sau |
+|---|---|---|---|
+| 2007 | `--year 2007 --since 1999` | máy điện – điện tử, RCA 0,573 | RCA **1,996** (2015) → **2,230**; xuất **3,4 → 115,4 tỷ USD** |
+| 2015 | `--year 2015 --since 2007` | thiết bị quang học 0,751 · sắt thép 0,604 | 0,905 · **1,003 — vượt ngưỡng** |
+| 2023 | `--year 2023` | thiết bị quang học 0,905 · máy móc công nghiệp 0,954 | *đề xuất của báo cáo* |
+
+Lần 2007 là lần đáng kể nhất: quy tắc chỉ ra điện tử khi nhóm đó mới 3,4 tỷ USD,
+trước đợt bùng nổ đưa nó lên 29,94% rổ hàng.
+
+**Nền so sánh — RCA của Việt Nam không tự đi lên.** Trên 97 nhóm HS2, cửa sổ
+2015 → 2023:
+
+| Nhóm con | n | % có RCA tăng | Trung vị thay đổi |
+|---|---|---|---|
+| tất cả | 97 | 45,4% | −0,0178 |
+| RCA 2015 ≥ 1,5 | 24 | **25,0%** | **−0,6413** |
+| RCA 2015 < 0,5 | 46 | 58,7% | +0,0138 |
+| **PCI > 0** | 43 | **62,8%** | **+0,0260** |
+| PCI ≤ 0 | 54 | 31,5% | −0,0733 |
+| PCI > 0 và đã tăng ở cửa sổ trước | 19 | **63,2%** | **+0,0907** |
+| chỉ dải RCA 0,5–1,5 | 27 | 40,7% | −0,0405 |
+
+**Hai kết luận, và cái thứ hai là một điểm yếu phải nói ra:**
+
+1. **Điều kiện mang sức dự báo là `pci > 0`, không phải dải RCA.** Hàng khó tăng
+   RCA ở 62,8% số nhóm, hàng dễ 31,5%. Dải RCA 0,5–1,5 đứng một mình còn **kém hơn
+   mức bình quân** (40,7% so với 45,4%); nó có mặt trong quy tắc để chọn *chỗ còn
+   đường đi*, không phải để dự báo.
+2. **Lớp thoả trọn quy tắc quá nhỏ để kết luận thống kê:** 6 nhóm ở cửa sổ
+   2015 → 2023 (50% tăng, trung vị +0,0205), và ở cửa sổ 2007 → 2015 lớp tương
+   đương lại **tệ hơn** bình quân (28,6%, trung vị −0,1893). Nên sức nặng nằm ở
+   **ba lần chọn cụ thể** và ở **điều kiện PCI**, chứ chưa ở mức "quy tắc đúng về
+   mặt thống kê". Báo cáo viết đúng như vậy ở §7.2.
+
+Cũng vì vậy mà điều kiện 2 của đề xuất (*không dồn thêm vào điện tử, RCA 2,23*)
+có thêm một chỗ tựa bằng số: nhóm RCA ≥ 1,5 chỉ 25% tăng tiếp, trung vị −0,6413.
+
+Lấy lại số: ba lệnh ở bảng trên · bảng nền so sánh ghép hai năm của
+`data/processed/country_product.csv` theo `product_id` — viết thành §7.2.
 
 ---
 
@@ -629,7 +680,8 @@ Ghi lại kèm **lý do**, để sau này không ai phải mở lại tranh lu�
 | B19 | **Khung point áp cho MỌI hình, không riêng T16** | B16 phát hiện lỗi đơn vị; T22 sửa xong cả năm hình cũ và `reference_data.xuat_png` thành chỗ duy nhất định nghĩa phép xuất. `src/check_readability.py` canh để không ai thêm hình mới bằng lối cũ. Sửa cỡ chữ là nửa dễ: ở cỡ đúng chữ to gấp 2,78 lần nên **cả năm hình phải bố cục lại** — tiêu đề tự ngắt dòng, chú giải có dải riêng, nhãn chồng thì bỏ bớt chứ không đè |
 | B20 | **Tên nhóm hàng HS2 có bảng tiếng Việt dùng chung** | `tree.csv` chỉ có tên tiếng Anh nên tới trước T31 mọi nhãn nhóm hàng trên T12, T13, T14 đều là tiếng Anh giữa một bài tiếng Việt. `R.PRODUCT_NAME_VI` + `R.ten_nhom()` phủ các nhóm thật sự được dán nhãn, phần đuôi tự lùi về tên gốc |
 | B21 | **Báo cáo cuối viết thành nhiều file Markdown trong `.report/final/`, một file một mục** | bản dịch giữa kỳ viết thẳng LaTeX, và diff của một PR sửa LaTeX thì **không đọc nổi** — không rà soát chéo được (T23). Markdown thì diff theo câu, review được trong git; T27 ráp sang LaTeX/HTML ở bước cuối. Số hiệu mục (`02-...`) là tạm cho tới khi T27 chốt thứ tự |
-| B22 | **Phần Phương pháp luận nêu cả phép kiểm KHÔNG sạch** | `check_tree.py` báo 1 lỗi (`3501` lệch nhánh) và 1 lưu ý (`XXXX` dưới `99`). Nới điều kiện kiểm cho nó qua thì mất luôn giá trị của phép kiểm. Giữ nguyên, kèm phép đo chứng minh lỗi đó **không ảnh hưởng** hình nào (cùng ngành 6, hình chỉ dùng tầng 1–2) — xem §2.8 |
+| B22 | **Phần Phương pháp luận nêu cả phép kiểm KHÔNG sạch** | `check_tree.py` báo 1 lỗi (`3501` lệch nhánh) và 1 lưu ý (`XXXX` dưới `99`). Nới điều kiện kiểm cho nó qua thì mất luôn giá trị của phép kiểm. Giữ nguyên, kèm phép đo chứng minh lỗi đó **không ảnh hưởng** hình nào (cùng ngành 6, hình chỉ dùng tầng 1–2) — xem §A.3 |
+| B23 | **Báo cáo cuối chốt 10 mục: bốn hồi + Mở đầu + Phương pháp + Đề xuất + Kết luận + Phụ lục** | checklist nộp bài đòi báo cáo có đủ bốn phần *Quy mô → Cấu trúc → Vị trí Việt Nam → Ý nghĩa*, còn **B18** đòi kết bằng đề xuất; hai ràng buộc đó cho đúng bố cục này. T27 chốt số hiệu mục (§2.4 cũ → §A.1, §3.6 cũ → §5.3 …) nên mọi tham chiếu chéo phải đổi một lượt — `src/build_report.py` tự kiểm bằng cách so mọi `§x.y` với danh sách tiêu đề có thật, đạt là khi không còn tham chiếu nào treo |
 
 ### B4 chi tiết — quy tắc lọc cạnh
 
@@ -784,7 +836,7 @@ không phải tin bừa:
    nên không một tổng theo ngành nào lệch, và mọi hình trong báo cáo dừng ở tầng
    1–2 còn chỗ lệch ở tầng 4 → **không ảnh hưởng**. Lưu ý: mã `XXXX` (*Trade data
    discrepancies*) dưới HS2 `99` là mã **giữ chỗ hợp lệ của Atlas**, không phải
-   lỗi cây. Chi tiết ở §2.8 phần Phương pháp luận.
+   lỗi cây. Chi tiết ở §A.3 của báo cáo.
 
 ---
 

@@ -354,19 +354,28 @@ global-ecom/
 │   ├── probe_colour_space.py  # còn chỗ cho bảng màu mới không (B17)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
+│   ├── build_report.py           # T27 ráp 10 mục -> output/bao-cao-cuoi.{md,html}
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
 │   ├── nhat-ky-cong-viec.md        # đã làm gì, nằm ở đâu — mở trước khi soạn slide
-│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A16, quyết định B1–B22, hạn chế D1–D5
+│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A17, quyết định B1–B23, hạn chế D1–D5
 │   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
 │   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
 │   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
 │   └── kien-thuc-nen-tang.md       # kiến thức kinh tế tối thiểu để đọc số
 ├── .report/
-│   ├── final/        # báo cáo cuối — MỘT FILE MỘT MỤC, Markdown (B21)
+│   ├── final/        # báo cáo cuối — MỘT FILE MỘT MỤC, Markdown (B21, B23)
+│   │   ├── 00-tom-tat.md           # bản một trang
+│   │   ├── 01-mo-dau.md            # câu hỏi, thông điệp, bố cục, danh mục hình
 │   │   ├── 02-phuong-phap-luan.md  # Phương pháp luận (T25)
-│   │   └── 03-phat-hien.md         # Phát hiện (T26)
+│   │   ├── 03-quy-mo.md            # hồi 1 — Quy mô
+│   │   ├── 04-cau-truc.md          # hồi 2 — Cấu trúc
+│   │   ├── 05-vi-tri-viet-nam.md   # hồi 3 — Vị trí Việt Nam
+│   │   ├── 06-y-nghia.md           # hồi 4 — Ý nghĩa
+│   │   ├── 07-de-xuat.md           # Đề xuất (T27)
+│   │   ├── 08-han-che-ket-luan.md  # hạn chế D1–D5 + kết luận
+│   │   └── 09-phu-luc.md           # 5 mục phương pháp chuyển về đây
 │   ├── midterm/      # bản dịch chương 9 giữa kỳ (HTML)
 │   └── overleaf/     # bản dịch chương 9 giữa kỳ (LaTeX)
 └── phan-cong-cong-viec.xlsx
@@ -445,6 +454,9 @@ python src/make_decision_plane.py --year 2015 --since 2007   # thử lại quy t
 python src/check_readability.py       # T24 kiểm khả năng đọc, ĐẠT thì trả 0
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
+python src/make_decision_plane.py --year 2007 --since 1999  # quy tắc chạy ở 2007
+python src/build_report.py            # T27 ráp báo cáo cuối từ .report/final/
+python src/build_report.py --embed    # bản HTML một file, nhúng PNG (~8,6 MB)
 ```
 
 Biểu đồ ra `output/` dưới hai dạng `.html` và `.png`; thư mục này bị
@@ -529,21 +541,29 @@ certutil -hashfile data\atlas\cc_year.csv MD5
 Mã in ra phải trùng với cột MD5 ở bảng trên. Chỉ so kích thước là chưa đủ, nhưng
 lệch kích thước thì chắc chắn file hỏng.
 
-## Báo cáo cuối: Phương pháp luận (T25) và Phát hiện (T26) đã viết
+## Báo cáo cuối đã ráp xong (T27)
 
-Một file một mục, Markdown (quyết định **B21**). Cả hai file **dài hơn** số trang
-file phân công dự tính, nên mỗi file mang sẵn **kế hoạch cắt** ở đầu — T27 ráp báo
-cáo thì cắt theo kế hoạch đó.
+Một file một mục, Markdown (quyết định **B21**), ráp bằng `src/build_report.py`
+ra `output/bao-cao-cuoi.md` và `output/bao-cao-cuoi.html`. Bố cục chốt ở **B23**:
+bốn hồi mà checklist nộp bài đòi — **Quy mô → Cấu trúc → Vị trí Việt Nam → Ý
+nghĩa** — kẹp giữa Mở đầu và Phương pháp luận ở trước, Đề xuất và Kết luận ở sau,
+rồi Phụ lục. Đo được: **khoảng 19 trang thân + 3 trang phụ lục** (11.100 chữ văn
+xuôi, không kể bảng), **14 hình** chèn đúng mục.
 
-### Phương pháp luận (T25) — `.report/final/02-phuong-phap-luan.md`
+`build_report.py` **tự kiểm tham chiếu chéo**: nó so mọi `§x.y` trong bài với danh
+sách tiêu đề có thật và in ra những tham chiếu treo. Đó là phép kiểm bắt buộc, vì
+T27 đã đổi số hiệu toàn bộ (§2.4 cũ → §A.1, §3.6 cũ → §5.3 …) nên một tham chiếu
+sót lại sẽ trỏ vào mục không còn tồn tại. Hiện **0 tham chiếu treo**.
+
+### Phương pháp luận (T25) — `02-phuong-phap-luan.md` + `09-phu-luc.md`
 
 12 tiểu mục, **mỗi con số kèm lệnh lấy lại được**. Nội dung đáng chú ý:
 
-- **Vì sao T19 dùng đồ thị đầy đủ còn T15–T17 dùng đồ thị đã lọc** (§2.7). Đây
+- **Vì sao T19 dùng đồ thị đầy đủ còn T15–T17 dùng đồ thị đã lọc** (§2.5). Đây
   không phải sở thích: dùng đồ thị đã lọc cho Sankey thì cán cân Việt Nam 2023
   **đổi dấu** — từ **+53,45 tỷ USD** thành **−15,17 tỷ USD** — vì ngưỡng cắt phía
   bán ra (166 → 8 nước) nặng hơn phía mua vào (149 → 10 nước). Phát hiện **A15**.
-- **Hai chỗ lệch của cây HS92** (§2.8), giữ nguyên kết quả kiểm không sạch: nút
+- **Hai chỗ lệch của cây HS92** (§A.3), giữ nguyên kết quả kiểm không sạch: nút
   `3501` (casein) nằm dưới HS2 `34` thay vì `35`, nhưng cùng ngành 6 nên không tổng
   ngành nào lệch; mã `XXXX` dưới HS2 `99` là mã giữ chỗ của Atlas, và nhóm `99` ấy
   chiếm **11,83%** rổ hàng Việt Nam (45,60 tỷ USD, RCA 2,4408, PCI −1,206) nên bị
@@ -551,22 +571,22 @@ cáo thì cắt theo kế hoạch đó.
 - **Hạn chế D1–D5** nói thẳng, kèm số: 2023 không phải 2024 (thiếu 1.781 cặp nước),
   ECI đo hàng *đi qua* chứ chưa hẳn hàng *ở lại*, node-link vứt 98,5% số cạnh, dữ
   liệu dừng ở HS2, và không có bảng vào–ra.
-- **Vì sao tin được đề xuất** (§2.10): nó là một quy tắc trong code, nên thử lại
+- **Vì sao tin được đề xuất** (§7.1): nó là một quy tắc trong code, nên thử lại
   được trên quá khứ — chạy trên 2015 thì chọn thiết bị quang học và sắt thép, tám
   năm sau sắt thép chạm **RCA 1,00**.
 
 ```bash
-# Lấy lại các số của §2.7 và §2.8
+# Lấy lại các số của §2.5 và §A.3
 PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_sankey.py
 PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/check_tree.py
 ```
 
-### Phát hiện (T26) — `.report/final/03-phat-hien.md`
+### Phát hiện (T26) — nay là bốn hồi, `03-quy-mo.md` … `06-y-nghia.md`
 
 Chín tiểu mục theo mạch lập luận, không theo thứ tự số A. Phần đáng chú ý nhất là
 một **phát hiện sửa chính câu trung tâm của đồ án**:
 
-- **Phép đếm bạn hàng KHÔNG bền** (§3.6, phát hiện **A16**). Câu cũ: "số bạn hàng
+- **Phép đếm bạn hàng KHÔNG bền** (§5.3, phát hiện **A16**). Câu cũ: "số bạn hàng
   giảm từ 181 xuống 166". Số đúng, phép đo thì không: **47 nước** rời khỏi danh sách
   giữa 2002 và 2023 chỉ mang theo **0,59%** kim ngạch, và đặt một mức sàn vào là kết
   luận **đảo chiều** — trên 100 triệu USD thì số kênh **tăng 13 → 83**. Phép đo bền
@@ -574,11 +594,11 @@ một **phát hiện sửa chính câu trung tâm của đồ án**:
   mức 1995**; top-3 nhận **52,41%**. Việt Nam đi từ **dưới** trung vị thế giới (2015)
   lên **hạng 30/97** nước xuất trên 10 tỷ USD, và là nước **tập trung nhất ASEAN**
   (gần gấp đôi Thái Lan).
-- **Ba kết quả cấu trúc mạng đi ngược trực giác** (§3.2): mật độ **0,5183** nên mạng
+- **Ba kết quả cấu trúc mạng đi ngược trực giác** (§4.1): mật độ **0,5183** nên mạng
   không scale-free (R² của phép khớp lũy thừa chỉ **0,51**); kết nối dàn đều ra
   (lệch khỏi phân bố đều 0,180 → **0,056**) mà giá trị thì không (Gini đứng yên
   0,9548 → 0,9569); và betweenness **bằng 0 ở 172/231 nước**.
-- **ASEAN không hiện ra như một cộng đồng** (§3.3) — ba phép đo độc lập cùng nói
+- **ASEAN không hiện ra như một cộng đồng** (§4.2) — ba phép đo độc lập cùng nói
   thế: Louvain, tỷ trọng tiền (**7,77%** so với **52,41%**), và chord 1995 vs 2023.
 
 Hai chỗ ghi sai trong sổ phát hiện đã được sửa cùng lúc: **A13** (đỉnh số bạn hàng
@@ -594,9 +614,36 @@ hai** phép đo kèm bốn mức sàn để không ai dùng lại phép không b
 nó không bền.
 
 ```bash
-# Lấy lại các số của §3.6 (cả hai chiều)
+# Lấy lại các số của §5.3 (cả hai chiều)
 PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_time_multiples.py
 PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_time_multiples.py --direction nhap
+```
+
+### Đề xuất và phép thử lại (T27) — `07-de-xuat.md`
+
+Báo cáo kết bằng một đề xuất, không dừng ở mô tả (**B18**): dồn ưu tiên vào **thiết
+bị quang học – đo lường – y tế** (RCA 0,905; PCI +0,934) và **máy móc công nghiệp**
+(0,954; +0,783). Đề xuất do **quy tắc trong `make_decision_plane.py`** chọn, nên
+chạy lại được trên quá khứ — và T27 đã chạy thêm một năm nữa:
+
+| Chạy quy tắc ở | Nó chọn | Tám năm sau |
+|---|---|---|
+| 2007 | máy điện – điện tử, RCA 0,573 | RCA **2,230**, xuất **3,4 → 115,4 tỷ USD** |
+| 2015 | thiết bị quang học 0,751 · sắt thép 0,604 | 0,905 · **1,003 — vượt ngưỡng** |
+| 2023 | thiết bị quang học 0,905 · máy móc công nghiệp 0,954 | *đề xuất của báo cáo* |
+
+Phát hiện **A17** là **nền so sánh** cho ba lần ấy: RCA không tự đi lên — trong 97
+nhóm hàng chỉ **45,4%** tăng giữa 2015 và 2023, trung vị **−0,0178**, còn nhóm đã có
+RCA ≥ 1,5 thì chỉ **25%** tăng tiếp. A17 cũng nói thẳng chỗ yếu: điều kiện mang sức
+dự báo là **PCI > 0** (62,8% tăng, so với 31,5% ở hàng dễ) chứ không phải dải RCA
+0,5–1,5 (40,7%, kém cả mức bình quân), và lớp thoả trọn quy tắc chỉ có 6 nhóm — quá
+nhỏ để kết luận thống kê.
+
+```bash
+# Lấy lại bảng ba lần chạy ở §7.2
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_decision_plane.py --year 2007 --since 1999
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_decision_plane.py --year 2015 --since 2007
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_decision_plane.py --year 2023
 ```
 
 ## Quy ước git
