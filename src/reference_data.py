@@ -690,3 +690,31 @@ HS2_NAME_VI = {
     "97": "Tác phẩm nghệ thuật, đồ cổ",
     "99": "Hàng hóa khác",
 }
+
+
+def wrap_pt(text, font_pt, width_pt, ratio=0.52):
+    """Ngắt dòng theo BỀ RỘNG THẬT tính bằng point, không theo số ký tự đoán mò.
+
+    `ratio` là bề rộng trung bình một ký tự so với cỡ chữ, đo xấp xỉ cho
+    Segoe UI / Arial. Khung hình rộng 453,6pt nên một dòng 13pt chỉ chứa
+    khoảng 67 ký tự — ngắt sai là tiêu đề tràn ra ngoài mép.
+
+    Dùng chung cho mọi hình đặt khung bằng point theo B16.
+    """
+    limit = max(8, int(width_pt / (font_pt * ratio)))
+    lines, cur = [], ""
+    for word in text.split(" "):
+        probe = (cur + " " + word).strip()
+        if len(probe) <= limit or not cur:
+            cur = probe
+        else:
+            lines.append(cur)
+            cur = word
+    if cur:
+        lines.append(cur)
+    return "<br>".join(lines)
+
+
+def n_lines(wrapped):
+    """Số dòng của một chuỗi đã qua `wrap_pt` — để tính lề trên/dưới."""
+    return wrapped.count("<br>") + 1

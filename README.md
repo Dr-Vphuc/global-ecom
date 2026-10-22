@@ -200,11 +200,68 @@ chi tiết nhỏ. Giá phải trả cho phần bảo hiểm rất rẻ: **+23 c�
 67,8% giá trị năm 2023 — tức là **vứt 98,5% số cạnh**. Phần bị vứt là hàng vạn
 luồng nhỏ; cộng lại chúng bằng gần một phần ba thương mại thế giới. Node-link vì
 vậy **không** đọc được là "bản đồ thương mại toàn cầu", mà là *"bản đồ các luồng
-thương mại lớn, cộng với chỗ đứng của ASEAN trong đó"*. Ai muốn nhìn phần đuôi
-phải xem ma trận kề (T16), vì ma trận chịu được nhiều cạnh hơn hẳn node-link.
+thương mại lớn, cộng với chỗ đứng của ASEAN trong đó"*. Ma trận kề của T16 vẽ
+đủ **cả 416 luồng có hướng**, không gộp hai chiều và không có cạnh nào chồng lên
+cạnh nào — nhưng nó đứng trên cùng đồ thị đã lọc ấy, nên **không** cứu được cái
+98,5% đã bỏ. Muốn nhìn phần đuôi thì phải đổi ngưỡng, không phải đổi loại hình.
 
 Toàn bộ 21 phương án đã cân nhắc nằm trong `data/processed/threshold_coverage.csv`
 — gồm cả họ ngưỡng tuyệt đối và họ "mỗi nước giữ k luồng lớn nhất" đã bị loại.
+
+### Ma trận kề: đổi thứ tự thì cấu trúc hiện ra (T16)
+
+`src/make_adjacency_matrix.py` vẽ **hai** ma trận 73 × 73 của cùng đồ thị đã
+lọc, hình vuông 6,30 × 6,30 inch, thang `SEQUENTIAL_SCALE`: một xếp theo mã
+nước A→Z (`adjacency_alpha_2023.png`), một xếp theo cụm Louvain
+(`adjacency_cluster_2023.png`). Hàng là nước xuất, cột là nước nhập.
+
+Hai bản có **cùng 416 ô** và **cùng 14,69 nghìn tỷ USD** — script tự dựng cả
+hai rồi so, tổng lệch **0 USD**. Khác nhau duy nhất là chỗ ngồi. Và chỗ ngồi
+đổi được bao nhiêu thì đã đo, chứ không chỉ nói:
+
+| Thước đo (2023) | Theo mã nước | Theo cụm | Xếp ngẫu nhiên |
+|---|---|---|---|
+| Khoảng cách trung bình tới đường chéo `\|i−j\|/(n−1)`, có trọng số theo giá trị | 0,398 | **0,258** | 0,341 |
+| Giá trị nằm trong khối | 69,7% — không phụ thuộc thứ tự | | |
+| Mật độ ô trong khối so với ngoài khối | 12,9% so với 4,1%, gấp **3,14 lần** | | |
+
+Thứ tự alphabet **còn xa đường chéo hơn cả 300 lần xếp ngẫu nhiên** (0,398 so
+với 0,341): nó không trung tính, nó chủ động trộn các khối vào nhau. Xếp theo
+cụm kéo con số xuống 0,258, giảm **35,1%**.
+
+Năm đối chứng 1995 cho cùng kết luận nhưng mạnh hơn (0,366 → 0,165, giảm
+54,9%) và lộ ra một phát hiện mới, **A10**: năm 1995 khối lớn là khối *xuyên
+Thái Bình Dương* do **Hoa Kỳ** đứng đầu, chứa cả Nhật Bản, Canada và 10 nước
+ASEAN; đến 2023 Hoa Kỳ đã tách ra thành một khối Bắc Mỹ 7 nước, còn khối cũ nở
+lên 41 nước với **Trung Quốc** ở tâm. Đồng thời tỉ lệ giá trị nằm trong khối
+rơi từ **83,8%** xuống **69,7%** trong khi modularity gần như đứng yên
+(0,343 → 0,337) — cấu trúc khối lỏng đi chứ không chặt lại.
+
+Hai quyết định mới đi kèm, cả hai đều từ phép đo: **B15** chỉ ghi nhãn 13 nước
+(10 ASEAN + nước mạnh nhất mỗi cụm) vì 73 nhãn trên cạnh 250,3pt chỉ còn 3,4pt
+mỗi nhãn, dưới sàn 7pt của style guide; **B16** đặt khung hình bằng point chứ
+không bằng pixel, vì không quy đổi được thì không kiểm được cái sàn ấy.
+
+### Chord: Việt Nam nối vào đâu, và không nối vào đâu (T17)
+
+`src/make_chord.py` gộp 73 nước thành **8 khối** suy thẳng từ `nodes.csv`: Việt
+Nam tách riêng, ASEAN còn lại, Đông Á tách khỏi phần Á còn lại, rồi bốn châu.
+Không có bảng gán tay — script tự kiểm **mọi nước thuộc đúng một khối** và in
+bảng đối chiếu (2023: 73 nước, 73 đã gán, 0 chưa gán, 0 khối chồng nhau).
+
+Bề dày dải là **tổng hai chiều** của phần vượt ngưỡng, theo **B13** như T15 —
+nên hình này **không** nói chiều của luồng. Chiều là việc của T19 (Sankey), và
+cố ý để dành cho nó.
+
+| Bạn hàng của Việt Nam | 1995 | 2023 |
+|---|---|---|
+| Đông Á | 59,1% | **70,9%** |
+| ASEAN còn lại | **33,4%** | 8,4% |
+| Châu Mỹ | *không luồng nào vượt ngưỡng* | **18,5%** |
+| Tổng giá trị | 6,6 tỷ USD | 514,9 tỷ USD |
+
+Khối phân biệt bằng **vị trí**, không bằng màu — xem **B17**: không gian màu đã
+hết chỗ cho bảng thứ ba, và điều đó đo được bằng `src/probe_colour_space.py`.
 
 ## Quyết định đã chốt
 
@@ -218,6 +275,8 @@ Toàn bộ 21 phương án đã cân nhắc nằm trong `data/processed/threshol
 | `sector_color` | đang là bảng màu tạm, phải thay ở T04 |
 | Ngưỡng lọc cạnh | **chốt ở T10**: `THRESHOLD_SHARE = 0.00046` (tỷ lệ theo năm) + `FOCUS_TOPK = 3` |
 | Mũi tên trên node-link | **không dùng** — đối ứng 0,84 nên hướng cạnh gần như vô nghĩa |
+| Nhãn trên ma trận kề (T16) | **13 nước, không phải 73** — 73 nhãn trên cạnh 250,3pt chỉ còn 3,4pt mỗi nhãn, dưới sàn 7pt. Giữ 10 nước ASEAN + nước mạnh nhất mỗi cụm → 19,3pt (B15) |
+| Khung hình của T16 | tính bằng **point** (`6,30 × 72 = 453,6`), không bằng pixel — có thế mới kiểm được sàn 7pt (B16) |
 
 ## Cấu trúc repo
 
@@ -239,13 +298,16 @@ global-ecom/
 │   ├── compute_metrics.py     # bậc, độ mạnh, betweenness, cộng đồng (T18)
 │   ├── make_degree_loglog.py     # log-log phân bố bậc, kiểm scale-free (T09)
 │   ├── make_node_link.py         # node-link mạng đã lọc, 73 nút (T15)
+│   ├── make_adjacency_matrix.py  # hai ma trận kề: alphabet vs cụm (T16)
+│   ├── make_chord.py          # chord 8 khối, Việt Nam làm trọng tâm (T17)
+│   ├── probe_colour_space.py  # còn chỗ cho bảng màu mới không (B17)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
 │   ├── nhat-ky-cong-viec.md        # đã làm gì, nằm ở đâu — mở trước khi soạn slide
-│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A9, quyết định B1–B12, hạn chế D1–D5
+│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A10, quyết định B1–B16, hạn chế D1–D5
 │   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
 │   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
 │   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
@@ -313,6 +375,10 @@ python src/check_tree.py              # T11 kiểm cây HS92, thoát 1 nếu câ
 python src/compute_metrics.py         # T18 metrics.csv + bảng top 20
 python src/make_degree_loglog.py      # T09 log-log phân bố bậc
 python src/make_node_link.py          # T15 node-link mạng đã lọc
+python src/make_adjacency_matrix.py   # T16 hai ma trận kề, alphabet vs cụm
+python src/make_adjacency_matrix.py --year 1995   # năm đối chứng
+python src/make_chord.py              # T17 chord 8 khối, VN làm trọng tâm
+python src/make_chord.py --year 1995  # năm đối chứng
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 ```

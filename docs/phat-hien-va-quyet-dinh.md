@@ -314,6 +314,92 @@ Chưa trả lời được **vì sao**: dữ liệu này không cho biết mất
 mất vì thương mại thật sự dừng hay vì dồn qua trung gian. Nếu viết vào báo cáo
 thì viết đúng phần đo được, đừng đoán phần còn lại.
 
+### A10. Khối Thái Bình Dương tách làm đôi, và Việt Nam ở lại phía đổi tâm
+
+`data/processed/edges.csv` · `src/make_adjacency_matrix.py --year 1995|2023`
+
+Ma trận kề của T16 bắt được điều mà một năm đứng một mình không nói ra. Cùng
+một quy tắc lọc, cùng Louvain `--seed 42`, hai năm cho hai bức tranh khác hẳn:
+
+| | 1995 | 2023 |
+|---|---|---|
+| Nút / luồng vượt ngưỡng | 63 / 383 | 73 / 416 |
+| Số cụm, cỡ từng cụm | 3 — **34 / 27 / 2** | 3 — **41 / 25 / 7** |
+| Nước mạnh nhất mỗi cụm | **Hoa Kỳ** · Đức · Brazil | **Trung Quốc** · Đức · Hoa Kỳ |
+| Modularity | 0,343 | 0,337 |
+| **Giá trị nằm trong khối** | **83,8%** | **69,7%** |
+| Mật độ ô trong khối / ngoài khối | 15,6% / 4,7% — gấp 3,31 | 12,9% / 4,1% — gấp 3,14 |
+| Khoảng cách tới đường chéo: mã nước → cụm | 0,366 → **0,165** | 0,398 → **0,258** |
+
+Ba câu đáng viết, theo thứ tự quan trọng:
+
+1. **Khối lớn đổi tâm.** Năm 1995 khối 34 nước là một khối *xuyên Thái Bình
+   Dương*: Hoa Kỳ, Nhật Bản, Canada và cả 10 nước ASEAN trong cùng một ô.
+   Năm 2023 Hoa Kỳ đã **ra khỏi** khối đó và đứng đầu một khối Bắc Mỹ riêng 7
+   nước, còn khối cũ nở lên 41 nước với **Trung Quốc** ở tâm. Việt Nam ở
+   nguyên trong khối lớn suốt — nhưng cái khối ấy đã đổi người cầm trịch.
+2. **Cấu trúc khối LỎNG đi, không chặt lại.** Tỉ lệ giá trị nằm trong khối rơi
+   từ 83,8% xuống 69,7% — 14,1 điểm phần trăm. Tức là đồng tiền lớn ngày càng
+   đi **qua** ranh giới khối chứ không ở trong. Lưu ý khi viết: modularity gần
+   như đứng yên (0,343 → 0,337), nên đây **không** phải "phân hoạch kém đi" mà
+   là "cùng một chất lượng phân hoạch, nhưng giá trị thoát ra ngoài khối nhiều
+   hơn". Hai số đo hai thứ khác nhau, đừng gộp.
+3. **Việt Nam dày lên thấy được trên hình.** Hàng và cột Việt Nam năm 1995 chỉ
+   có **3 ô xuất + 3 ô nhập** vượt ngưỡng (và cả 6 ô đó tồn tại được là nhờ
+   bảo hiểm top-3 ASEAN của B4, xem đoạn thứ 3 của B4); năm 2023 là **8 ô xuất
+   + 10 ô nhập**. Luồng lớn nhất đổi từ *xuất sang Nhật Bản 1,5 tỷ USD* thành
+   *nhập từ Trung Quốc 133,0 tỷ USD*.
+
+Một chỗ phải cẩn thận khi so hai năm: n khác nhau (63 so với 73) nên khoảng
+cách tới đường chéo và mật độ khối **không so trực tiếp được** giữa hai năm;
+chúng chỉ so được giữa hai cách xếp **trong cùng một năm**. Tỉ lệ giá trị
+trong khối thì so được, vì nó không phụ thuộc thứ tự lẫn cỡ ma trận.
+
+Hình đã vẽ: `output/adjacency_{alpha,cluster}_{1995,2023}.{html,png}`.
+
+---
+
+### A11. Việt Nam rời quỹ đạo ASEAN, vào hành lang Đông Á – châu Mỹ
+
+Chord T17 chia 73 nước thành 8 khối (Việt Nam tách riêng, ASEAN còn lại, Đông Á,
+Châu Á còn lại, rồi bốn châu). Nhìn riêng các dải chạm vào Việt Nam:
+
+| Bạn hàng của Việt Nam | 1995 | 2023 |
+|---|---|---|
+| Đông Á | 59,1% | **70,9%** |
+| ASEAN còn lại | **33,4%** | 8,4% |
+| Châu Mỹ | *không có luồng nào vượt ngưỡng* | **18,5%** |
+| Châu Âu | 7,5% | 2,3% |
+| Số khối nối tới | 3 trên 7 | 4 trên 7 |
+| Tổng giá trị | 6,6 tỷ USD | 514,9 tỷ USD — **gấp 78 lần** |
+
+Năm 1995, bạn hàng lớn thứ hai của Việt Nam là **chính ASEAN** (33,4%). Đến 2023
+chỗ đó thuộc về **châu Mỹ** (18,5%) — một khối mà năm 1995 Việt Nam **không có
+lấy một luồng nào vượt ngưỡng** — còn ASEAN tụt xuống 8,4%. Luồng lớn nhất đổi
+từ *Singapore bán sang Việt Nam 1,8 tỷ* thành *Trung Quốc bán sang Việt Nam
+133,0 tỷ*.
+
+Đặt cạnh **A8** (ASEAN không hiện ra như một cộng đồng) thì hai phát hiện này nói
+cùng một điều, từ hai phép đo độc lập: **lát cắt "Việt Nam – ASEAN" của đề tài là
+một câu hỏi, không phải một tiền đề.** Việt Nam hội nhập vào hành lang Đông Á –
+châu Mỹ chứ không hội nhập vào ASEAN. Đây là chất liệu tốt cho báo cáo, nhưng
+phải nói thẳng chứ đừng để người đọc tưởng nhóm đã giả định ngược lại.
+
+Hai con số nền đi kèm, đo trên cùng phân hoạch:
+
+- **Thương mại nội khối lỏng đi:** 60,5% → **48,4%** giá trị nằm trong nội bộ một
+  khối. Cùng chiều với A10 (83,8% → 69,7% trên phân hoạch Louvain) — hai phân
+  hoạch khác nhau, cùng một kết luận.
+- **Trọng tâm dịch sang Đông Á:** cung Đông Á nở từ 23,9% lên 30,1% tổng giá trị
+  chạm vào các khối, trong khi cung châu Âu co từ 37,9% xuống 27,6%.
+
+Cảnh báo khi trích: mọi tỉ lệ ở đây tính trên **phần vượt ngưỡng**, không phải
+toàn bộ thương mại. Quy tắc B4 giữ lại top-3 bạn hàng của nước trọng tâm nên các
+luồng nhỏ của Việt Nam không bị xoá ở **cả hai năm** — so sánh vẫn cùng một thước.
+
+Lấy lại số: `PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_chord.py --year 1995`
+Hình đã vẽ: `output/chord_bloc_{1995,2023}.{html,png}`.
+
 ---
 
 ## B. Quyết định đã chốt
@@ -336,6 +422,9 @@ Ghi lại kèm **lý do**, để sau này không ai phải mở lại tranh lu�
 | B12 | **Làm nổi Việt Nam bằng hình dạng, không bằng màu** | đã thử thêm màu thứ 11: mọi màu cam/đỏ khác 10 màu ngành ở mắt thường (ΔE 22–27) đều tụt xuống ΔE 4–8 khi mô phỏng mù màu. Viền đen 1,5px + nhãn đậm thay cho màu riêng |
 | B13 | **Node-link gộp hai chiều thành MỘT cạnh** | 416 cạnh có hướng rút còn 271 cặp nước. Đối ứng 0,84 nên vẽ hai nửa cạnh song song chỉ làm dày hình mà không thêm thông tin. Độ dày = **tổng giá trị hai chiều của phần vượt ngưỡng**, không phải tổng thương mại hai nước — có cặp chỉ một chiều lọt ngưỡng |
 | B14 | **Cụm Louvain dùng bảng màu RIÊNG, khóa theo thứ hạng cỡ cụm** | quy tắc §3.1 cấm mượn 10 màu ngành sang chỉ cụm. `COMMUNITY_PALETTE` đã qua cùng bộ kiểm: ΔE 24,7 mắt thường, 13,5 ở dạng mù màu khó nhất, và cách màu ngành gần nhất 20,0. Khóa theo cỡ cụm vì số hiệu Louvain là nhãn tùy ý, chạy lại có thể hoán vị |
+| B15 | **Ma trận kề chỉ ghi nhãn 13 nước, không ghi 73** | đo được: cạnh vùng vẽ **250,3pt** trên khung 453,6pt (= 6,30 inch), chia cho 73 nước còn **3,4pt mỗi nhãn** — dưới sàn **7pt** của style guide §7, và không có cách bố trí nào cứu được vì 73 × 7pt = 511pt đã dài hơn cả cạnh khung. Tập 13 nhãn = **10 nước ASEAN** (lát cắt của đề tài, B2) **+ nước mạnh nhất mỗi cụm** (chỗ duy nhất đặt tên được cho một khối) → **19,3pt mỗi nhãn**, đạt sàn. Xem chi tiết bên dưới |
+| B16 | **Khung hình của T16 tính bằng POINT, không bằng pixel** | `FIG_WIDTH_FULL * 72 = 453,6` thay cho `FIG_WIDTH_FULL * FIG_DPI_SCREEN = 1260`. Lý do: không quy đổi được thì không kiểm được sàn 7pt, mà sàn 7pt là một dòng trong checklist §7. Hệ quả đã đo, và là một lỗi có thật của các hình trước: xem bên dưới |
+| B17 | **Khối trong chord mã hoá bằng VỊ TRÍ, không bằng màu** | đã đo chứ không phỏng đoán: sau 10 màu ngành (T04) và 3 màu cụm (T15), tìm tham lam maximin trên lưới 868 màu in được thì hai màu đầu của một bảng mới còn cách ΔE 27,2 và 18,7 — nhưng chúng là `#00FF00` và `#FF00FF`, tức thuật toán đã phải bới vào góc gamut — và **màu thứ ba chỉ còn 14,2, dưới sàn 15**. Hết chỗ cho bảng màu thứ ba. Trên một vòng tròn thì khối đã có vị trí cố định và nhãn riêng nên hue không cần thiết: cung và dải dùng độ sáng, Việt Nam nổi lên bằng viền đen theo B12. Chạy lại: `src/probe_colour_space.py` |
 
 ### B4 chi tiết — quy tắc lọc cạnh
 
@@ -367,6 +456,94 @@ Ba lý do, theo thứ tự quan trọng:
 - *Ngưỡng tuyệt đối* mọi mức — không so sánh được giữa các năm.
 - *Mỗi nước giữ k luồng lớn nhất* — giữ đủ 231 nút nhưng độ phủ giá trị quá thấp
   (k=3 chỉ 40,5%), và k=10 mới đạt 66% thì đã 2.289 cạnh, quá dày để vẽ.
+
+### B15 chi tiết — vì sao 73 nhãn là không thể, và 13 nhãn nào
+
+Lấy lại số: `python src/make_adjacency_matrix.py --year 2023`, khối **NHÃN**.
+
+```
+cạnh vùng vẽ 250,3 pt (khung 453,6 pt = 6,30 inch)
+   73 nhãn ->  3,43 pt mỗi nhãn   DƯỚI sàn 7 pt
+   13 nhãn -> 19,25 pt mỗi nhãn   ĐẠT  sàn 7 pt
+```
+
+Đây **không** phải vấn đề bố trí khéo hay vụng. 73 dòng chữ, mỗi dòng tối thiểu
+7pt, là 511pt — dài hơn cả cạnh khung 453,6pt, chưa trừ tiêu đề và thanh màu.
+Không có cách xoay, so le hay thu nhỏ nào cứu được; chỉ còn hai lối ra: **bỏ
+bớt nhãn** hoặc **phóng to hình**, mà phóng to thì vi phạm khổ 6,30 inch của
+style guide §5 vốn là bề rộng vùng chữ của khổ A4.
+
+Chọn tập 13 theo hai tiêu chí, mỗi tiêu chí trả lời một câu người đọc sẽ hỏi:
+
+| Ai được ghi tên | Vì sao |
+|---|---|
+| **10 nước ASEAN** (gồm Việt Nam, in đậm) | đề tài có lát cắt VN–ASEAN, B2. Không ghi thì không ai tìm được Việt Nam trên một tấm lưới 73×73 |
+| **Nước mạnh nhất mỗi cụm** (2023: Trung Quốc, Đức, Hoa Kỳ) | là chỗ duy nhất gọi tên được một khối. Không có nó thì ba khối chỉ là ba ô vuông vô danh |
+
+Ba thứ đi kèm để việc bỏ nhãn không thành mất thông tin:
+
+1. **Nét dẫn.** Ở bản xếp theo cụm, 7 nước ASEAN nằm cách nhau 2–3 hàng (8–12pt)
+   nên nhãn vẫn đè nhau dù chỉ còn 13 cái. Nhãn được đẩy ra vừa đủ và nối về
+   đúng hàng bằng một nét 0,4pt — **hàng không xê dịch, chỉ cái nhãn xê dịch**.
+2. **Nhãn theo KHỐI ở lề phải** — tên nước mạnh nhất + cỡ khối, thay cho việc
+   đọc tên từng thành viên.
+3. **Chỉ ghi nhãn ở hàng, không ghi ở cột.** Hai trục dùng chung một thứ tự nên
+   nhãn cột chỉ lặp lại nhãn hàng; bỏ đi thì ma trận to thêm **40pt** mỗi cạnh.
+   Bù lại có một đường chéo mảnh để dò từ một cột về hàng cùng tên, và các vạch
+   chia nhỏ trên trục trên đặt đúng 13 vị trí ấy.
+4. **Bản `.html` vẫn đủ 73 × 73**: rê chuột vào bất kỳ ô nào ra tên hai nước,
+   giá trị và số hiệu khối. Không ô nào bị bỏ đi, chỉ nhãn bị bỏ.
+
+### B16 chi tiết — point hay pixel, và một lỗi đơn vị của các hình trước
+
+Các script trước đặt khung plotly rộng `FIG_WIDTH_FULL * FIG_DPI_SCREEN = 1260`
+rồi truyền thẳng `FONT_SIZES` (13 / 10 / 9 / 8 / 7) vào làm cỡ chữ. Hai con số
+ấy **không cùng đơn vị**: 1.260 là pixel ảnh, còn 13 trong style guide là
+point in trên khổ 6,30 inch.
+
+Hệ quả đo được: khi dán ảnh vào cột chữ rộng 6,30 inch, một đơn vị khung bằng
+`453,6 / 1.260 = 0,36pt`. Nên trên bản in, tiêu đề 17 đơn vị của
+`output/node_link_2023.png` chỉ còn **≈ 6,1pt**, và dòng nguồn 7 đơn vị còn
+**≈ 2,5pt**. Dòng cuối checklist §7 — *"chữ nhỏ nhất ≥ 7pt sau khi xuất"* —
+hiện **không** đạt ở T09, T12–T15, mà không ai thấy vì trên màn hình ảnh được
+xem to hơn khổ in khoảng 2,8 lần.
+
+T16 đặt khung `453,6 × 453,6` (= 6,30 inch × 72) và xuất PNG bằng
+`scale = 6,30 × 300 / 454 = 4,163` → ảnh 1.890 × 1.890 px, đúng 300 dpi của
+`FIG_DPI_PRINT`. Khi đó **một đơn vị khung = một point in thật**, cỡ chữ trong
+`FONT_SIZES` là point thật, và câu "3,4pt mỗi nhãn" ở B15 là một phép trừ kiểm
+lại được chứ không phải một ước lượng.
+
+**Chưa sửa các hình cũ** — đó là việc của T22 (áp hệ thống thị giác lên toàn bộ
+biểu đồ), không phải của T16, và sửa thì phải vẽ lại cả năm hình cùng lúc để
+chúng còn cùng một cỡ chữ. Ghi ở đây để T22 không phải phát hiện lại.
+
+---
+
+### B17 chi tiết — không gian màu đã hết chỗ, và đo được là hết
+
+`src/probe_colour_space.py` chọn tham lam maximin trên lưới 868 màu nằm trong
+khoảng độ sáng in được: mỗi bước lấy màu cách xa nhất **mọi màu đã bị chiếm** (10
+màu ngành + 3 màu cụm) và mọi màu đã chọn trước đó. Nếu cách tốt nhất vẫn dưới
+ngưỡng thì không phải do chọn kém — là hết chỗ thật.
+
+| Màu thứ | Màu tìm được | Cách màu đã chiếm (ΔE2000) | Ngưỡng |
+|---|---|---|---|
+| 1 | `#00FF00` | 27,2 | 15 |
+| 2 | `#FF00FF` | 18,7 | 15 |
+| 3 | `#0000FF` | **14,2** | 15 — **hỏng** |
+| 4 | `#FF0000` | **14,0** | 15 — **hỏng** |
+
+Hai điều đọc ra từ bảng này. Thứ nhất, hai màu đầu *đạt ngưỡng* nhưng là lục và
+hồng cánh sen bão hoà hết cỡ — thuật toán đã phải chạy ra sát mép gamut, nghĩa là
+chỗ trống chỉ còn ở những nơi không ai muốn in. Thứ hai, chỉ cần tới màu thứ ba
+là tụt dưới sàn. Một bảng màu 8 khối thì không có cửa.
+
+Hệ quả cho cả đồ án, không riêng T17: **từ đây, thứ gì cần phân biệt mà không
+phải ngành hàng hay cụm Louvain thì phải dùng kênh khác hue** — vị trí, hình
+dạng, độ sáng, hoặc nhãn. Quy tắc §3.1 của style guide ("màu = ngành hàng, chỉ
+thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa mà là một ràng buộc đo
+được.
 
 ---
 
@@ -410,8 +587,11 @@ Năm hạn chế. Nêu ra thì được điểm trung thực; giấu đi mà b�
    bất kể giữ lại bao nhiêu giá trị. Xem A2.
 3. **Node-link vứt 98,5% số cạnh.** Nó **không** đọc được là "bản đồ thương mại
    toàn cầu", mà là *"bản đồ các luồng thương mại lớn, cộng chỗ đứng của ASEAN
-   trong đó"*. Ai muốn nhìn phần đuôi phải xem ma trận kề (T16) — ma trận chịu
-   được nhiều cạnh hơn hẳn node-link.
+   trong đó"*. Ai muốn nhìn phần đuôi phải xem ma trận kề (T16,
+   `output/adjacency_cluster_2023.png`) — ma trận vẽ đủ **cả 416 luồng có
+   hướng**, không gộp hai chiều như node-link, và không có cạnh nào chồng lên
+   cạnh nào. Nhưng nó cũng chỉ vẽ **đúng 416 luồng ấy**: cả hai hình đứng trên
+   cùng một đồ thị đã lọc, nên ma trận **không** cứu được cái 98,5% đã bỏ.
 4. **Dữ liệu dừng ở HS2 (97 nhóm hàng).** Chi tiết hơn cần file HS4 452 MB
    (~4,2 giờ tải). "Điện, điện tử và linh kiện" gộp cả chip lẫn dây điện.
 5. **Không có dữ liệu giá trị gia tăng.** Mọi nhận định về "giữ lại bao nhiêu
