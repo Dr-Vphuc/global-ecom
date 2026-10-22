@@ -138,10 +138,17 @@ san phẳng chuyện “ai nối với ai”, nhưng không san phẳng chuyện
 
 | Giữ lại | % số cạnh | % giá trị |
 |---|---|---|
-| top 100 cạnh | 0,36% | 43,0% |
-| top 416 (quy tắc đã chốt) | 1,51% | 68,5% |
-| top 1.000 | 3,63% | 83,5% |
-| top 2.754 | 10,0% | 95,2% |
+| top 100 cạnh | 0,36% | 43,02% |
+| top 416 cạnh | 1,51% | 68,50% |
+| top 1.000 | 3,63% | 83,54% |
+| top 2.754 | 10,0% | 95,19% |
+| **quy tắc đã chốt (B4)** — cũng 416 cạnh | 1,51% | **67,84%** |
+
+Hai dòng cuối **không trùng nhau**, và dòng thứ hai từng bị ghi gộp vào dòng "top
+416" (đã sửa 22/10/2026). Chỗ lệch là một lựa chọn: B4 giữ thêm top-3 luồng vào/ra
+của từng nước ASEAN, nên nó **đánh đổi 0,66 điểm phần trăm độ phủ giá trị** để cả
+10 nước ASEAN có mặt ở mọi năm. Không có chỗ đánh đổi ấy thì năm 1995 Brunei và
+Lào biến khỏi hình.
 
 **Vứt 98,5% số cạnh vẫn giữ hơn 2/3 tổng giá trị thương mại thế giới.**
 
@@ -428,7 +435,14 @@ Lấy lại số: `src/make_sankey.py` · Hình: `output/sankey_vietnam_{1995,20
 
 ---
 
-### A13. Số bạn hàng đã đạt đỉnh từ 2005, không phải mới giảm
+### A13. Số bạn hàng đạt đỉnh rồi lùi — nhưng đỉnh là 2002, và phép đo này không bền
+
+> ⚠️ **Đã sửa 22/10/2026 (xem A16).** Mục này từng ghi *"đỉnh rơi vào 2005"* và
+> *"từ đó giảm liên tục qua từng mốc"*. Cả hai câu chỉ đúng **trong bốn năm mốc
+> 1995/2005/2015/2023**. Đo trên chuỗi đầy đủ 1995–2023 thì đỉnh là **2002 với 208
+> nước** (bên nhập: **2003 với 176 nước**), và chuỗi không giảm đều. Quan trọng hơn,
+> **A16 cho thấy chính phép đo "đếm bạn hàng" không bền** — đọc A16 trước khi trích
+> bất cứ con số nào ở đây.
 
 **A9 đúng nhưng chưa đủ.** A9 so 2015 với 2023 và thấy mất 15 bạn hàng. Vẽ đủ
 bốn năm mốc thì hình dạng thật không phải một đường giảm:
@@ -436,17 +450,19 @@ bốn năm mốc thì hình dạng thật không phải một đường giảm:
 | Năm | Xuất khẩu | Số bạn hàng |
 |---|---|---|
 | 1995 | 5,1 tỷ USD | 98 |
-| 2005 | 32,9 tỷ USD | **200 ← đỉnh** |
+| **2002** | 16,3 tỷ USD | **208 ← đỉnh thật** |
+| 2005 | 32,9 tỷ USD | 200 |
 | 2015 | 169,4 tỷ USD | 181 |
 | 2023 | 385,5 tỷ USD | 166 |
 
-Đỉnh rơi vào **2005**, và từ đó giảm **liên tục** qua từng mốc. Nên việc thu hẹp
-kênh bán là xu thế **18 năm**, không phải 8 năm. Bên nhập cũng vậy: đỉnh 164
-nước năm 2005.
+Nên việc thu hẹp **số lượng** kênh bán là xu thế **21 năm** (2002 → 2023), không
+phải 18 năm và cũng không phải 8 năm. Nhưng xem A16: 47 nước rời khỏi danh sách
+trong 21 năm đó chỉ mang theo **0,59%** kim ngạch, nên câu đáng viết vào báo cáo là
+câu về **tập trung giá trị**, không phải câu về số đếm.
 
 Cẩn thận chỗ này: so hai đầu 1995 → 2023 sẽ ra "**tăng** 68 nước", đúng số mà
 che mất toàn bộ câu chuyện. Tiêu đề của T20 vì thế đi tìm năm đỉnh chứ không trừ
-hai đầu.
+hai đầu — và từ 22/10/2026 nó tìm trên **cả chuỗi**, không chỉ bốn năm được vẽ.
 
 Lấy lại số: `src/make_time_multiples.py` · Hình: `output/time_multiples_xuat.png`
 
@@ -513,6 +529,76 @@ chiều. Quy tắc rút ra, dùng cho cả báo cáo:
 
 Lấy lại số: `src/make_sankey.py` (khối KIỂM CHỨNG) và `data/processed/edges.csv`
 lọc theo cột `above_threshold`. Viết hẳn thành §2.7 của phần Phương pháp luận.
+
+---
+
+### A16. "Số bạn hàng giảm" là một phép đo KHÔNG bền — phép bền là tập trung giá trị
+
+`data/processed/edges.csv` · đồ thị đầy đủ · đo 22/10/2026 khi viết T26
+
+Đây là phát hiện **sửa chính câu đang đứng giữa lập luận của đồ án** (A9, A13, và
+nhịp 3 của §E). Câu cũ: *"xuất khẩu gấp 2,28 lần mà số bạn hàng giảm từ 181 xuống
+166 — tiền vào nhiều hơn qua ít kênh hơn"*. Số liệu ấy đúng. Phép đo thì không bền.
+
+Đếm "bạn hàng" là đếm mọi nước có luồng xuất khẩu **lớn hơn 0**, nên nó đếm cả
+luồng cỡ một triệu USD. Đặt một mức sàn giá trị vào thì kết luận **đảo chiều**:
+
+| Việt Nam bán cho bao nhiêu nước | 1995 | 2002 | 2005 | 2015 | 2023 |
+|---|---|---|---|---|---|
+| trên 0 (phép đo cũ) | 98 | **208** | 200 | 181 | 166 |
+| trên 10 triệu USD | 32 | 53 | 78 | **138** | 128 |
+| trên 100 triệu USD | 13 | 23 | 32 | 68 | **83** |
+| trên 1 tỷ USD | 1 | 4 | 8 | 29 | **35** |
+
+Ba chứng cứ cho thấy phần "giảm" nằm gần hết ở các luồng tí hon:
+
+1. **47 nước rời khỏi danh sách 2002 → 2023 mang theo 0,096 tỷ USD = 0,59%** kim
+   ngạch 2002 (nước lớn nhất: Cuba, 48 triệu USD). Trung vị một luồng xuất khẩu đi
+   từ **1,0 triệu USD** (2002) lên **103,6 triệu USD** (2023).
+2. **Trên 100 triệu USD, số kênh tăng đều qua từng mốc**, kể cả 2015 → 2023
+   (68 → 83). Hạng thế giới của Việt Nam theo số bạn hàng trên 10 triệu USD đi từ
+   **65/211** (1995) lên **24/231** (2023).
+3. Xếp 223 nước theo mức giảm số bạn hàng 2002 → 2023 thì Việt Nam **giảm mạnh
+   nhất, −42**, trên Nga (−38), Triều Tiên (−37), Iran và Syria (−27) — trong khi
+   xuất khẩu Việt Nam cùng kỳ **gấp 23,6 lần** và những nước kia bị cấm vận hoặc
+   chiến tranh. Một phép đo đặt Việt Nam vào đúng nhóm đó vì lý do ngược hẳn nhau
+   là một phép đo đang đo thứ khác.
+
+**Phép đo bền: HHI và tỷ trọng top-3** — không phụ thuộc mức sàn, vì luồng tí hon
+đóng góp tí hon. (HHI = tổng bình phương tỷ trọng từng bạn hàng; càng cao càng dồn
+vào ít nước.)
+
+| Việt Nam | 1995 | 2002 | **2013** | 2015 | **2021** | 2023 |
+|---|---|---|---|---|---|---|
+| HHI | 0,1209 | 0,0687 | **0,0662 ← đáy** | 0,0814 | **0,1330 ← đỉnh** | **0,1226** |
+| Top-3 nhận | 47,21% | 36,31% | 39,25% | 42,99% | 54,75% | **52,41%** |
+| Bạn hàng nhận trên 1% | 16 | 21 | 24 | 23 | 20 | 22 |
+
+Hình dạng thật là **chữ V**, không phải đường giảm: đa dạng hoá 18 năm (1995 →
+đáy 2013), rồi dồn lại **10 năm liền** (2013 → đỉnh 2021), và 2023 ở **0,1226 —
+cao hơn cả 1995**. Chỗ đứng so với thế giới cũng đã đổi: trong 97 nước xuất khẩu
+trên 10 tỷ USD năm 2023, trung vị HHI **0,0921**, Việt Nam **0,1226 → hạng 30/97**;
+năm 2015 Việt Nam còn **dưới** trung vị (0,0814 so với 0,0856, hạng 47/84). Trong
+ASEAN 2023, Việt Nam **tập trung nhất**: Thái Lan 0,066 · Singapore 0,067 ·
+Malaysia 0,089 · Indonesia 0,089 · Philippines 0,090 · **Việt Nam 0,123**.
+
+**Câu thay thế, dùng cho nhịp 3:**
+
+> Việt Nam **không** bán qua ít cửa hơn — số cửa đáng kể còn tăng. Việt Nam **dồn
+> tiền vào ít cửa hơn**: top-3 nhận **52,41%** năm 2023 so với **39,25%** năm 2013,
+> và mức tập trung đã quay về **trên** mức năm 1995.
+
+Câu mới mạnh hơn ở ba điểm: nó sống sót qua phản biện *"anh chỉ đang đếm mấy luồng
+tí hon"*; nó có một **năm bước ngoặt** (2013) chứ không chỉ hai đầu; và nó so được
+với thế giới cùng ASEAN trên cùng phép đo.
+
+**Hệ quả đã làm ngay:** tiêu đề T20 tìm năm đỉnh trên **cả chuỗi** chứ không chỉ
+bốn năm được vẽ (trước đây in sai *"đỉnh 2005"*), và khối KIỂM CHỨNG của
+`make_time_multiples.py` in thêm HHI, tỷ trọng top-3 và số bạn hàng theo bốn mức
+sàn — để không ai dùng lại phép đo không bền mà không thấy ngay nó không bền.
+
+Lấy lại số: `PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_time_multiples.py`
+· viết thành §3.6 của phần Phát hiện.
 
 ---
 
@@ -741,9 +827,14 @@ xuất khẩu gấp **75 lần**. → **T21** (dòng chảy cơ cấu)
 
 **Nhịp 3 — Nhưng cách trèo là một hành lang, và hành lang thì hẹp ở cả hai
 đầu.** Mua của Trung Quốc 133,1 tỷ bán lại 86,1 tỷ (**−46,9**); mua của Hoa Kỳ
-9,8 tỷ bán sang 95,2 tỷ (**+85,3**). 68,3% hàng vào từ một vùng duy nhất. Và số
-kênh bán đã **đạt đỉnh 200 nước năm 2005**, giờ còn 166 — nhiều tiền hơn, qua ít
-cửa hơn. → **T19** (Sankey), **T20** (small multiples), A12, A13
+9,8 tỷ bán sang 95,2 tỷ (**+85,3**). 68,3% hàng vào từ một vùng duy nhất. Và đầu
+ra thì **dồn lại**: top-3 thị trường nhận **52,41%** hàng xuất năm 2023 so với
+**39,25%** năm 2013, HHI từ đáy **0,0662** (2013) lên **0,1226** — cao hơn cả mức
+1995. → **T19** (Sankey), **T20** (small multiples), A12, **A16**
+
+⚠️ Nhịp 3 **không** nói "số bạn hàng giảm" nữa: A16 đo được rằng phép đếm bạn hàng
+không bền (47 nước rời danh sách chỉ mang 0,59% kim ngạch, còn ở mức sàn 100 triệu
+USD thì số kênh **tăng** 68 → 83). Dùng câu tập trung giá trị, không dùng câu số đếm.
 
 **Nhịp 4 — Nhìn kỹ thì trèo bằng gì.** RCA 7,52 ở giày dép (PCI −0,49) và 4,21 ở
 cà phê (−1,38), nhưng **dưới 1** ở máy móc công nghiệp (+0,78) và thiết bị quang

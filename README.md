@@ -358,14 +358,15 @@ global-ecom/
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
 │   ├── nhat-ky-cong-viec.md        # đã làm gì, nằm ở đâu — mở trước khi soạn slide
-│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A15, quyết định B1–B22, hạn chế D1–D5
+│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A16, quyết định B1–B22, hạn chế D1–D5
 │   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
 │   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
 │   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
 │   └── kien-thuc-nen-tang.md       # kiến thức kinh tế tối thiểu để đọc số
 ├── .report/
 │   ├── final/        # báo cáo cuối — MỘT FILE MỘT MỤC, Markdown (B21)
-│   │   └── 02-phuong-phap-luan.md  # Phương pháp luận (T25)
+│   │   ├── 02-phuong-phap-luan.md  # Phương pháp luận (T25)
+│   │   └── 03-phat-hien.md         # Phát hiện (T26)
 │   ├── midterm/      # bản dịch chương 9 giữa kỳ (HTML)
 │   └── overleaf/     # bản dịch chương 9 giữa kỳ (LaTeX)
 └── phan-cong-cong-viec.xlsx
@@ -528,10 +529,15 @@ certutil -hashfile data\atlas\cc_year.csv MD5
 Mã in ra phải trùng với cột MD5 ở bảng trên. Chỉ so kích thước là chưa đủ, nhưng
 lệch kích thước thì chắc chắn file hỏng.
 
-## Báo cáo cuối: Phương pháp luận đã viết (T25)
+## Báo cáo cuối: Phương pháp luận (T25) và Phát hiện (T26) đã viết
 
-`.report/final/02-phuong-phap-luan.md` — mục Phương pháp luận của báo cáo cuối, 12
-tiểu mục, **mỗi con số kèm lệnh lấy lại được**. Nội dung đáng chú ý:
+Một file một mục, Markdown (quyết định **B21**). Cả hai file **dài hơn** số trang
+file phân công dự tính, nên mỗi file mang sẵn **kế hoạch cắt** ở đầu — T27 ráp báo
+cáo thì cắt theo kế hoạch đó.
+
+### Phương pháp luận (T25) — `.report/final/02-phuong-phap-luan.md`
+
+12 tiểu mục, **mỗi con số kèm lệnh lấy lại được**. Nội dung đáng chú ý:
 
 - **Vì sao T19 dùng đồ thị đầy đủ còn T15–T17 dùng đồ thị đã lọc** (§2.7). Đây
   không phải sở thích: dùng đồ thị đã lọc cho Sankey thì cán cân Việt Nam 2023
@@ -553,6 +559,44 @@ tiểu mục, **mỗi con số kèm lệnh lấy lại được**. Nội dung đ
 # Lấy lại các số của §2.7 và §2.8
 PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_sankey.py
 PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/check_tree.py
+```
+
+### Phát hiện (T26) — `.report/final/03-phat-hien.md`
+
+Chín tiểu mục theo mạch lập luận, không theo thứ tự số A. Phần đáng chú ý nhất là
+một **phát hiện sửa chính câu trung tâm của đồ án**:
+
+- **Phép đếm bạn hàng KHÔNG bền** (§3.6, phát hiện **A16**). Câu cũ: "số bạn hàng
+  giảm từ 181 xuống 166". Số đúng, phép đo thì không: **47 nước** rời khỏi danh sách
+  giữa 2002 và 2023 chỉ mang theo **0,59%** kim ngạch, và đặt một mức sàn vào là kết
+  luận **đảo chiều** — trên 100 triệu USD thì số kênh **tăng 13 → 83**. Phép đo bền
+  là tập trung giá trị: HHI đáy **0,0662** (2013) → **0,1226** (2023), **cao hơn cả
+  mức 1995**; top-3 nhận **52,41%**. Việt Nam đi từ **dưới** trung vị thế giới (2015)
+  lên **hạng 30/97** nước xuất trên 10 tỷ USD, và là nước **tập trung nhất ASEAN**
+  (gần gấp đôi Thái Lan).
+- **Ba kết quả cấu trúc mạng đi ngược trực giác** (§3.2): mật độ **0,5183** nên mạng
+  không scale-free (R² của phép khớp lũy thừa chỉ **0,51**); kết nối dàn đều ra
+  (lệch khỏi phân bố đều 0,180 → **0,056**) mà giá trị thì không (Gini đứng yên
+  0,9548 → 0,9569); và betweenness **bằng 0 ở 172/231 nước**.
+- **ASEAN không hiện ra như một cộng đồng** (§3.3) — ba phép đo độc lập cùng nói
+  thế: Louvain, tỷ trọng tiền (**7,77%** so với **52,41%**), và chord 1995 vs 2023.
+
+Hai chỗ ghi sai trong sổ phát hiện đã được sửa cùng lúc: **A13** (đỉnh số bạn hàng
+là **2002 với 208 nước**, không phải 2005 với 200 — con số cũ chỉ đúng trong bốn năm
+mốc được vẽ) và **A4** (dòng "top 416" gộp hai con số khác nhau: 416 cạnh lớn nhất
+phủ **68,50%** giá trị, còn quy tắc B4 — cũng 416 cạnh — phủ **67,84%**, vì nó đánh
+đổi 0,66 điểm phần trăm để giữ đủ 10 nước ASEAN).
+
+Tiêu đề hình **T20** đã sửa theo: nó từng in *"số bạn hàng đã đạt đỉnh 200 nước năm
+2005"* — câu sai, vì nó tìm đỉnh chỉ trong bốn năm được vẽ. Nay nó tìm trên **cả
+chuỗi 1995–2023** và dựng khẳng định từ tỷ trọng top-3, còn khối KIỂM CHỨNG in **cả
+hai** phép đo kèm bốn mức sàn để không ai dùng lại phép không bền mà không thấy ngay
+nó không bền.
+
+```bash
+# Lấy lại các số của §3.6 (cả hai chiều)
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_time_multiples.py
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_time_multiples.py --direction nhap
 ```
 
 ## Quy ước git

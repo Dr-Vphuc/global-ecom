@@ -2,9 +2,21 @@
 """Small multiples theo thời gian: Việt Nam bán cho ai, 1995·2005·2015·2023 (T20).
 
 T21 trả lời "bán GÌ". Hình này trả lời "bán CHO AI", và nó là hình dựng sẵn cho
-phát hiện **A9**: từ 2015 đến 2023 tiền xuất khẩu gấp 2,28 lần mà **số bạn hàng
-giảm 15 nước**, trong khi trung vị thế giới là +1. Nhiều tiền hơn, qua ít kênh
-hơn — một câu mà bốn ô lưới nói hộ được.
+phát hiện **A16**: tiền xuất khẩu gấp 75 lần từ 1995 đến 2023, nhưng tỷ trọng ba
+thị trường đầu **chạm đáy rồi quay lên** — 47,21% (1995) → 39,84% (2005) → 42,99%
+(2015) → **52,41%** (2023). Tiền dồn lại vào ít cửa, một câu mà bốn ô lưới nói
+hộ được.
+
+Vì sao tiêu đề KHÔNG còn nói "số bạn hàng giảm"
+-----------------------------------------------
+A9 và A13 từng dùng phép đếm bạn hàng (181 → 166 nước). A16 đo lại và thấy phép
+đếm ấy **không bền**: 47 nước rời khỏi danh sách giữa 2002 và 2023 chỉ mang theo
+0,59% kim ngạch, còn ở mức sàn 100 triệu USD thì số kênh **tăng** 68 → 83. Thêm
+nữa, đỉnh thật của phép đếm là **2002 (208 nước)**, không phải 2005 (200) như khi
+chỉ nhìn bốn năm được vẽ — nên hàm ``headline`` tìm đỉnh trên **cả chuỗi
+1995–2023**, không chỉ trên các năm có mặt trên hình. Tiêu đề vì vậy đứng trên
+phép đo tập trung giá trị, và khối KIỂM CHỨNG in **cả hai** phép để người đọc tự
+thấy phép nào bền.
 
 Vì sao small multiples chứ không phải một hình động hay một hình chồng
 ----------------------------------------------------------------------
@@ -20,8 +32,9 @@ Hai điều buộc phải thống nhất giữa bốn ô, nếu không thì so s
 2. **Chung quy tắc gộp đuôi** — cùng lấy ``TOPK`` nước đầu, phần còn lại gộp
    thành một thanh ``Khác`` kèm số nước, để không ô nào trông thưa giả tạo.
 
-Tiêu đề từng ô ghi tổng giá trị và **số bạn hàng** của năm đó; chính cặp số này
-là bằng chứng của A9, nên nó phải nằm trên hình chứ không nằm trong lời kể.
+Tiêu đề từng ô ghi tổng giá trị và **số bạn hàng** của năm đó. Số bạn hàng là một
+dữ kiện, giữ lại được; nhưng **khẳng định** trên tiêu đề chính thì dựng từ tỷ
+trọng top-3, vì đó là phép đo không đổi khi đổi mức sàn.
 
 Chạy
 ----
@@ -56,6 +69,11 @@ TEXT_PAD = 6.0
 LINE_H = 1.33
 LABEL_FLOOR_PT = 7.0
 
+# Bốn mức sàn giá trị để thử xem "số bạn hàng" có bền không — xem A16.
+FLOORS = [0, int(1e7), int(1e8), int(1e9)]
+FLOOR_LABELS = ["trên 0 (phép đếm cũ)", "trên 10 triệu USD",
+                "trên 100 triệu USD", "trên 1 tỷ USD"]
+
 BAR = "#B4B4B4"
 BAR_TOP = "#5A5A5A"        # thanh lớn nhất của từng ô
 BAR_REST = "#DCDCDC"       # cụm gộp "Khác"
@@ -66,25 +84,49 @@ SOURCE_TEXT = ("Nguồn: Atlas of Economic Complexity (Harvard Growth Lab). "
                "Đồ thị đầy đủ, không lọc ngưỡng — xem T19.")
 
 
+def partners(e, y, direction):
+    """Bạn hàng → giá trị cho MỘT năm, đã sắp giảm dần."""
+    ey = e[e["year"] == y]
+    if direction == "xuat":
+        s = ey[ey["source_iso3"] == FOCUS].groupby(
+            "target_iso3")["export_value"].sum()
+    else:
+        s = ey[ey["target_iso3"] == FOCUS].groupby(
+            "source_iso3")["export_value"].sum()
+    return s[s > 0].sort_values(ascending=False)
+
+
 def load(years, direction):
-    """Với mỗi năm, trả về Series bạn hàng → giá trị, đã sắp giảm dần."""
+    """Bốn năm được vẽ, CỘNG chuỗi đầy đủ 1995–2023 để đo lại cho đúng.
+
+    Chuỗi đầy đủ là phần **A16** đòi phải có. Đỉnh số bạn hàng rơi vào một năm
+    KHÔNG có mặt trên hình (2002, 208 nước), nên đi tìm đỉnh trong ``years`` sẽ
+    in ra một câu sai — chính lỗi mà hình này từng mắc ("đỉnh 200 nước năm
+    2005"). Chuỗi cũng cho HHI và tỷ trọng top-3 của từng năm, là hai phép đo
+    không phụ thuộc mức sàn giá trị.
+    """
     e = pd.read_csv(os.path.join(DATA, "edges.csv"))
+    e = e[e["year"] <= R.REFERENCE_YEAR]       # 2024 còn tạm, xem A6
     n = pd.read_csv(os.path.join(DATA, "nodes.csv"))
     name = {}
     for iso, vi in zip(n["country_iso3"], n["country_name_vi"]):
         name[iso] = vi if isinstance(vi, str) and vi.strip() else iso
     out = {}
     for y in years:
-        ey = e[e["year"] == y]
-        if direction == "xuat":
-            s = ey[ey["source_iso3"] == FOCUS].groupby(
-                "target_iso3")["export_value"].sum()
-        else:
-            s = ey[ey["target_iso3"] == FOCUS].groupby(
-                "source_iso3")["export_value"].sum()
-        s = s[s > 0].sort_values(ascending=False)
-        out[y] = s
-    return out, name
+        out[y] = partners(e, y, direction)
+    rows = []
+    for y in sorted(e["year"].unique()):
+        s = partners(e, y, direction)
+        if not len(s):
+            continue
+        sh = s / float(s.sum())
+        row = {"year": int(y), "hhi": float((sh ** 2).sum()),
+               "top3": float(sh.head(3).sum() * 100.0),
+               "over1pct": int((sh >= 0.01).sum())}
+        for f in FLOORS:
+            row["n%d" % f] = int((s >= f).sum())
+        rows.append(row)
+    return out, name, pd.DataFrame(rows).set_index("year")
 
 
 def panel_rows(s, topk, name):
@@ -103,24 +145,27 @@ def panel_rows(s, topk, name):
 def headline(data, years, direction):
     y0, y1 = years[0], years[-1]
     t0, t1 = float(data[y0].sum()), float(data[y1].sum())
-    n0, n1 = len(data[y0]), len(data[y1])
     verb = "bán cho" if direction == "xuat" else "mua từ"
-    # A9 so 2015 với 2023 và thấy số bạn hàng giảm 15. Nhưng vẽ đủ bốn mốc thì
-    # hình dạng thật không phải một đường giảm: số bạn hàng ĐẠT ĐỈNH rồi mới
-    # quay đầu. Nên tìm năm đỉnh thay vì chỉ so hai đầu — so hai đầu ở đây sẽ ra
-    # "tăng 68 nước", đúng số nhưng che mất chỗ quan trọng.
-    counts = [(y, len(data[y])) for y in years]
-    peak_y, peak_n = max(counts, key=lambda t: t[1])
-    if peak_y != y1 and peak_n > n1:
-        kenh = ("tiền gấp %s lần, nhưng số bạn hàng đã đạt đỉnh %s nước năm %d "
-                "rồi lùi về %s" % (R.fmt_vn(t1 / t0, 1), R.fmt_vn(peak_n, 0),
-                                   peak_y, R.fmt_vn(n1, 0)))
-    elif n1 < n0:
-        kenh = ("tiền gấp %s lần mà số bạn hàng GIẢM %s nước"
-                % (R.fmt_vn(t1 / t0, 1), R.fmt_vn(n0 - n1, 0)))
+    # A16: phép đếm bạn hàng ĐỔI kết luận khi đổi mức sàn giá trị (trên 0 thì
+    # giảm, trên 100 triệu USD thì tăng), nên khẳng định trên tiêu đề dựng từ tỷ
+    # trọng top-3 — phép đo không phụ thuộc mức sàn. Và vẫn tìm đáy thay vì trừ
+    # hai đầu, vì hình dạng thật là một chữ V: trừ hai đầu ra "+5,20 điểm", đúng
+    # số nhưng che mất chỗ quan trọng.
+    sh = [(y, float(data[y].head(3).sum() / data[y].sum() * 100.0))
+          for y in years]
+    low_y, low_v = min(sh, key=lambda t: t[1])
+    v0, v1 = sh[0][1], sh[-1][1]
+    if low_y not in (y0, y1) and v1 > low_v:
+        kenh = ("tiền gấp %s lần, nhưng tỷ trọng ba bạn hàng đầu chạm đáy %s "
+                "năm %d rồi quay lên %s"
+                % (R.fmt_vn(t1 / t0, 1), R.fmt_pct(low_v), low_y,
+                   R.fmt_pct(v1)))
+    elif v1 > v0:
+        kenh = ("tiền gấp %s lần, và tỷ trọng ba bạn hàng đầu tăng từ %s lên %s"
+                % (R.fmt_vn(t1 / t0, 1), R.fmt_pct(v0), R.fmt_pct(v1)))
     else:
-        kenh = ("tiền gấp %s lần, số bạn hàng %s nước → %s"
-                % (R.fmt_vn(t1 / t0, 1), R.fmt_vn(n0, 0), R.fmt_vn(n1, 0)))
+        kenh = ("tiền gấp %s lần, tỷ trọng ba bạn hàng đầu %s → %s"
+                % (R.fmt_vn(t1 / t0, 1), R.fmt_pct(v0), R.fmt_pct(v1)))
     top0 = data[y0].index[0]
     top1 = data[y1].index[0]
     title = ("Việt Nam %s ai: %s" % (verb, kenh))
@@ -253,7 +298,7 @@ def save(fig, name):
         print("  (không xuất được PNG: %s)" % exc)
 
 
-def report(data, years, panels, name, xmax, direction):
+def report(data, years, panels, name, xmax, direction, series):
     print("\n" + "=" * 70)
     print("KIỂM CHỨNG — small multiples theo thời gian (%s)"
           % ("xuất khẩu" if direction == "xuat" else "nhập khẩu"))
@@ -275,18 +320,51 @@ def report(data, years, panels, name, xmax, direction):
     n0, n1 = len(data[y0]), len(data[y1])
     print("\n  %d → %d: tiền gấp %s lần, bạn hàng %+d nước"
           % (y0, y1, R.fmt_vn(t1 / t0, 2), n1 - n0))
-    counts = [(y, len(data[y])) for y in years]
-    peak_y, peak_n = max(counts, key=lambda t: t[1])
-    print("  Đỉnh số bạn hàng: %s nước năm %d — từ đó %s"
-          % (R.fmt_vn(peak_n, 0), peak_y,
-             "giảm liên tục" if all(
-                 counts[i][1] >= counts[i + 1][1]
-                 for i in range(len(counts) - 1)
-                 if counts[i][0] >= peak_y) else "không giảm đều"))
     if 2015 in data and 2023 in data:
         a, b = len(data[2015]), len(data[2023])
         print("  Khớp A9 (2015→2023): %d → %d bạn hàng, chênh %+d"
               % (a, b, b - a))
+
+    # A16 — hai phép đo đặt cạnh nhau, để không ai dùng lại phép không bền mà
+    # không thấy ngay nó không bền.
+    print("\n  A16 — PHÉP ĐẾM BẠN HÀNG CÓ BỀN KHÔNG?")
+    nz = "n%d" % FLOORS[0]
+    peak_y = int(series[nz].idxmax())
+    print("    Đỉnh trên CẢ chuỗi %d–%d: %s nước năm %d (trong bốn năm được vẽ "
+          "thì đỉnh là %s nước năm %d — %s)"
+          % (series.index.min(), series.index.max(),
+             R.fmt_vn(series[nz].max(), 0), peak_y,
+             R.fmt_vn(max(len(data[y]) for y in years), 0),
+             max(years, key=lambda y: len(data[y])),
+             "khớp" if peak_y in years else "LỆCH, nên tiêu đề phải dùng cả chuỗi"))
+    print("    %-22s %s" % ("mức sàn giá trị",
+                            " ".join("%8d" % y for y in years)))
+    for f, lab in zip(FLOORS, FLOOR_LABELS):
+        print("    %-22s %s" % (lab, " ".join(
+            "%8s" % R.fmt_vn(series.loc[y, "n%d" % f], 0) for y in years)))
+    tot_up = sum(1 for f in FLOORS[1:]
+                 if series.loc[years[-1], "n%d" % f]
+                 > series.loc[years[-2], "n%d" % f])
+    print("    → %d trong %d mức sàn đáng kể cho số kênh TĂNG ở chặng %d→%d. "
+          "Phép đếm đổi kết luận theo mức sàn, nên KHÔNG dùng nó làm khẳng định."
+          % (tot_up, len(FLOORS) - 1, years[-2], years[-1]))
+
+    print("\n  A16 — PHÉP ĐO BỀN: tập trung giá trị")
+    print("    %-22s %s" % ("", " ".join("%8d" % y for y in years)))
+    print("    %-22s %s" % ("HHI", " ".join(
+        "%8s" % R.fmt_vn(series.loc[y, "hhi"], 4) for y in years)))
+    print("    %-22s %s" % ("top-3 nhận", " ".join(
+        "%8s" % R.fmt_pct(series.loc[y, "top3"]) for y in years)))
+    print("    %-22s %s" % ("bạn hàng trên 1%", " ".join(
+        "%8s" % R.fmt_vn(series.loc[y, "over1pct"], 0) for y in years)))
+    lo, hi = int(series["hhi"].idxmin()), int(series["hhi"].idxmax())
+    print("    Trên cả chuỗi: HHI đáy %s năm %d, đỉnh %s năm %d, %d ở %s "
+          "(%s mức %d)"
+          % (R.fmt_vn(series["hhi"].min(), 4), lo,
+             R.fmt_vn(series["hhi"].max(), 4), hi,
+             series.index.max(), R.fmt_vn(series["hhi"].iloc[-1], 4),
+             "cao hơn" if series["hhi"].iloc[-1] > series["hhi"].iloc[0]
+             else "thấp hơn", series.index.min()))
 
     print("\n  Thứ hạng đầu bảng từng năm — lý do không vẽ chồng được:")
     for y in years:
@@ -312,11 +390,11 @@ def main():
     a = ap.parse_args()
     years = [int(x) for x in a.years.split(",")]
 
-    data, name = load(years, a.direction)
+    data, name, series = load(years, a.direction)
     fig, panels, xmax = build(data, years, name, a.topk, a.direction)
     print("Đã dựng small multiples %s:" % a.direction)
     save(fig, "time_multiples_%s" % a.direction)
-    report(data, years, panels, name, xmax, a.direction)
+    report(data, years, panels, name, xmax, a.direction, series)
     return 0
 
 
