@@ -770,3 +770,36 @@ PRODUCT_NAME_VI = {
 def ten_nhom(name):
     """Tên tiếng Việt của một nhóm hàng cấp 2, lùi về tên gốc nếu chưa có."""
     return PRODUCT_NAME_VI.get(name, name)
+
+
+# ---------------------------------------------------------------------------
+# Xuất PNG ở KHUNG POINT — sửa lỗi đơn vị ghi ở B16.
+#
+# Các script đời đầu gọi `write_image(width=FIG_WIDTH_FULL * FIG_DPI_SCREEN)`,
+# tức khung rộng 6,30 × 200 = 1.260 đơn vị, rồi truyền thẳng FONT_SIZES vào.
+# Nhưng FONT_SIZES là POINT, còn khung lại đang đếm bằng PIXEL. Cỡ chữ khai báo
+# 14 in ra thật chỉ 14 / 1.260 × 6,30 × 72 = 5,04 pt — nhỏ hơn khai báo đúng
+# 200/72 = 2,78 lần. Dòng nguồn khai 7 pt in ra 2,52 pt, dưới sàn 7 pt của
+# style guide §7.
+#
+# Cách sửa: đặt khung bằng ĐÚNG số point của khổ hình, rồi để `scale` lo phần
+# độ phân giải. Khi ấy cỡ chữ khai báo bao nhiêu point thì in ra bấy nhiêu.
+# ---------------------------------------------------------------------------
+PT_PER_INCH = 72.0
+PX_PER_PT_CU = FIG_DPI_SCREEN / PT_PER_INCH   # 2,7778 — hệ số quy đổi khung cũ
+
+
+def khung_pt(inch):
+    """Số point của một bề ngang/dọc tính bằng inch."""
+    return int(round(inch * PT_PER_INCH))
+
+
+def xuat_png(fig, path, w_inch=None, h_inch=None, dpi=None):
+    """Ghi PNG sao cho 1 đơn vị bố cục = 1 point, in ra ở `dpi` chấm mỗi inch."""
+    w_inch = FIG_WIDTH_FULL if w_inch is None else w_inch
+    h_inch = FIG_HEIGHT_DEFAULT if h_inch is None else h_inch
+    dpi = FIG_DPI_PRINT if dpi is None else dpi
+    w_pt, h_pt = khung_pt(w_inch), khung_pt(h_inch)
+    fig.write_image(path, width=w_pt, height=h_pt,
+                    scale=(w_inch * dpi) / float(w_pt))
+    return w_pt, h_pt

@@ -290,6 +290,81 @@ def node_traces(nodes, pos, comm, focus, n_named):
     return traces
 
 
+# Khung tính bằng POINT theo B16 — xem reference_data.xuat_png.
+FIG_H_INCH = 6.60
+MARGIN_X = 8.0
+TEXT_PAD = 6.0
+LINE_H = 1.33
+LEG_BAND = 48.0        # chú giải cụm, xếp ngang, cuộn thành hai hàng
+
+
+def _go_nhan_chong(fig, x_rng, y_rng, plot_w, plot_h):
+    """Bỏ bớt nhãn nút cho đến khi không còn nhãn nào chồng nhãn nào.
+
+    Đặt nhãn theo hướng xuyên tâm là đủ khi chữ còn in ra ~3 pt như trước khi
+    sửa lỗi đơn vị B16. Ở cỡ chữ ĐÚNG, chữ to gấp 2,78 lần nên vùng giữa — chỗ
+    đông nút nhất — chồng chéo hẳn: "Trung Quốc" đè "Nhật Bản", "Hoa Kỳ" đè
+    "Đài Loan". Nên xếp nhãn theo thứ tự ưu tiên (Việt Nam trước, rồi nút to
+    dần xuống) và nhãn nào không còn chỗ trống thì BỎ, chứ không chồng.
+
+    Trục đã khoá tỉ lệ 1:1 (scaleanchor) nên hai chiều dùng chung một hệ số.
+    """
+    sx = (x_rng[1] - x_rng[0]) or 1.0
+    sy = (y_rng[1] - y_rng[0]) or 1.0
+    k = min(plot_w / sx, plot_h / sy)
+    ds = []
+    for ti, tr in enumerate(fig.data):
+        if not getattr(tr, "text", None) or "text" not in (tr.mode or ""):
+            continue
+        sizes = tr.marker.size
+        if not isinstance(sizes, (list, tuple)):
+            sizes = [sizes] * len(tr.text)
+        pos = tr.textposition
+        if not isinstance(pos, (list, tuple)):
+            pos = [pos] * len(tr.text)
+        fs = tr.textfont.size or R.FONT_SIZES["annotation"]
+        for pi, lab in enumerate(tr.text):
+            if not lab:
+                continue
+            ds.append(dict(ti=ti, pi=pi, lab=lab, fs=fs,
+                           r=(sizes[pi] or 8) / 2.0,
+                           px=(tr.x[pi] - x_rng[0]) * k,
+                           py=(y_rng[1] - tr.y[pi]) * k,
+                           pos=pos[pi] or "top center"))
+    # Việt Nam (nhãn in đậm) đứng trước, rồi nút to dần xuống.
+    ds.sort(key=lambda d: (0 if "<b>" in d["lab"] else 1, -d["r"]))
+
+    placed, bo = [], {}
+    for d in ds:
+        n = len(d["lab"].replace("<b>", "").replace("</b>", ""))
+        w = n * d["fs"] * 0.52
+        h = d["fs"] * 1.33
+        pad = d["r"] + 2.0
+        if d["pos"] == "middle right":
+            x0, y0 = d["px"] + pad, d["py"] - h / 2.0
+        elif d["pos"] == "middle left":
+            x0, y0 = d["px"] - pad - w, d["py"] - h / 2.0
+        elif d["pos"] == "bottom center":
+            x0, y0 = d["px"] - w / 2.0, d["py"] + pad
+        else:
+            x0, y0 = d["px"] - w / 2.0, d["py"] - pad - h
+        box = (x0, y0, x0 + w, y0 + h)
+        if any(box[0] < q[2] and q[0] < box[2]
+               and box[1] < q[3] and q[1] < box[3] for q in placed):
+            bo.setdefault(d["ti"], []).append(d["pi"])
+            continue
+        placed.append(box)
+    n_bo = 0
+    for ti, idx in bo.items():
+        txt = list(fig.data[ti].text)
+        for pi in idx:
+            txt[pi] = ""
+            n_bo += 1
+        fig.data[ti].text = txt
+    print("  Nhãn nút: giữ %s, bỏ %s vì không còn chỗ trống"
+          % (R.fmt_vn(len(placed), 0), R.fmt_vn(n_bo, 0)))
+
+
 def _span(vals, pad=0.09):
     """Khoảng trục bám sát dữ liệu, chừa lề cho nhãn nút khỏi bị cắt."""
     lo, hi = min(vals), max(vals)
@@ -335,24 +410,45 @@ def make_figure(nodes, pairs, pos, comm, year, focus, n_directed, n_named):
     else:
         title = "<b>Mạng lưới thương mại đã lọc, năm %d</b>" % year
 
+    # --- khối chữ đặt tay theo B16 (khung point) ---------------------------
+    # layout.title không tự ngắt dòng; ở khung point câu tiêu đề dài sẽ tràn
+    # khỏi mép khung. Và thẻ <b> trong `title` phải bóc ra vì khối chữ bây giờ
+    # tự đặt cỡ, không nhờ plotly.
+    tit = title.replace("<b>", "").replace("</b>", "")
+    sub = ("Năm %d · %s nút, %s cạnh có hướng gộp thành %s cặp nước. Cỡ nút "
+           "theo bậc (diện tích tỉ lệ với bậc), độ dày cạnh theo tổng giá trị "
+           "hai chiều của phần vượt ngưỡng, màu theo cụm Louvain. Không mũi "
+           "tên — quyết định B5.%s"
+           % (year, R.fmt_vn(len(nodes), 0), R.fmt_vn(n_directed, 0),
+              R.fmt_vn(len(pairs), 0), biggest))
+    note = ("Cụm Louvain KHÔNG tách được ASEAN: cả 10 nước ASEAN nằm chung một "
+            "cụm với Trung Quốc, Nhật, Hàn, Ấn và vùng Vịnh (phát hiện A8) — "
+            "nên Việt Nam nhận viền đen, không nhận màu riêng.")
+    src = ("Nguồn: Atlas of Economic Complexity (Harvard Growth Lab). Đồ thị "
+           "đã lọc theo quy tắc T10: giữ cạnh ≥ 0,046% tổng xuất khẩu thế "
+           "giới, cộng top 3 luồng xuất và nhập của mỗi nước ASEAN.")
+
+    w_pt, h_pt = R.khung_pt(R.FIG_WIDTH_FULL), R.khung_pt(FIG_H_INCH)
+    t_w = w_pt - 2 * MARGIN_X - 2 * TEXT_PAD
+    tw = R.wrap_pt(tit, R.FONT_SIZES["title"], t_w)
+    sw = R.wrap_pt(sub, R.FONT_SIZES["subtitle"], t_w)
+    nw = R.wrap_pt(note, R.FONT_SIZES["annotation"], t_w)
+    cw = R.wrap_pt(src, R.FONT_SIZES["footnote"], t_w)
+    h_title = R.n_lines(tw) * R.FONT_SIZES["title"] * LINE_H
+    h_sub = R.n_lines(sw) * R.FONT_SIZES["subtitle"] * LINE_H
+    h_note = R.n_lines(nw) * R.FONT_SIZES["annotation"] * LINE_H
+    h_src = R.n_lines(cw) * R.FONT_SIZES["footnote"] * LINE_H
+    m_t = TEXT_PAD + h_title + h_sub + TEXT_PAD
+    m_b = LEG_BAND + h_note + h_src + 2 * TEXT_PAD
+    plot_h = h_pt - m_t - m_b
+
     fig.update_layout(
-        title=dict(
-            text=title +
-                 "<br><span style='font-size:%dpx;color:#555'>"
-                 "Năm %d · %s nút, %s cạnh có hướng gộp thành %s cặp nước. "
-                 "Cỡ nút theo bậc (diện tích tỉ lệ với bậc), độ dày cạnh theo "
-                 "tổng giá trị hai chiều của phần vượt ngưỡng,<br>màu theo cụm "
-                 "Louvain. Không mũi tên — quyết định B5.%s</span>"
-                 % (R.FONT_SIZES["subtitle"], year, R.fmt_vn(len(nodes), 0),
-                    R.fmt_vn(n_directed, 0), R.fmt_vn(len(pairs), 0), biggest),
-            x=0.01, xanchor="left", font=dict(size=R.FONT_SIZES["title"] + 4),
-        ),
         font=dict(family=", ".join(R.FONT_STACK), size=R.FONT_SIZES["legend"]),
         separators=",.",
-        margin=dict(t=132, l=8, r=8, b=150),
+        margin=dict(t=m_t, l=MARGIN_X, r=MARGIN_X, b=m_b),
         paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF",
-        legend=dict(orientation="h", y=-0.02, x=0, xanchor="left",
-                    font=dict(size=R.FONT_SIZES["legend"])),
+        legend=dict(orientation="h", y=-(4.0 / plot_h), x=0, xanchor="left",
+                    yanchor="top", font=dict(size=R.FONT_SIZES["footnote"])),
         hovermode="closest",
         xaxis=dict(visible=False, showgrid=False, zeroline=False,
                    range=_span([p[0] for p in pos.values()])),
@@ -360,22 +456,23 @@ def make_figure(nodes, pairs, pos, comm, year, focus, n_directed, n_named):
                    scaleanchor="x", scaleratio=1,
                    range=_span([p[1] for p in pos.values()])),
     )
-    fig.add_annotation(
-        text="Cụm Louvain KHÔNG tách được ASEAN: cả 10 nước ASEAN nằm chung một cụm "
-             "với Trung Quốc, Nhật, Hàn, Ấn và vùng Vịnh (phát hiện A8) — "
-             "nên Việt Nam nhận viền đen, không nhận màu riêng.",
-        showarrow=False, xref="paper", yref="paper", x=0, y=-0.072,
-        xanchor="left", align="left",
-        font=dict(size=R.FONT_SIZES["annotation"], color="#444"),
-    )
-    fig.add_annotation(
-        text="Nguồn: Atlas of Economic Complexity (Harvard Growth Lab). Đồ thị đã lọc "
-             "theo quy tắc T10: giữ cạnh ≥ 0,046% tổng xuất khẩu thế giới, "
-             "cộng top 3 luồng xuất và nhập của mỗi nước ASEAN.",
-        showarrow=False, xref="paper", yref="paper", x=0, y=-0.112,
-        xanchor="left", align="left",
-        font=dict(size=R.FONT_SIZES["footnote"], color="#777"),
-    )
+
+    def ann(text, y, size, color):
+        fig.add_annotation(text=text, showarrow=False, xref="paper",
+                           yref="paper", x=0, y=y,
+                           xshift=-(MARGIN_X - TEXT_PAD), xanchor="left",
+                           yanchor="top", align="left",
+                           font=dict(size=size, color=color))
+
+    ann(tw, 1 + (m_t - TEXT_PAD) / plot_h, R.FONT_SIZES["title"], None)
+    ann(sw, 1 + (m_t - TEXT_PAD - h_title) / plot_h,
+        R.FONT_SIZES["subtitle"], "#555555")
+    ann(nw, -(LEG_BAND / plot_h), R.FONT_SIZES["annotation"], "#444444")
+    ann(cw, -((LEG_BAND + h_note) / plot_h), R.FONT_SIZES["footnote"], "#777777")
+
+    _go_nhan_chong(fig, _span([p[0] for p in pos.values()]),
+                   _span([p[1] for p in pos.values()]),
+                   w_pt - 2 * MARGIN_X, plot_h)
     return fig
 
 
@@ -386,8 +483,7 @@ def save(fig, name):
     print("  %s" % html)
     try:
         png = os.path.join(OUTDIR, name + ".png")
-        fig.write_image(png, width=int(R.FIG_WIDTH_FULL * R.FIG_DPI_SCREEN),
-                        height=int(R.FIG_WIDTH_FULL * R.FIG_DPI_SCREEN), scale=2)
+        R.xuat_png(fig, png, R.FIG_WIDTH_FULL, FIG_H_INCH)
         print("  %s" % png)
     except Exception as exc:
         print("  (không xuất được PNG: %s — bản .html vẫn dùng được)" % exc)
