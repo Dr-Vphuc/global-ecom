@@ -402,6 +402,88 @@ Hình đã vẽ: `output/chord_bloc_{1995,2023}.{html,png}`.
 
 ---
 
+### A12. Hành lang đo được: mua của Trung Quốc, bán cho Hoa Kỳ
+
+`data/processed/edges.csv` · đồ thị **đầy đủ**, không lọc ngưỡng · 2023
+
+| Đối tác | Việt Nam mua | Việt Nam bán | Chênh |
+|---|---|---|---|
+| Trung Quốc | 133,05 tỷ USD | 86,11 tỷ USD | **−46,94 tỷ** |
+| Hoa Kỳ | 9,83 tỷ USD | 95,16 tỷ USD | **+85,33 tỷ** |
+
+Hai đầu **ngược dấu** — đó chính là dấu hiệu mà giả thuyết trung chuyển cần, và
+là thứ T15 với T17 không nói được vì cả hai đã gộp hai chiều theo B13. Trung
+Quốc cấp 40,1% hàng vào; Hoa Kỳ nhận 24,7% hàng ra. Theo vùng: **68,3% hàng vào
+từ Đông Á**, còn hàng ra thì chia cho Đông Á 37,2% và Bắc Mỹ 26,7%.
+
+Năm đối chứng 1995 ra một hành lang **khác hẳn**: Singapore cấp nhiều nhất (thâm
+hụt 1,39 tỷ), Nhật Bản mua nhiều nhất (thặng dư 0,60 tỷ). Hành lang không mới —
+**hai đầu của nó đã đổi người**, và quy mô gấp 75 lần.
+
+⚠️ Phần nhạt trên thanh Việt Nam là **xuất trừ nhập**, KHÔNG phải giá trị tăng
+thêm trong nước. Tách được phần ở lại Việt Nam thì cần bảng vào–ra mà Atlas
+không có — xem D2, D5. Đừng để ai đọc hình này thành "Việt Nam chỉ lắp ráp".
+
+Lấy lại số: `src/make_sankey.py` · Hình: `output/sankey_vietnam_{1995,2023}.png`
+
+---
+
+### A13. Số bạn hàng đã đạt đỉnh từ 2005, không phải mới giảm
+
+**A9 đúng nhưng chưa đủ.** A9 so 2015 với 2023 và thấy mất 15 bạn hàng. Vẽ đủ
+bốn năm mốc thì hình dạng thật không phải một đường giảm:
+
+| Năm | Xuất khẩu | Số bạn hàng |
+|---|---|---|
+| 1995 | 5,1 tỷ USD | 98 |
+| 2005 | 32,9 tỷ USD | **200 ← đỉnh** |
+| 2015 | 169,4 tỷ USD | 181 |
+| 2023 | 385,5 tỷ USD | 166 |
+
+Đỉnh rơi vào **2005**, và từ đó giảm **liên tục** qua từng mốc. Nên việc thu hẹp
+kênh bán là xu thế **18 năm**, không phải 8 năm. Bên nhập cũng vậy: đỉnh 164
+nước năm 2005.
+
+Cẩn thận chỗ này: so hai đầu 1995 → 2023 sẽ ra "**tăng** 68 nước", đúng số mà
+che mất toàn bộ câu chuyện. Tiêu đề của T20 vì thế đi tìm năm đỉnh chứ không trừ
+hai đầu.
+
+Lấy lại số: `src/make_time_multiples.py` · Hình: `output/time_multiples_xuat.png`
+
+---
+
+### A14. Chỗ đáng dồn sức, và một phép thử cho chính cách chọn
+
+Quy tắc chọn (viết trong `src/make_decision_plane.py`, không chọn tay): hàng xuất
+trên 1 tỷ USD, PCI dương, RCA trong `[0,5; 1,5)` và **đang tăng**, lấy hai nhóm
+PCI cao nhất. Năm 2023 ra:
+
+| Nhóm | RCA 2015 → 2023 | PCI | Xuất khẩu |
+|---|---|---|---|
+| Thiết bị quang học, y tế | 0,75 → **0,91** | **+0,93** | 11,3 tỷ USD |
+| Máy móc công nghiệp | 0,46 → **0,95** | +0,78 | 39,8 tỷ USD |
+
+Để so: Máy điện và thiết bị điện đã chiếm **29,9%** rổ hàng với RCA **2,23** —
+thêm tiền vào đó chỉ làm dày chỗ vốn dày.
+
+**Phép thử của chính quy tắc.** Chạy đúng quy tắc ấy trên năm 2015 (so với 2007)
+thì nó chọn Thiết bị quang học (0,45 → 0,75) và **Sắt thép** (0,27 → 0,60). Tám
+năm sau cả hai đều đi đúng hướng quy tắc ngụ ý, và **sắt thép đã chạm RCA 1,00**
+— tức vượt ngưỡng lợi thế. Đây là luận cứ mạnh hơn hẳn việc khẳng định suông
+rằng lựa chọn năm 2023 là đúng.
+
+Bốn góc của mặt phẳng, 2023: *đã thắng* 38,2% rổ hàng · *cơ hội* 21,6% · **đang
+kẹt 36,2%** · ngoài cuộc 4,0%. Góc "đang kẹt" (RCA cao, PCI thấp) năm 2015 còn
+44,7% — rổ hàng **đang rời** khỏi góc đó, nhưng hơn một phần ba vẫn nằm lại:
+thủy sản (RCA 2,75; PCI −1,59), cà phê (4,21; −1,38), trái cây (2,88; −1,33).
+
+⚠️ Ô `Chưa phân loại` chiếm **11,8%** rổ hàng. Đó là mã `XXXX` của Atlas, không
+phải một ngành để đầu tư — đã loại khỏi danh sách đề xuất, xem D4.
+
+Lấy lại số: `src/make_decision_plane.py` · Hình: `output/decision_plane_2023.png`
+
+---
+
 ## B. Quyết định đã chốt
 
 Ghi lại kèm **lý do**, để sau này không ai phải mở lại tranh luận.
@@ -546,6 +628,10 @@ thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa 
 được.
 
 ---
+| B18 | **Báo cáo kết thúc bằng một ĐỀ XUẤT, không dừng ở mô tả** | mục tiêu buổi thuyết trình là đóng vai tư vấn và thuyết phục một quyết định, nên mỗi hình phải là bằng chứng cho một nhịp của lập luận chứ không phải một mục trong phòng trưng bày. Hệ quả: thêm T31 (mặt phẳng quyết định) làm hình mang đề xuất, và §E được viết lại thành năm nhịp kết bằng lời đề nghị. Đề xuất phải **suy từ quy tắc viết trong code**, không chọn tay — xem A14 |
+| B19 | **Khung point áp cho MỌI hình, không riêng T16** | B16 phát hiện lỗi đơn vị; T22 sửa xong cả năm hình cũ và `reference_data.xuat_png` thành chỗ duy nhất định nghĩa phép xuất. `src/check_readability.py` canh để không ai thêm hình mới bằng lối cũ. Sửa cỡ chữ là nửa dễ: ở cỡ đúng chữ to gấp 2,78 lần nên **cả năm hình phải bố cục lại** — tiêu đề tự ngắt dòng, chú giải có dải riêng, nhãn chồng thì bỏ bớt chứ không đè |
+| B20 | **Tên nhóm hàng HS2 có bảng tiếng Việt dùng chung** | `tree.csv` chỉ có tên tiếng Anh nên tới trước T31 mọi nhãn nhóm hàng trên T12, T13, T14 đều là tiếng Anh giữa một bài tiếng Việt. `R.PRODUCT_NAME_VI` + `R.ten_nhom()` phủ các nhóm thật sự được dán nhãn, phần đuôi tự lùi về tên gốc |
+
 
 ## C. Bẫy kỹ thuật đã vấp — đừng vấp lại
 
@@ -599,18 +685,50 @@ Năm hạn chế. Nêu ra thì được điểm trung thực; giấu đi mà b�
 
 ---
 
-## E. Mạch chuyện đề xuất cho báo cáo
+## E. Mạch chuyện: năm nhịp, kết bằng một đề xuất
 
-Bốn nhịp, mỗi nhịp đã có sẵn số liệu:
+Đây là **mạch của buổi thuyết trình**, không phải mục lục của báo cáo. Vai diễn
+là nhà tư vấn: bốn nhịp đầu dựng bằng chứng, nhịp năm nói ra việc nên làm. Mỗi
+nhịp đã có số đo và đã có hình.
 
-1. **Thế giới nối nhau dày hơn ta tưởng** — mật độ 51,8%, đối ứng 0,84. Nhưng
-   giá trị thì cực lệch: Gini 0,957, top 1,5% cạnh giữ 68,5% giá trị. → A3, A4
-2. **Việt Nam trèo lên trong bảng xếp hạng đó** — ECI #181/211 → #78/230, thu
-   khoảng cách với Thái Lan từ 1,39 xuống 0,28. → A1
-3. **Nhìn kỹ thì trèo bằng gì** — RCA 7,52 ở giày dép (PCI −0,49) và 4,21 ở cà
-   phê (PCI −1,38), nhưng **dưới 1** ở máy móc công nghiệp (PCI +0,78) và thiết
-   bị quang học (PCI +0,93). Điện tử là 115,4 tỷ USD mà RCA chỉ 2,23. → A2
-4. **Vậy con số nói gì và không nói gì** — ECI đo rổ hàng gộp, nên nó đo *cái gì
-   đi qua Việt Nam*, chưa hẳn là *cái gì ở lại Việt Nam*. → D2, D5
+**Nhịp 1 — Rổ hàng đã được xây lại gần như từ đầu.** Điện tử 0,6% → **29,9%**,
+máy móc 1,4% → **14,4%**; nông sản 42,9% → 11,6%, khoáng sản 20,6% → 1,4%. Tổng
+xuất khẩu gấp **75 lần**. → **T21** (dòng chảy cơ cấu)
 
-Nhịp 4 mới là chỗ tách bài khá khỏi bài giỏi.
+**Nhịp 2 — Và Việt Nam trèo lên thật trong bảng xếp hạng năng lực.** ECI từ
+#181/211 lên **#78/230**, COI 0,225 → 1,197, số mặt hàng xuất 186 → 285. → A1
+
+**Nhịp 3 — Nhưng cách trèo là một hành lang, và hành lang thì hẹp ở cả hai
+đầu.** Mua của Trung Quốc 133,1 tỷ bán lại 86,1 tỷ (**−46,9**); mua của Hoa Kỳ
+9,8 tỷ bán sang 95,2 tỷ (**+85,3**). 68,3% hàng vào từ một vùng duy nhất. Và số
+kênh bán đã **đạt đỉnh 200 nước năm 2005**, giờ còn 166 — nhiều tiền hơn, qua ít
+cửa hơn. → **T19** (Sankey), **T20** (small multiples), A12, A13
+
+**Nhịp 4 — Nhìn kỹ thì trèo bằng gì.** RCA 7,52 ở giày dép (PCI −0,49) và 4,21 ở
+cà phê (−1,38), nhưng **dưới 1** ở máy móc công nghiệp (+0,78) và thiết bị quang
+học (+0,93). Điện tử 115,4 tỷ USD mà RCA chỉ 2,23. **36,2% rổ hàng vẫn nằm ở góc
+"bán rất đậm nhưng hàng dễ".** → A2, **T31**
+
+**Nhịp 5 — Vậy nên đề xuất.** Dồn ưu tiên vào **thiết bị quang học – y tế**
+(RCA 0,75 → 0,91; PCI +0,93) và **máy móc công nghiệp** (0,46 → **0,95**; +0,78)
+— hai nhóm khó nhất trong rổ và đang sát ngưỡng lợi thế — thay vì đào sâu thêm
+vào lắp ráp điện tử, nơi RCA đã 2,23 và là khâu phụ thuộc nhập khẩu nhất. Không
+dồn thêm vào nhóm RCA cao – PCI thấp (thủy sản, cà phê, trái cây), vốn đã giảm
+tỷ trọng suốt 28 năm. → **T31**
+
+**Vì sao tin được cách chọn này:** chạy đúng quy tắc ấy trên dữ liệu 2015 thì nó
+chọn thiết bị quang học và sắt thép; tám năm sau cả hai đi đúng hướng, **sắt
+thép chạm RCA 1,00**. Quy tắc có thành tích trên chính bộ dữ liệu này — mạnh hơn
+hẳn một lời khẳng định. → A14
+
+**Điều gì sẽ làm chúng tôi đổi ý:** nếu RCA hai nhóm ấy chững lại dưới 1 trong
+vài năm tới, hoặc nếu đầu vào tự đa dạng hoá khỏi mức 68,3% một vùng, thì luận
+cứ yếu đi và phải chọn lại.
+
+**Và phải nói thật:** ECI đo rổ hàng gộp, nên nó đo *cái gì đi qua Việt Nam*,
+chưa hẳn là *cái gì ở lại Việt Nam*. Phần "xuất trừ nhập" trên T19 là số học,
+không phải giá trị tăng thêm — tách được phần đó cần bảng vào–ra mà Atlas không
+có. → D2, D5
+
+Nhịp 5 và đoạn "đổi ý" là chỗ tách bài khá khỏi bài giỏi: một đề xuất có điều
+kiện bác bỏ thì mới là đề xuất, còn không thì chỉ là một ý thích.

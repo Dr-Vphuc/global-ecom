@@ -49,6 +49,15 @@ DEFAULT_COUNTRIES = ["VNM", "THA", "MYS", "IDN"]
 
 TILE_BORDER = dict(color="#FFFFFF", width=1)
 
+# Khung tính bằng POINT theo B16 — xem reference_data.xuat_png.
+FIG_H_INCH = 5.70
+MARGIN_X = 8.0
+TEXT_PAD = 6.0
+LINE_H = 1.33
+LABEL_FLOOR_PT = 7.0
+TILE_TITLE_BAND = 32.0   # tên nước + giá trị, hai dòng, trên mỗi ô lưới
+FOCUS_ISO = "VNM"
+
 
 def sector_shares(tree, exports):
     """Gộp xuất khẩu lên 10 ngành cấp 1. Trả về (danh sách ngành, tổng)."""
@@ -139,31 +148,72 @@ def main():
         ), row=r, col=c)
 
     year_note = "" if args.year == R.REFERENCE_YEAR else " (năm %d)" % args.year
+    # --- khối chữ đặt tay theo B16 (khung point) ---------------------------
+    # Tiêu đề cũ viết sẵn câu "Việt Nam là nước duy nhất còn dựa mạnh vào dệt
+    # may, giày dép" — một khẳng định không được tính lại, tức đúng thứ quy tắc
+    # 2 của CLAUDE.md cấm. Giờ đi tìm ngành mà Việt Nam vượt nước cao thứ nhì
+    # nhiều nhất, rồi nói đúng khoảng cách đo được.
+    share_of = {}
+    for iso, rws, _tot in panels:
+        for x in rws:
+            share_of.setdefault(x["name"], {})[iso] = x["share"]
+    vn_gap = []
+    for nganh, per in share_of.items():
+        if FOCUS_ISO not in per:
+            continue
+        khac = [v for k, v in per.items() if k != FOCUS_ISO]
+        if not khac:
+            continue
+        vn_gap.append((per[FOCUS_ISO] - max(khac), nganh, per[FOCUS_ISO],
+                       max(khac)))
+    vn_gap.sort(reverse=True)
+    if vn_gap and vn_gap[0][0] > 0:
+        _d, nganh, vn_s, nhi_s = vn_gap[0]
+        title = ("Việt Nam dựa vào %s nặng hơn hẳn: %s rổ hàng, nước cao thứ "
+                 "nhì chỉ %s%s"
+                 % (nganh.lower(), R.fmt_pct(vn_s), R.fmt_pct(nhi_s), year_note))
+    else:
+        title = ("Không ngành nào Việt Nam vượt cả ba nước còn lại%s" % year_note)
+    sub = ("Cơ cấu xuất khẩu theo 10 ngành cấp 1 của hệ HS92, năm %d. Mỗi ô "
+           "lưới tự chuẩn hóa về 100%% nên so được cơ cấu; quy mô tuyệt đối "
+           "ghi dưới tên nước. Việt Nam viền đậm." % args.year)
+    src = ("Nguồn: Atlas of Economic Complexity (Harvard Growth Lab), phân "
+           "loại HS92. Giá trị xuất khẩu, USD hiện hành.")
+    w_pt, h_pt = R.khung_pt(R.FIG_WIDTH_FULL), R.khung_pt(FIG_H_INCH)
+    t_w = w_pt - 2 * MARGIN_X - 2 * TEXT_PAD
+    tw = R.wrap_pt(title, R.FONT_SIZES["title"], t_w)
+    sw = R.wrap_pt(sub, R.FONT_SIZES["subtitle"], t_w)
+    cw = R.wrap_pt(src, R.FONT_SIZES["footnote"], t_w)
+    h_title = R.n_lines(tw) * R.FONT_SIZES["title"] * LINE_H
+    h_sub = R.n_lines(sw) * R.FONT_SIZES["subtitle"] * LINE_H
+    m_t = TEXT_PAD + h_title + h_sub + TILE_TITLE_BAND
+    m_b = 8.0 + R.n_lines(cw) * R.FONT_SIZES["footnote"] * LINE_H + TEXT_PAD
+    plot_h = h_pt - m_t - m_b
+
     fig.update_layout(
-        title=dict(
-            text="<b>Việt Nam là nước duy nhất còn dựa mạnh vào dệt may, giày dép%s</b>"
-                 "<br><span style='font-size:%dpx;color:#555'>"
-                 "Cơ cấu xuất khẩu theo 10 ngành cấp 1 của hệ HS92, năm %d. "
-                 "Mỗi ô lưới tự chuẩn hóa về 100%% nên so được cơ cấu; "
-                 "quy mô tuyệt đối ghi dưới tên nước. Việt Nam viền đậm.</span>"
-                 % (year_note, R.FONT_SIZES["subtitle"], args.year),
-            x=0.01, xanchor="left", font=dict(size=R.FONT_SIZES["title"] + 4),
-        ),
         font=dict(family=", ".join(R.FONT_STACK), size=R.FONT_SIZES["legend"]),
         separators=",.",
-        margin=dict(t=110, l=8, r=8, b=34),
+        margin=dict(t=m_t, l=MARGIN_X, r=MARGIN_X, b=m_b),
         paper_bgcolor="#FFFFFF",
+        # Chữ trong ô tự co cho vừa; chặn sàn 7 pt của §7, thà giấu còn hơn in
+        # ra chữ 2–3 pt như bản trước khi sửa lỗi đơn vị B16.
+        uniformtext=dict(minsize=LABEL_FLOOR_PT, mode="hide"),
     )
-    # Co chu tieu de tung o luoi (subplot_titles nam trong layout.annotations).
-    fig.update_annotations(font_size=R.FONT_SIZES["legend"] + 2)
-    # Chú thích nguồn phải thêm SAU update_layout, vì subplot_titles cũng nằm
-    # trong fig.layout.annotations — gán đè sẽ xóa mất tiêu đề từng ô lưới.
-    fig.add_annotation(
-        text="Nguồn: Atlas of Economic Complexity (Harvard Growth Lab), phân loại HS92. "
-             "Giá trị xuất khẩu, USD hiện hành.",
-        showarrow=False, xref="paper", yref="paper", x=0, y=-0.045,
-        xanchor="left", font=dict(size=R.FONT_SIZES["footnote"], color="#777"),
-    )
+    # Co chữ tiêu đề từng ô lưới (subplot_titles nằm trong layout.annotations).
+    # Phải làm TRƯỚC khi thêm tiêu đề chính, nếu không tiêu đề chính cũng bị co.
+    fig.update_annotations(font_size=R.FONT_SIZES["annotation"])
+
+    def ann(text, y, size, color):
+        fig.add_annotation(text=text, showarrow=False, xref="paper",
+                           yref="paper", x=0, y=y,
+                           xshift=-(MARGIN_X - TEXT_PAD), xanchor="left",
+                           yanchor="top", align="left",
+                           font=dict(size=size, color=color))
+
+    ann(tw, 1 + (m_t - TEXT_PAD) / plot_h, R.FONT_SIZES["title"], None)
+    ann(sw, 1 + (m_t - TEXT_PAD - h_title) / plot_h,
+        R.FONT_SIZES["subtitle"], "#555555")
+    ann(cw, -(8.0 / plot_h), R.FONT_SIZES["footnote"], "#777777")
 
     os.makedirs(OUTDIR, exist_ok=True)
     stem = "small_multiples_%s_%d" % ("-".join(c.lower() for c in countries), args.year)
@@ -172,7 +222,7 @@ def main():
     print("  %s" % html)
     try:
         png = os.path.join(OUTDIR, stem + ".png")
-        fig.write_image(png, width=1400, height=900, scale=2)
+        R.xuat_png(fig, png, R.FIG_WIDTH_FULL, FIG_H_INCH)
         print("  %s" % png)
     except Exception as exc:
         print("  (không xuất được PNG: %s — bản .html vẫn dùng được)" % exc)

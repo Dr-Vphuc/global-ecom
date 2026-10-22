@@ -55,6 +55,18 @@ except ImportError:
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTDIR = os.path.join(ROOT, "output")
+
+# Khung tính bằng POINT theo B16: cỡ chữ khai báo bao nhiêu point thì in ra
+# bấy nhiêu. Phải cao hơn FIG_HEIGHT_DEFAULT vì khối tiêu đề ở cỡ chữ ĐÚNG
+# chiếm gần 80 pt — để nguyên 3,90 inch thì phần vẽ chỉ còn hơn 70 pt.
+FIG_H_INCH = 4.40
+MARGIN_X = 8.0
+MARGIN_L = 34.0       # chỗ cho nhãn trục dọc
+TEXT_PAD = 6.0
+LINE_H = 1.33
+AXIS_BAND = 34.0      # nhãn tick + tên trục ngang
+LEG_BAND = 50.0       # chú giải xếp ngang, cuộn thành hai hàng
+SUBTITLE_BAND = 18.0  # tiêu đề hai bảng con, plotly đặt trong lề trên
 DIST_CSV = os.path.join(ROOT, "data", "processed", "degree_distribution.csv")
 
 COLOR_OUT = R.SECTOR_PALETTE[5]   # #332288 — xanh đậm
@@ -181,8 +193,8 @@ def make_figure(data, year, fit, gap):
     fig = make_subplots(
         rows=1, cols=2,
         subplot_titles=(
-            "<b>Thang log-log</b> — scale-free thì phải thẳng",
-            "<b>Thang thường</b> — so với phân bố đều hoàn toàn",
+            "<b>Thang log-log</b> — phải thẳng nếu scale-free",
+            "<b>Thang thường</b> — so với phân bố đều",
         ),
         horizontal_spacing=0.09,
     )
@@ -217,7 +229,7 @@ def make_figure(data, year, fit, gap):
     # Hai câu đọc hộ bảng trái. Đặt vào hai khoảng trống sẵn có nên không che
     # dữ liệu: góc trên (phần đường khớp chạy vượt 100%) và góc dưới trái.
     fig.add_annotation(
-        x=math.log10(1.15), y=math.log10(2.6), row=1, col=1,
+        x=math.log10(1.15), y=math.log10(4.0), row=1, col=1,
         text="Trên mốc 100%%: đường khớp đòi hơn<br>toàn bộ số nước — bất khả. "
              "Mọi bậc<br>dưới %s đều rơi vào vùng này."
              % R.fmt_vn(fit["crosses_one_at"], 0),
@@ -282,44 +294,73 @@ def make_figure(data, year, fit, gap):
                      ticktext=[R.fmt_pct(v * 100, 0 if v >= .01 else 1) for v in y_ticks],
                      row=1, col=1, **axis_common)
     fig.update_xaxes(title_text="Bậc (số bạn hàng)", row=1, col=2, **axis_common)
-    fig.update_yaxes(title_text="CCDF", range=[0, 1.04], tickformat=".0%",
+    fig.update_yaxes(title_text="", range=[0, 1.04], tickformat=".0%",
                      row=1, col=2, **axis_common)
 
+    # --- khối chữ đặt tay theo B16 -----------------------------------------
+    # layout.title tự đo chỗ và KHÔNG tự ngắt dòng: ở khung point, câu tiêu đề
+    # dài hơn bề ngang khung nên nó chạy thẳng ra ngoài mép. Ngắt dòng bằng
+    # wrap_pt rồi tự đặt, giống T16/T17/T19.
+    title = ("Phân bố bậc không theo luật lũy thừa: thương mại thế giới không "
+             "có hub theo nghĩa tô-pô")
+    sub = ("Năm %d, %s nước. Đường thẳng khớp nhất trên thang log-log chỉ giải "
+           "thích được R² = %s, và có chỗ lệch tới %s lần. %s. Đường không "
+           "thẳng là kết quả, không phải lỗi dữ liệu."
+           % (year, R.fmt_vn(len(degrees_of(data["out"])), 0),
+              R.fmt_vn(fit["r2"], 2), R.fmt_vn(fit["worst_ratio"], 0),
+              uniform_phrase(gap)))
+    src = ("Nguồn: Atlas of Economic Complexity (Harvard Growth Lab). Bậc đếm "
+           "trên đồ thị đầy đủ, chưa lọc cạnh. CCDF = hàm phân bố tích lũy bù.")
+
+    w_pt = R.khung_pt(R.FIG_WIDTH_FULL)
+    h_pt = R.khung_pt(FIG_H_INCH)
+    t_w = w_pt - 2 * MARGIN_X - 2 * TEXT_PAD
+    title_w = R.wrap_pt(title, R.FONT_SIZES["title"], t_w)
+    sub_w = R.wrap_pt(sub, R.FONT_SIZES["subtitle"], t_w)
+    src_w = R.wrap_pt(src, R.FONT_SIZES["footnote"], t_w)
+    m_t = (TEXT_PAD + R.n_lines(title_w) * R.FONT_SIZES["title"] * LINE_H
+           + R.n_lines(sub_w) * R.FONT_SIZES["subtitle"] * LINE_H
+           + SUBTITLE_BAND)
+    m_b = (AXIS_BAND + LEG_BAND
+           + R.n_lines(src_w) * R.FONT_SIZES["footnote"] * LINE_H + TEXT_PAD)
+    plot_h = h_pt - m_t - m_b
+
     fig.update_layout(
-        title=dict(
-            text="<b>Phân bố bậc không theo luật lũy thừa: thương mại thế giới "
-                 "không có hub theo nghĩa tô-pô</b>"
-                 "<br><span style='font-size:%dpx;color:#555'>"
-                 "Năm %d, %s nước. Đường thẳng khớp nhất trên thang log-log chỉ "
-                 "giải thích được R² = %s, và có chỗ lệch tới %s lần. %s. "
-                 "<b>Đường không thẳng là kết quả, không phải lỗi dữ liệu.</b>"
-                 "</span>"
-                 % (R.FONT_SIZES["subtitle"], year,
-                    R.fmt_vn(len(degrees_of(data["out"])), 0),
-                    R.fmt_vn(fit["r2"], 2), R.fmt_vn(fit["worst_ratio"], 0),
-                    uniform_phrase(gap)),
-            x=0.01, xanchor="left", font=dict(size=R.FONT_SIZES["title"] + 4),
-        ),
         font=dict(family=", ".join(R.FONT_STACK), size=R.FONT_SIZES["legend"]),
         separators=",.",
-        margin=dict(t=132, l=8, r=8, b=74),
+        margin=dict(t=m_t, l=MARGIN_L, r=MARGIN_X, b=m_b),
         paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF",
-        legend=dict(orientation="h", y=-0.22, x=0, xanchor="left",
-                    font=dict(size=R.FONT_SIZES["legend"])),
+        legend=dict(orientation="h", y=-((AXIS_BAND + 2.0) / plot_h), x=0,
+                    xanchor="left", yanchor="top",
+                    font=dict(size=R.FONT_SIZES["footnote"])),
         hovermode="closest",
     )
-    # Tiêu đề hai bảng con nằm trong layout.annotations và mặc định 16px — to
-    # hơn cả dòng phụ của tiêu đề chính. Hạ xuống cho đúng thứ bậc chữ.
-    # Phải làm TRƯỚC khi thêm chú thích nguồn, nếu không nguồn cũng bị chỉnh.
+    # Tiêu đề hai bảng con nằm trong layout.annotations và mặc định 16 đơn vị —
+    # ở khung point thì to ngang tiêu đề chính. Hạ cỡ và căn trái theo mép ô.
+    k = 0
     for note in fig.layout.annotations:
         if note.text and note.text.startswith("<b>Thang"):
-            note.font = dict(size=R.FONT_SIZES["title"] - 1)
+            note.font = dict(size=R.FONT_SIZES["axis"])
+            note.xanchor = "left"
+            note.x = fig.get_subplot(1, k + 1).xaxis.domain[0]
+            k += 1
+
+    def block(txt, y_from_top, size, color=None):
+        fig.add_annotation(text=txt, showarrow=False, xref="paper",
+                           yref="paper", x=0,
+                           y=1 + (m_t - y_from_top) / plot_h,
+                           xshift=-(MARGIN_L - TEXT_PAD), xanchor="left",
+                           yanchor="top", align="left",
+                           font=dict(size=size, color=color))
+
+    block(title_w, TEXT_PAD, R.FONT_SIZES["title"])
+    block(sub_w, TEXT_PAD + R.n_lines(title_w) * R.FONT_SIZES["title"] * LINE_H,
+          R.FONT_SIZES["subtitle"], "#555555")
     fig.add_annotation(
-        text="Nguồn: Atlas of Economic Complexity (Harvard Growth Lab). Bậc đếm trên "
-             "đồ thị đầy đủ, chưa lọc cạnh. CCDF = hàm phân bố tích lũy bù.",
-        showarrow=False, xref="paper", yref="paper", x=0, y=-0.30,
-        xanchor="left", font=dict(size=R.FONT_SIZES["footnote"], color="#777"),
-    )
+        text=src_w, showarrow=False, xref="paper", yref="paper", x=0,
+        y=-((AXIS_BAND + LEG_BAND) / plot_h),
+        xshift=-(MARGIN_L - TEXT_PAD), xanchor="left", yanchor="top",
+        align="left", font=dict(size=R.FONT_SIZES["footnote"], color="#777"))
     return fig
 
 
@@ -330,8 +371,7 @@ def save(fig, name):
     print("  %s" % html)
     try:
         png = os.path.join(OUTDIR, name + ".png")
-        fig.write_image(png, width=int(R.FIG_WIDTH_FULL * R.FIG_DPI_SCREEN),
-                        height=int(R.FIG_HEIGHT_DEFAULT * R.FIG_DPI_SCREEN), scale=2)
+        R.xuat_png(fig, png, R.FIG_WIDTH_FULL, FIG_H_INCH)
         print("  %s" % png)
     except Exception as exc:
         print("  (không xuất được PNG: %s — bản .html vẫn dùng được)" % exc)

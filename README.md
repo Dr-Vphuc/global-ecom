@@ -263,6 +263,52 @@ cố ý để dành cho nó.
 Khối phân biệt bằng **vị trí**, không bằng màu — xem **B17**: không gian màu đã
 hết chỗ cho bảng thứ ba, và điều đó đo được bằng `src/probe_colour_space.py`.
 
+### Chiều của luồng, và hành lang hai đầu (T19)
+
+`src/make_sankey.py` là hình **duy nhất** còn giữ chiều: T15 và T17 đều gộp hai
+chiều theo B13, nên câu "hàng vào từ đâu, hàng ra đi đâu" chỉ hình này trả lời.
+
+Bằng chứng của hành lang là **cán cân ngược dấu ở hai đầu**: Trung Quốc cấp
+133,05 tỷ USD và mua lại 86,11 tỷ (**−46,94**), Hoa Kỳ cấp 9,83 tỷ và mua 95,16
+tỷ (**+85,33**). Tiêu đề chỉ gọi là "hành lang" khi phép thử ngược dấu đó đạt ở
+năm đang vẽ — năm 1995 hai đầu là Singapore và Nhật Bản, và hình tự nói ra.
+
+Hình này dùng **đồ thị đầy đủ**, không lọc ngưỡng B4, nên tổng khớp đúng
+`country_year.csv` tới từng xu. Vì thế **đừng so thẳng số của T19 với T17** —
+chính là cái bẫy ghi ở A5. Phần nhạt trên thanh Việt Nam là *xuất trừ nhập*,
+không phải giá trị tăng thêm trong nước (D2, D5).
+
+### Bán cho ai, và qua bao nhiêu cửa (T20)
+
+`src/make_time_multiples.py` vẽ bốn năm mốc, chung một thang trục ngang. Vẽ đủ
+bốn mốc mới thấy **A9 chưa đủ**: số bạn hàng không giảm đều mà **đạt đỉnh 200
+nước năm 2005** rồi lùi về 166 — thu hẹp 18 năm chứ không phải 8. So hai đầu
+1995 → 2023 sẽ ra "tăng 68 nước", đúng số mà che mất câu chuyện, nên tiêu đề đi
+tìm năm đỉnh. Xem **A13**.
+
+### Rổ hàng được xây lại (T21)
+
+`src/make_streamgraph.py` — điện tử 0,6% → **29,9%**, nông sản 42,9% → 11,6%,
+tổng xuất khẩu gấp 75 lần. **Không** dùng nền lượn kiểu ThemeRiver: xuất khẩu
+gấp 75 lần nên trên thang tuyến tính, cơ cấu năm 1995 chỉ dày 1,3% khung — tức
+đúng thứ hình này sinh ra để kể lại là thứ không nhìn thấy. Tách hai tầng: tầng
+trên là quy mô, tầng dưới chuẩn hóa 100% cho cơ cấu.
+
+### Mặt phẳng quyết định — hình mang đề xuất (T31)
+
+`src/make_decision_plane.py` là chỗ báo cáo **đề nghị một việc** thay vì chỉ mô
+tả. RCA (bán đậm hơn hay nhạt hơn thế giới) trên trục ngang thang log, PCI (hàng
+khó hay dễ) trên trục dọc, diện tích hình tròn là giá trị xuất khẩu.
+
+Nhóm được đề xuất chọn bằng **quy tắc viết trong code**, không chọn tay: xuất
+trên 1 tỷ USD, PCI dương, RCA trong `[0,5; 1,5)` và đang tăng, lấy hai nhóm PCI
+cao nhất. Năm 2023 ra **thiết bị quang học – y tế** (RCA 0,75 → 0,91; PCI +0,93)
+và **máy móc công nghiệp** (0,46 → 0,95; +0,78).
+
+Viết thành quy tắc nên **thử lại được**: chạy trên 2015 thì nó chọn thiết bị
+quang học và sắt thép, tám năm sau cả hai đi đúng hướng và sắt thép đã chạm RCA
+**1,00**. Xem **A14** và quyết định **B18**.
+
 ## Quyết định đã chốt
 
 | | |
@@ -300,6 +346,11 @@ global-ecom/
 │   ├── make_node_link.py         # node-link mạng đã lọc, 73 nút (T15)
 │   ├── make_adjacency_matrix.py  # hai ma trận kề: alphabet vs cụm (T16)
 │   ├── make_chord.py          # chord 8 khối, Việt Nam làm trọng tâm (T17)
+│   ├── make_sankey.py         # nhập → VN → xuất, hình duy nhất có chiều (T19)
+│   ├── make_time_multiples.py # bán cho ai, bốn năm mốc (T20)
+│   ├── make_streamgraph.py    # rổ hàng được xây lại 1995–2023 (T21)
+│   ├── make_decision_plane.py # RCA × PCI — hình mang ĐỀ XUẤT (T31)
+│   ├── check_readability.py   # kiểm cỡ chữ, khung, tương phản, mù màu (T24)
 │   ├── probe_colour_space.py  # còn chỗ cho bảng màu mới không (B17)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
@@ -379,6 +430,14 @@ python src/make_adjacency_matrix.py   # T16 hai ma trận kề, alphabet vs cụ
 python src/make_adjacency_matrix.py --year 1995   # năm đối chứng
 python src/make_chord.py              # T17 chord 8 khối, VN làm trọng tâm
 python src/make_chord.py --year 1995  # năm đối chứng
+python src/make_sankey.py             # T19 Sankey nhập → VN → xuất
+python src/make_sankey.py --year 1995 # năm đối chứng
+python src/make_time_multiples.py     # T20 bốn năm mốc, bán cho ai
+python src/make_time_multiples.py --direction nhap   # phía mua vào
+python src/make_streamgraph.py        # T21 dòng chảy cơ cấu 1995–2023
+python src/make_decision_plane.py     # T31 mặt phẳng quyết định (đề xuất)
+python src/make_decision_plane.py --year 2015 --since 2007   # thử lại quy tắc
+python src/check_readability.py       # T24 kiểm khả năng đọc, ĐẠT thì trả 0
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 ```

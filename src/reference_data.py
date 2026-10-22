@@ -718,3 +718,88 @@ def wrap_pt(text, font_pt, width_pt, ratio=0.52):
 def n_lines(wrapped):
     """Số dòng của một chuỗi đã qua `wrap_pt` — để tính lề trên/dưới."""
     return wrapped.count("<br>") + 1
+
+
+# ---------------------------------------------------------------------------
+# Tên tiếng Việt cho các NHÓM HÀNG cấp 2 (HS2) hay xuất hiện trên hình.
+#
+# `tree.csv` chỉ có tên tiếng Anh, nên trước T31 mọi nhãn nhóm hàng trên T12,
+# T13, T14 đều là tiếng Anh giữa một bài tiếng Việt. Bảng này phủ những nhóm
+# thật sự được dán nhãn — tức các nhóm lớn của rổ hàng Việt Nam — và `ten_nhom`
+# tự lùi về tên tiếng Anh cho phần đuôi, vốn chỉ là chấm nhỏ không có nhãn.
+#
+# Dịch theo nghĩa chương HS, không dịch từng chữ: "Apparatuses (optical,
+# medical, etc.)" là chương 90, gọi đúng là "thiết bị quang học, y tế".
+# ---------------------------------------------------------------------------
+PRODUCT_NAME_VI = {
+    "Electrical machinery and equipment": "Máy điện và thiết bị điện",
+    "Industrial Machinery": "Máy móc công nghiệp",
+    "Footwear": "Giày dép",
+    "Apparel, not knit": "May mặc, không dệt kim",
+    "Apparel, knit": "May mặc, dệt kim",
+    "Furniture": "Nội thất",
+    "Apparatuses (optical, medical, etc.)": "Thiết bị quang học, y tế",
+    "Iron and steel": "Sắt thép",
+    "Articles of iron or steel": "Sản phẩm từ sắt thép",
+    "Plastics": "Nhựa",
+    "Fruits and nuts": "Trái cây và hạt",
+    "Fish": "Thủy sản",
+    "Rubber": "Cao su",
+    "Wood": "Gỗ",
+    "Vehicles": "Phương tiện vận tải",
+    "Coffee, tea and spices": "Cà phê, chè và gia vị",
+    "Cereals": "Ngũ cốc",
+    "Toys": "Đồ chơi và dụng cụ thể thao",
+    "Mineral fuels, oils and waxes": "Nhiên liệu khoáng",
+    "Articles of leather": "Sản phẩm từ da",
+    "Cotton": "Bông",
+    "Preparations of meat or fish": "Chế biến từ thịt và cá",
+    "Paper and paperboard": "Giấy và bìa",
+    "Aluminium": "Nhôm",
+    "Copper": "Đồng",
+    "Other made up textile articles": "Hàng dệt may khác",
+    "Salt, sulphur, lime, cement, etc.": "Muối, lưu huỳnh, xi măng",
+    "Preparations of vegetables, fruit, or nuts": "Chế biến rau quả",
+    "Inorganic chemicals": "Hóa chất vô cơ",
+    "Miscellaneous chemical products": "Hóa chất khác",
+    "Flours, starches and malts": "Bột, tinh bột và mạch nha",
+    "Other": "Chưa phân loại",
+}
+
+
+def ten_nhom(name):
+    """Tên tiếng Việt của một nhóm hàng cấp 2, lùi về tên gốc nếu chưa có."""
+    return PRODUCT_NAME_VI.get(name, name)
+
+
+# ---------------------------------------------------------------------------
+# Xuất PNG ở KHUNG POINT — sửa lỗi đơn vị ghi ở B16.
+#
+# Các script đời đầu gọi `write_image(width=FIG_WIDTH_FULL * FIG_DPI_SCREEN)`,
+# tức khung rộng 6,30 × 200 = 1.260 đơn vị, rồi truyền thẳng FONT_SIZES vào.
+# Nhưng FONT_SIZES là POINT, còn khung lại đang đếm bằng PIXEL. Cỡ chữ khai báo
+# 14 in ra thật chỉ 14 / 1.260 × 6,30 × 72 = 5,04 pt — nhỏ hơn khai báo đúng
+# 200/72 = 2,78 lần. Dòng nguồn khai 7 pt in ra 2,52 pt, dưới sàn 7 pt của
+# style guide §7.
+#
+# Cách sửa: đặt khung bằng ĐÚNG số point của khổ hình, rồi để `scale` lo phần
+# độ phân giải. Khi ấy cỡ chữ khai báo bao nhiêu point thì in ra bấy nhiêu.
+# ---------------------------------------------------------------------------
+PT_PER_INCH = 72.0
+PX_PER_PT_CU = FIG_DPI_SCREEN / PT_PER_INCH   # 2,7778 — hệ số quy đổi khung cũ
+
+
+def khung_pt(inch):
+    """Số point của một bề ngang/dọc tính bằng inch."""
+    return int(round(inch * PT_PER_INCH))
+
+
+def xuat_png(fig, path, w_inch=None, h_inch=None, dpi=None):
+    """Ghi PNG sao cho 1 đơn vị bố cục = 1 point, in ra ở `dpi` chấm mỗi inch."""
+    w_inch = FIG_WIDTH_FULL if w_inch is None else w_inch
+    h_inch = FIG_HEIGHT_DEFAULT if h_inch is None else h_inch
+    dpi = FIG_DPI_PRINT if dpi is None else dpi
+    w_pt, h_pt = khung_pt(w_inch), khung_pt(h_inch)
+    fig.write_image(path, width=w_pt, height=h_pt,
+                    scale=(w_inch * dpi) / float(w_pt))
+    return w_pt, h_pt
