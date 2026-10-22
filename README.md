@@ -358,12 +358,16 @@ global-ecom/
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
 │   ├── nhat-ky-cong-viec.md        # đã làm gì, nằm ở đâu — mở trước khi soạn slide
-│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A10, quyết định B1–B16, hạn chế D1–D5
+│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A15, quyết định B1–B22, hạn chế D1–D5
 │   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
 │   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
 │   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
 │   └── kien-thuc-nen-tang.md       # kiến thức kinh tế tối thiểu để đọc số
-├── .report/          # báo cáo LaTeX
+├── .report/
+│   ├── final/        # báo cáo cuối — MỘT FILE MỘT MỤC, Markdown (B21)
+│   │   └── 02-phuong-phap-luan.md  # Phương pháp luận (T25)
+│   ├── midterm/      # bản dịch chương 9 giữa kỳ (HTML)
+│   └── overleaf/     # bản dịch chương 9 giữa kỳ (LaTeX)
 └── phan-cong-cong-viec.xlsx
 ```
 
@@ -523,6 +527,33 @@ certutil -hashfile data\atlas\cc_year.csv MD5
 
 Mã in ra phải trùng với cột MD5 ở bảng trên. Chỉ so kích thước là chưa đủ, nhưng
 lệch kích thước thì chắc chắn file hỏng.
+
+## Báo cáo cuối: Phương pháp luận đã viết (T25)
+
+`.report/final/02-phuong-phap-luan.md` — mục Phương pháp luận của báo cáo cuối, 12
+tiểu mục, **mỗi con số kèm lệnh lấy lại được**. Nội dung đáng chú ý:
+
+- **Vì sao T19 dùng đồ thị đầy đủ còn T15–T17 dùng đồ thị đã lọc** (§2.7). Đây
+  không phải sở thích: dùng đồ thị đã lọc cho Sankey thì cán cân Việt Nam 2023
+  **đổi dấu** — từ **+53,45 tỷ USD** thành **−15,17 tỷ USD** — vì ngưỡng cắt phía
+  bán ra (166 → 8 nước) nặng hơn phía mua vào (149 → 10 nước). Phát hiện **A15**.
+- **Hai chỗ lệch của cây HS92** (§2.8), giữ nguyên kết quả kiểm không sạch: nút
+  `3501` (casein) nằm dưới HS2 `34` thay vì `35`, nhưng cùng ngành 6 nên không tổng
+  ngành nào lệch; mã `XXXX` dưới HS2 `99` là mã giữ chỗ của Atlas, và nhóm `99` ấy
+  chiếm **11,83%** rổ hàng Việt Nam (45,60 tỷ USD, RCA 2,4408, PCI −1,206) nên bị
+  loại thẳng khỏi quy tắc chọn đề xuất.
+- **Hạn chế D1–D5** nói thẳng, kèm số: 2023 không phải 2024 (thiếu 1.781 cặp nước),
+  ECI đo hàng *đi qua* chứ chưa hẳn hàng *ở lại*, node-link vứt 98,5% số cạnh, dữ
+  liệu dừng ở HS2, và không có bảng vào–ra.
+- **Vì sao tin được đề xuất** (§2.10): nó là một quy tắc trong code, nên thử lại
+  được trên quá khứ — chạy trên 2015 thì chọn thiết bị quang học và sắt thép, tám
+  năm sau sắt thép chạm **RCA 1,00**.
+
+```bash
+# Lấy lại các số của §2.7 và §2.8
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_sankey.py
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/check_tree.py
+```
 
 ## Quy ước git
 

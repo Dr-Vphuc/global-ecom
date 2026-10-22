@@ -477,10 +477,42 @@ kẹt 36,2%** · ngoài cuộc 4,0%. Góc "đang kẹt" (RCA cao, PCI thấp) n�
 44,7% — rổ hàng **đang rời** khỏi góc đó, nhưng hơn một phần ba vẫn nằm lại:
 thủy sản (RCA 2,75; PCI −1,59), cà phê (4,21; −1,38), trái cây (2,88; −1,33).
 
-⚠️ Ô `Chưa phân loại` chiếm **11,8%** rổ hàng. Đó là mã `XXXX` của Atlas, không
-phải một ngành để đầu tư — đã loại khỏi danh sách đề xuất, xem D4.
+⚠️ Ô `Chưa phân loại` chiếm **11,83%** rổ hàng — **45,60 tỷ USD**, RCA **2,4408**,
+PCI **−1,206**. Đó là HS2 `99` với nút con duy nhất `XXXX` (*Trade data
+discrepancies*) của Atlas, không phải một ngành để đầu tư: quy tắc chọn đã loại
+thẳng (`sector != UNCLASSIFIED`), nếu không thì ô có RCA cao đáng kể trên mặt
+phẳng lại là một ô dữ liệu không phân loại được. Xem §2.8 phần Phương pháp luận.
 
 Lấy lại số: `src/make_decision_plane.py` · Hình: `output/decision_plane_2023.png`
+
+---
+
+### A15. Dùng đồ thị đã lọc cho Sankey sẽ ĐỔI DẤU cán cân
+
+Đây là câu trả lời đo được cho câu hỏi *"vì sao T19 dùng đồ thị đầy đủ còn T15–T17
+dùng đồ thị đã lọc"* — câu mà người chấm sẽ hỏi khi thấy số liệu hai nhóm hình
+không trùng nhau (đúng cái bẫy A5).
+
+| Việt Nam, 2023 | Đồ thị đầy đủ | Đồ thị đã lọc |
+|---|---|---|
+| Bán ra | **166 nước**, 385,54 tỷ USD | **8 nước**, 249,84 tỷ USD (64,8%) |
+| Mua vào | **149 nước**, 332,09 tỷ USD | **10 nước**, 265,01 tỷ USD (79,8%) |
+| Xuất trừ nhập | **+53,45 tỷ USD** (thặng dư) | **−15,17 tỷ USD** (thâm hụt) |
+
+Ngưỡng lọc cắt phía **bán ra** nặng hơn phía **mua vào** — Việt Nam mua tập trung
+vào vài nước lớn nhưng bán rải ra 166 nước — nên cán cân trên đồ thị đã lọc **lật
+dấu**. Một Sankey dựng trên đồ thị đã lọc sẽ in ra một câu sai: *"Việt Nam nhập
+siêu"*, trong khi năm 2023 Việt Nam **xuất siêu 53,45 tỷ USD**.
+
+Trên đồ thị đầy đủ, Sankey khớp `country_year.csv` **lệch 0,00 tỷ USD** ở cả hai
+chiều. Quy tắc rút ra, dùng cho cả báo cáo:
+
+> Hình nói về **cấu trúc toàn cầu** → đồ thị đã lọc (T15, T16, T17).
+> Hình nói về **một nước** → đồ thị đầy đủ (T19, T20).
+> **Không so trực tiếp con số của hai nhóm hình.**
+
+Lấy lại số: `src/make_sankey.py` (khối KIỂM CHỨNG) và `data/processed/edges.csv`
+lọc theo cột `above_threshold`. Viết hẳn thành §2.7 của phần Phương pháp luận.
 
 ---
 
@@ -507,6 +539,11 @@ Ghi lại kèm **lý do**, để sau này không ai phải mở lại tranh lu�
 | B15 | **Ma trận kề chỉ ghi nhãn 13 nước, không ghi 73** | đo được: cạnh vùng vẽ **250,3pt** trên khung 453,6pt (= 6,30 inch), chia cho 73 nước còn **3,4pt mỗi nhãn** — dưới sàn **7pt** của style guide §7, và không có cách bố trí nào cứu được vì 73 × 7pt = 511pt đã dài hơn cả cạnh khung. Tập 13 nhãn = **10 nước ASEAN** (lát cắt của đề tài, B2) **+ nước mạnh nhất mỗi cụm** (chỗ duy nhất đặt tên được cho một khối) → **19,3pt mỗi nhãn**, đạt sàn. Xem chi tiết bên dưới |
 | B16 | **Khung hình của T16 tính bằng POINT, không bằng pixel** | `FIG_WIDTH_FULL * 72 = 453,6` thay cho `FIG_WIDTH_FULL * FIG_DPI_SCREEN = 1260`. Lý do: không quy đổi được thì không kiểm được sàn 7pt, mà sàn 7pt là một dòng trong checklist §7. Hệ quả đã đo, và là một lỗi có thật của các hình trước: xem bên dưới |
 | B17 | **Khối trong chord mã hoá bằng VỊ TRÍ, không bằng màu** | đã đo chứ không phỏng đoán: sau 10 màu ngành (T04) và 3 màu cụm (T15), tìm tham lam maximin trên lưới 868 màu in được thì hai màu đầu của một bảng mới còn cách ΔE 27,2 và 18,7 — nhưng chúng là `#00FF00` và `#FF00FF`, tức thuật toán đã phải bới vào góc gamut — và **màu thứ ba chỉ còn 14,2, dưới sàn 15**. Hết chỗ cho bảng màu thứ ba. Trên một vòng tròn thì khối đã có vị trí cố định và nhãn riêng nên hue không cần thiết: cung và dải dùng độ sáng, Việt Nam nổi lên bằng viền đen theo B12. Chạy lại: `src/probe_colour_space.py` |
+| B18 | **Báo cáo kết thúc bằng một ĐỀ XUẤT, không dừng ở mô tả** | mục tiêu buổi thuyết trình là đóng vai tư vấn và thuyết phục một quyết định, nên mỗi hình phải là bằng chứng cho một nhịp của lập luận chứ không phải một mục trong phòng trưng bày. Hệ quả: thêm T31 (mặt phẳng quyết định) làm hình mang đề xuất, và §E được viết lại thành năm nhịp kết bằng lời đề nghị. Đề xuất phải **suy từ quy tắc viết trong code**, không chọn tay — xem A14 |
+| B19 | **Khung point áp cho MỌI hình, không riêng T16** | B16 phát hiện lỗi đơn vị; T22 sửa xong cả năm hình cũ và `reference_data.xuat_png` thành chỗ duy nhất định nghĩa phép xuất. `src/check_readability.py` canh để không ai thêm hình mới bằng lối cũ. Sửa cỡ chữ là nửa dễ: ở cỡ đúng chữ to gấp 2,78 lần nên **cả năm hình phải bố cục lại** — tiêu đề tự ngắt dòng, chú giải có dải riêng, nhãn chồng thì bỏ bớt chứ không đè |
+| B20 | **Tên nhóm hàng HS2 có bảng tiếng Việt dùng chung** | `tree.csv` chỉ có tên tiếng Anh nên tới trước T31 mọi nhãn nhóm hàng trên T12, T13, T14 đều là tiếng Anh giữa một bài tiếng Việt. `R.PRODUCT_NAME_VI` + `R.ten_nhom()` phủ các nhóm thật sự được dán nhãn, phần đuôi tự lùi về tên gốc |
+| B21 | **Báo cáo cuối viết thành nhiều file Markdown trong `.report/final/`, một file một mục** | bản dịch giữa kỳ viết thẳng LaTeX, và diff của một PR sửa LaTeX thì **không đọc nổi** — không rà soát chéo được (T23). Markdown thì diff theo câu, review được trong git; T27 ráp sang LaTeX/HTML ở bước cuối. Số hiệu mục (`02-...`) là tạm cho tới khi T27 chốt thứ tự |
+| B22 | **Phần Phương pháp luận nêu cả phép kiểm KHÔNG sạch** | `check_tree.py` báo 1 lỗi (`3501` lệch nhánh) và 1 lưu ý (`XXXX` dưới `99`). Nới điều kiện kiểm cho nó qua thì mất luôn giá trị của phép kiểm. Giữ nguyên, kèm phép đo chứng minh lỗi đó **không ảnh hưởng** hình nào (cùng ngành 6, hình chỉ dùng tầng 1–2) — xem §2.8 |
 
 ### B4 chi tiết — quy tắc lọc cạnh
 
@@ -537,7 +574,7 @@ Ba lý do, theo thứ tự quan trọng:
 
 - *Ngưỡng tuyệt đối* mọi mức — không so sánh được giữa các năm.
 - *Mỗi nước giữ k luồng lớn nhất* — giữ đủ 231 nút nhưng độ phủ giá trị quá thấp
-  (k=3 chỉ 40,5%), và k=10 mới đạt 66% thì đã 2.289 cạnh, quá dày để vẽ.
+  (k=3 chỉ 40,2% — đo lại 22/10/2026 trên `threshold_coverage.csv`), và k=10 mới đạt 66% thì đã 2.289 cạnh, quá dày để vẽ.
 
 ### B15 chi tiết — vì sao 73 nhãn là không thể, và 13 nhãn nào
 
@@ -628,10 +665,6 @@ thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa 
 được.
 
 ---
-| B18 | **Báo cáo kết thúc bằng một ĐỀ XUẤT, không dừng ở mô tả** | mục tiêu buổi thuyết trình là đóng vai tư vấn và thuyết phục một quyết định, nên mỗi hình phải là bằng chứng cho một nhịp của lập luận chứ không phải một mục trong phòng trưng bày. Hệ quả: thêm T31 (mặt phẳng quyết định) làm hình mang đề xuất, và §E được viết lại thành năm nhịp kết bằng lời đề nghị. Đề xuất phải **suy từ quy tắc viết trong code**, không chọn tay — xem A14 |
-| B19 | **Khung point áp cho MỌI hình, không riêng T16** | B16 phát hiện lỗi đơn vị; T22 sửa xong cả năm hình cũ và `reference_data.xuat_png` thành chỗ duy nhất định nghĩa phép xuất. `src/check_readability.py` canh để không ai thêm hình mới bằng lối cũ. Sửa cỡ chữ là nửa dễ: ở cỡ đúng chữ to gấp 2,78 lần nên **cả năm hình phải bố cục lại** — tiêu đề tự ngắt dòng, chú giải có dải riêng, nhãn chồng thì bỏ bớt chứ không đè |
-| B20 | **Tên nhóm hàng HS2 có bảng tiếng Việt dùng chung** | `tree.csv` chỉ có tên tiếng Anh nên tới trước T31 mọi nhãn nhóm hàng trên T12, T13, T14 đều là tiếng Anh giữa một bài tiếng Việt. `R.PRODUCT_NAME_VI` + `R.ten_nhom()` phủ các nhóm thật sự được dán nhãn, phần đuôi tự lùi về tên gốc |
-
 
 ## C. Bẫy kỹ thuật đã vấp — đừng vấp lại
 
@@ -657,7 +690,15 @@ không phải tin bừa:
    nước × sản phẩm), `hs92_country_year` (theo nước) đo cùng một nền thương mại
    từ ba góc. Tổng xuất khẩu thế giới 2024 khớp nhau **0,000%**.
 4. **Cây sản phẩm HS92** đúng `{1: 10, 2: 97, 4: 1.243, 6: 5.040}` nút mỗi tầng,
-   0 nút mồ côi.
+   0 nút mồ côi, 0 chu trình. Nhưng **phép kiểm này không sạch**, và giữ nguyên
+   kết quả không sạch đó: `src/check_tree.py` chạy 31 mục và báo **29 ĐẠT, 1 lỗi,
+   1 lưu ý**. Lỗi: nút `3501` (casein) nằm dưới HS2 `34` (xà phòng, sáp) thay vì
+   HS2 `35` (keo dán, enzyme) nơi năm nút em `3502`–`3507` của nó nằm — phá quy
+   tắc “mã con nối dài mã cha”. Hai nút `34` và `35` **cùng ngành 6 (hoá chất)**
+   nên không một tổng theo ngành nào lệch, và mọi hình trong báo cáo dừng ở tầng
+   1–2 còn chỗ lệch ở tầng 4 → **không ảnh hưởng**. Lưu ý: mã `XXXX` (*Trade data
+   discrepancies*) dưới HS2 `99` là mã **giữ chỗ hợp lệ của Atlas**, không phải
+   lỗi cây. Chi tiết ở §2.8 phần Phương pháp luận.
 
 ---
 
