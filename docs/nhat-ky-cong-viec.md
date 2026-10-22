@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 21/10/2026** · 17/30 việc Xong · `main` ở commit `fdc1798` (gộp PR #13)
+**Cập nhật 22/10/2026** · 23/31 việc Xong · `main` ở commit `7b226c7` (gộp PR #14)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -8,7 +8,8 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A11), chốt điều gì (B1–B17) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A14), chốt điều gì (B1–B20) | `docs/phat-hien-va-quyet-dinh.md` |
+| **Mạch thuyết trình — năm nhịp, kết bằng đề xuất** | `docs/phat-hien-va-quyet-dinh.md` §E |
 | Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
 | Chạy lại pipeline thế nào, số liệu đã đo | `README.md` |
 | Câu hỏi nghiên cứu, thông điệp, đối tượng | `docs/cau-hoi-nghien-cuu.md` |
@@ -68,7 +69,7 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T10 | Chốt ngưỡng lọc cạnh, biện minh bằng số | Xong | `threshold_coverage.csv`, quy tắc ở README §"Quy tắc lọc cạnh" |
 | T11 | Kiểm chất lượng cây HS92 4 tầng | Xong | `src/check_tree.py` |
 
-### Giai đoạn 3 — Trực quan hóa (7/10 Xong)
+### Giai đoạn 3 — Trực quan hóa (11/11 Xong)
 
 | Mã | Việc | Trạng thái | Sản phẩm thật |
 |---|---|---|---|
@@ -79,17 +80,18 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T16 | Hai ma trận kề, một theo alphabet một theo cụm | Xong | `src/make_adjacency_matrix.py --year 2023\|1995` → `output/adjacency_alpha_*.{html,png}`, `adjacency_cluster_*.*` · phát hiện **A10**, quyết định **B15**, **B16** |
 | T17 | Chord diagram giữa các khối, VN làm trọng tâm | Xong | `src/make_chord.py --year 2023\|1995` → `output/chord_bloc_*.{html,png}` · 8 khối suy từ `nodes.csv` · phát hiện **A11**, quyết định **B17** |
 | T18 | Chỉ số mạng: bậc, độ mạnh, betweenness, cộng đồng | Xong | `src/compute_metrics.py` → `metrics.csv` (304 dòng), `metrics_top20.csv` |
-| T19 | Sankey nhập → VN → xuất (kiểm giả thuyết trung chuyển) | **Chưa** | — |
-| T20 | Small multiples theo thời gian 1995·2005·2015·2023 | **Chưa** | — (phát hiện **A9** viết sẵn cho hình này) |
-| T21 | Streamgraph 10 ngành, 1995–2023 | **Chưa** | — |
+| T19 | Sankey nhập → VN → xuất (kiểm giả thuyết trung chuyển) | Xong | `src/make_sankey.py` → `sankey_vietnam_{1995,2023}` · phát hiện **A12** |
+| T20 | Small multiples theo thời gian 1995·2005·2015·2023 | Xong | `src/make_time_multiples.py` → `time_multiples_{xuat,nhap}` · **A13** sửa lại A9 |
+| T21 | Streamgraph 10 ngành, 1995–2023 | Xong | `src/make_streamgraph.py` → `stream_sectors_1995_2023` · hai tầng, không dùng nền lượn |
+| **T31** | **Mặt phẳng quyết định RCA × PCI — hình mang ĐỀ XUẤT** | Xong | `src/make_decision_plane.py` → `decision_plane_{2015,2023}` · phát hiện **A14**, quyết định **B18** |
 
-### Giai đoạn 4 — Tích hợp (0/5) · Giai đoạn 5 — Hoàn thiện (0/4)
+### Giai đoạn 4 — Tích hợp (2/5) · Giai đoạn 5 — Hoàn thiện (0/4)
 
 | Mã | Việc | Trạng thái | Ghi chú đã có sẵn cho việc đó |
 |---|---|---|---|
-| T22 | Áp hệ thống thị giác lên toàn bộ biểu đồ 3 người | Chưa | 4 biểu đồ đầu **đã** đi qua `fmt_vn`/`fmt_pct`/`fmt_usd` + `separators=",."` (PR #9) |
+| T22 | Áp hệ thống thị giác lên toàn bộ biểu đồ 3 người | Xong | sửa lỗi đơn vị **B16** cho T09, T12–T15 và bố cục lại cả năm; `R.xuat_png` là chỗ duy nhất định nghĩa phép xuất (**B19**) |
 | T23 | Rà soát chéo, mỗi người review 2 hình của người khác | Chưa | checklist ở `style-guide.md` §7 |
-| T24 | Kiểm khả năng đọc: nhãn, chú giải, tương phản, mù màu | Chưa | bảng màu đã kiểm mù màu sẵn ở T04 |
+| T24 | Kiểm khả năng đọc: nhãn, chú giải, tương phản, mù màu | Xong | `src/check_readability.py` — 5 phép kiểm, chạy được trong CI, hiện **ĐẠT** |
 | T25 | Viết phần Phương pháp luận | Chưa | **phải nêu**: hạn chế D1–D5, nút `3501` lệch cây HS92, mã `XXXX dưới 99` |
 | T26 | Viết phần Phát hiện | Chưa | nguyên mục A1–A9 của sổ phát hiện là bản thảo |
 | T27 | Ráp báo cáo cuối theo mạch 4 hồi | Chưa | mạch chuyện đề xuất ở sổ phát hiện §E |
@@ -116,6 +118,7 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | 21/10 | #12 | biểu đồ log-log phân bố bậc + ba con số bác giả thuyết scale-free; A3 thêm mức lệch 1995 | T09 |
 | 21/10 | #13 | node-link mạng đã lọc (271 cặp nước); **bảng màu cụm riêng** đã qua kiểm mù màu; B13, B14 | T15 |
 | 21/10 | #14 | `CLAUDE.md` + skill `/viec-tiep`: mọi context mới tự biết luật repo và chuẩn "hình thế nào là xong" | — |
+| 22/10 | #15 | **toàn bộ phần R3**: T19 Sankey, T20 small multiples, T21 dòng chảy, T22 sửa lỗi đơn vị cho 5 hình cũ, T24 kiểm khả năng đọc, **T31 hình mang đề xuất**; A12–A14, B18–B20, §E viết lại | T19–T22, T24, T31 |
 
 ¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
@@ -138,6 +141,15 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 | Gini giá trị cạnh | 0,9569 | cùng file |
 | Tổng xuất khẩu thế giới | 21,66 nghìn tỷ USD | cùng file, cột `total_export_value` |
 | Xuất khẩu Việt Nam | 385,5390 tỷ USD = **75,3×** năm 1995 | `country_year.csv`, lọc `VNM` |
+| Mua của Trung Quốc · bán lại | 133,05 tỷ · 86,11 tỷ → **−46,94 tỷ** | `src/make_sankey.py` |
+| Mua của Hoa Kỳ · bán sang | 9,83 tỷ · 95,16 tỷ → **+85,33 tỷ** | cùng lệnh |
+| Hàng vào từ Đông Á | **68,3%** | cùng lệnh |
+| Số bạn hàng xuất: đỉnh rồi giảm | 98 → **200 (2005)** → 181 → **166** | `src/make_time_multiples.py` |
+| Điện tử trong rổ hàng | 0,6% (1995) → **29,9%** (2023) | `src/make_streamgraph.py` |
+| Nông sản trong rổ hàng | 42,9% → 11,6% | cùng lệnh |
+| Máy móc công nghiệp RCA | 0,46 (2015) → **0,95** (2023), PCI +0,78 | `src/make_decision_plane.py` |
+| Thiết bị quang học, y tế RCA | 0,75 → **0,91**, PCI **+0,93** | cùng lệnh |
+| Rổ hàng còn kẹt ở góc "hàng dễ" | **36,2%** (2015 là 44,7%) | cùng lệnh |
 | Thị phần thế giới · hạng | 1,780% · **16**/231 | `metrics_top20.csv` dòng 16 |
 | Bạn hàng xuất khẩu · hạng | 166 · **66**/231 | `metrics.csv`, `VNM`/`full`, cột `degree_out` |
 | ECI · hạng | +0,579 · **78**/230 | cùng dòng, cột `eci`, `eci_rank` |
@@ -225,17 +237,29 @@ D1–D5. Nói trước thì là giới hạn đã nhận; để hội đồng ph
 
 ## 5. Việc còn lại, theo thứ tự nên làm
 
-1. **Hỏi R3 trước đã** — T19, T20, T21, T22, T24 đều của R3 mà nhánh `huyhihi`
-   vẫn 0 commit. Trong đó **T22 đang giữ phần sửa lỗi đơn vị B16** cho năm hình
-   cũ (T09, T12–T15): chữ in thật của chúng đang nhỏ hơn khai báo 2,78 lần, dòng
-   nguồn ra ~2,5pt. Không chốt được ai làm T22 thì năm hình đó in ra sai sàn 7pt.
-2. **T19 Sankey** nhập → VN → xuất. Chiều của luồng đã cố ý để dành cho việc này:
-   T15 và T17 đều gộp hai chiều theo **B13**, nên Sankey là chỗ duy nhất trả lời
-   giả thuyết trung chuyển. Số nền đã có sẵn ở **A11**.
-3. Rồi **T20 small multiples theo thời gian**, **T21 streamgraph**.
-4. **T08** khi có tài khoản; **T25** viết sẵn được ngay vì hạn chế đã ghi đủ.
-5. **T22** phải sửa lỗi đơn vị point/pixel ghi ở **B16** cho T09 và T12–T15 —
-   hiện cỡ chữ in thật của chúng nhỏ hơn khai báo khoảng 2,8 lần.
+Toàn bộ phần hình đã xong. **Việc còn lại chủ yếu là viết và ráp**, và cả ba việc
+đầu đều đã có sẵn vật liệu — không việc nào phải bắt đầu từ trang trắng.
+
+1. **T25 Phương pháp luận** — viết được ngay. Phải nêu đủ: hạn chế **D1–D5**, nút
+   `3501` lệch cây HS92 (`src/check_tree.py`), mã `XXXX dưới 99`, và **vì sao
+   T19 dùng đồ thị đầy đủ còn T15–T17 dùng đồ thị đã lọc** — nếu không, người
+   chấm sẽ tưởng số liệu mâu thuẫn (đúng cái bẫy A5).
+2. **T26 phần Phát hiện** — mục A1–A14 của sổ phát hiện chính là bản thảo.
+3. **T27 ráp báo cáo + T28 slide** — đi theo **§E**, năm nhịp, kết bằng đề xuất.
+   §E đã ghi sẵn từng nhịp dùng hình nào.
+4. **T23 rà soát chéo** — mỗi người review 2 hình của người khác, checklist ở
+   `style-guide.md` §7. Chạy `src/check_readability.py` trước cho đỡ mất công.
+5. **T29 diễn tập + 10 câu phản biện** — §4 sổ này đã có 7 câu kèm câu trả lời.
+   Ba câu còn thiếu nên nhắm vào chỗ yếu nhất của đề xuất: *"sao không chọn
+   điện tử?"*, *"RCA dưới 1 thì lấy gì chắc nó vượt?"*, *"ECI đo hàng đi qua hay
+   hàng ở lại?"* — câu cuối đã có sẵn câu trả lời ở D2/D5.
+6. **T30 dọn repo**; **T08** chỉ làm được khi có tài khoản CEPII + Comtrade.
+
+**Chỗ yếu cần biết trước khi lên trình bày.** Đề xuất ở T31 dựa trên RCA và PCI
+— hai chỉ số **đo rổ hàng gộp**, nên chúng nói *cái gì đi qua Việt Nam*, chưa hẳn
+*cái gì ở lại*. Không có bảng vào–ra thì không tách được, và phải nói thẳng điều
+đó chứ đừng để người chấm hỏi ra (D2, D5). Điểm mạnh bù lại: quy tắc chọn của
+T31 **đã được thử trên năm 2015** và trúng — xem A14.
 
 Hai quyết định còn treo:
 
