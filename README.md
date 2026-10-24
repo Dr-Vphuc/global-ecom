@@ -355,11 +355,12 @@ global-ecom/
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
 │   ├── build_report.py           # T27 ráp 10 mục -> output/bao-cao-cuoi.{md,html}
+│   ├── build_slides.py           # T28 dựng slide -> output/slide-thuyet-trinh.{html,md}
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
 │   ├── nhat-ky-cong-viec.md        # đã làm gì, nằm ở đâu — mở trước khi soạn slide
-│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A17, quyết định B1–B23, hạn chế D1–D5
+│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A17, quyết định B1–B25, hạn chế D1–D5
 │   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
 │   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
 │   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
@@ -457,6 +458,7 @@ python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 python src/make_decision_plane.py --year 2007 --since 1999  # quy tắc chạy ở 2007
 python src/build_report.py            # T27 ráp báo cáo cuối từ .report/final/
 python src/build_report.py --embed    # bản HTML một file, nhúng PNG (~8,6 MB)
+python src/build_slides.py            # T28 dựng slide thuyết trình 16:9
 ```
 
 Biểu đồ ra `output/` dưới hai dạng `.html` và `.png`; thư mục này bị
@@ -540,6 +542,33 @@ certutil -hashfile data\atlas\cc_year.csv MD5
 
 Mã in ra phải trùng với cột MD5 ở bảng trên. Chỉ so kích thước là chưa đủ, nhưng
 lệch kích thước thì chắc chắn file hỏng.
+
+## Slide thuyết trình đã dựng xong (T28)
+
+`src/build_slides.py` ra `output/slide-thuyet-trinh.html` (khổ **16:9**, mũi tên để
+đi, `n` bật lời dẫn, `g` xem dạng lưới, in ra PDF thì mỗi slide một trang ngang) và
+`output/slide-thuyet-trinh.md` (dàn ý kèm lời dẫn, để diễn tập T29 và rà soát T23
+đọc được theo câu). **17 slide chính + 3 slide dự phòng**, đi đúng năm nhịp của §E
+và kết bằng đề xuất ở §7 của báo cáo.
+
+Slide **không gõ tay** (quyết định **B24**): phần nội dung trong script chỉ chứa ô
+`{khoá}`, còn con số thì script đo lại từ `data/processed/` mỗi lần chạy — cùng một
+chuẩn đã áp cho mọi hình. Rồi nó **đối chiếu 62 con số ấy với con số báo cáo cuối đã
+in** (bảng `KY_VONG`); lệch một chữ số là thoát mã 1. Chính phép đối chiếu đó bắt
+được một con số sai trong A17 (28,6% → **25,0%**, đã sửa cả ở §7.2 của báo cáo).
+
+Script tự kiểm 8 việc và in ra khối KIỂM CHỨNG: ô `{khoá}` chưa giải được, hình
+thiếu file PNG, đủ năm nhịp và đúng thứ tự, cả ba người đều có phần trình bày
+(checklist nộp bài mục 3), có cả hai họ kỹ thuật cây và đồ thị (mục 4), số khớp báo
+cáo, tỷ trọng ngành cộng đủ 100%, và slide nào quá dài để đọc khi chiếu.
+
+```bash
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/build_slides.py
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/build_slides.py --embed  # một file
+```
+
+Xem slide bằng cách mở thẳng file HTML; muốn phục vụ qua HTTP thì
+`python -m http.server` trong thư mục `output/`.
 
 ## Báo cáo cuối đã ráp xong (T27)
 

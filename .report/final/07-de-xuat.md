@@ -90,7 +90,8 @@ Hai dòng cuối là chỗ phải đọc trung thực, và báo cáo nói ra tha
   — chứ không phải vì nó dự báo được.
 - **Và lớp các nhóm thoả trọn quy tắc thì quá nhỏ để kết luận:** 6 nhóm ở cửa sổ
   2015 → 2023 (50% tăng, trung vị +0,0205), và ở cửa sổ 2007 → 2015 thì lớp
-  tương đương lại **tệ hơn** mức bình quân (28,6% tăng, trung vị −0,1893). Nên bằng
+  tương đương (12 nhóm) lại **tệ hơn** mức bình quân của chính cửa sổ đó —
+  **25,0%** tăng so với 37,1% của cả 97 nhóm, trung vị −0,1893. Nên bằng
   chứng mạnh ở **ba lần chọn cụ thể** và ở **điều kiện PCI**, chứ chưa mạnh ở mức
   "quy tắc này đúng về mặt thống kê". Một quy tắc ba lần chọn đúng trên ba nhóm là
   thành tích đáng kể với một bộ dữ liệu 29 năm, không phải một phép kiểm giả thuyết.

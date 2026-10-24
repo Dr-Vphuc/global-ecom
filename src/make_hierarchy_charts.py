@@ -281,8 +281,8 @@ def make_treemap(d, country_vi, year):
     top = d["labels"][0]
     fig.update_layout(**_layout(
         "%s: %s chiếm phần lớn nhất trong rổ hàng xuất khẩu năm %d" % (country_vi, top, year),
-        "Treemap — bố cục chữ nhật lấp đầy không gian. Diện tích ô tỉ lệ với giá trị xuất khẩu. "
-        "Bấm vào một ngành để xem các nhóm hàng bên trong.",
+        "Treemap — bố cục chữ nhật lấp đầy không gian. Diện tích ô tỉ lệ với giá trị "
+        "xuất khẩu năm %d; tầng ngoài là 10 ngành cấp 1, tầng trong là các nhóm HS2." % year,
     ))
     return fig
 
@@ -348,7 +348,7 @@ def make_sunburst(d, country_vi, year, h_inch):
         "%s: cùng dữ liệu đó, nhìn theo cấu trúc phân cấp — năm %d" % (country_vi, year),
         "Sunburst — bố cục xuyên tâm lấp đầy không gian. Vành trong là 10 ngành cấp 1, "
         "vành ngoài là các nhóm HS2. Lát quá mỏng để chứa một dòng chữ 7 pt thì "
-        "bỏ nhãn, số liệu xem khi rê chuột. Bấm vào một vành để khoan sâu.",
+        "bỏ nhãn — giá trị của lát đó vẫn nằm trong dữ liệu, chỉ không in ra.",
         h_inch))
     return fig
 
