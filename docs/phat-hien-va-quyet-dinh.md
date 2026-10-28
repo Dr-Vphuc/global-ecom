@@ -640,8 +640,12 @@ trước đợt bùng nổ đưa nó lên 29,94% rổ hàng.
    mức bình quân** (40,7% so với 45,4%); nó có mặt trong quy tắc để chọn *chỗ còn
    đường đi*, không phải để dự báo.
 2. **Lớp thoả trọn quy tắc quá nhỏ để kết luận thống kê:** 6 nhóm ở cửa sổ
-   2015 → 2023 (50% tăng, trung vị +0,0205), và ở cửa sổ 2007 → 2015 lớp tương
-   đương lại **tệ hơn** bình quân (28,6%, trung vị −0,1893). Nên sức nặng nằm ở
+   2015 → 2023 (50,0% tăng, trung vị +0,0205), và ở cửa sổ 2007 → 2015 lớp tương
+   đương — 12 nhóm — lại **tệ hơn** bình quân của chính cửa sổ đó: **25,0%** tăng
+   so với 37,1% của cả 97 nhóm, trung vị −0,1893. *(Con số này ban đầu viết 28,6%;
+   phép đối chiếu của `src/build_slides.py` ở T28 đo lại ra 25,0% trên đúng lớp mà
+   trung vị −0,1893 thuộc về, và 28,6% không khớp với lớp nào. Đã sửa cả ở §7.2 báo
+   cáo.)* Nên sức nặng nằm ở
    **ba lần chọn cụ thể** và ở **điều kiện PCI**, chứ chưa ở mức "quy tắc đúng về
    mặt thống kê". Báo cáo viết đúng như vậy ở §7.2.
 
@@ -850,6 +854,8 @@ thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa 
 được.
 
 ---
+| B24 | **Slide dựng bằng script, không gõ tay** — `src/build_slides.py` ra `output/slide-thuyet-trinh.{html,md}` | Chuẩn "mọi con số in ra phải suy lại từ dữ liệu" áp cho hình thì cũng phải áp cho slide: slide là thứ người chấm nhìn lâu nhất. Script đo lại 62 con số từ `data/processed/` rồi **đối chiếu với con số báo cáo cuối đã in** (bảng `KY_VONG`); lệch một chữ số là thoát mã 1. Chính phép đối chiếu này bắt được con số 28,6% sai ở A17. Không dùng PowerPoint vì phải cài thêm `python-pptx`; bản HTML 16:9 chiếu toàn màn hình, `n` bật lời dẫn, và in ra PDF thì mỗi slide một trang ngang |
+| B25 | **Phụ đề hình ghi năm, đơn vị, phạm vi — không ghi hướng dẫn tương tác** | Phụ đề treemap in *"Bấm vào một ngành để xem các nhóm hàng bên trong"* và sunburst in *"Bấm vào một vành để khoan sâu"*. Đúng với bản HTML, **sai với bản PNG** nằm trong báo cáo nộp và trên slide — một lời mời bấm vào ảnh tĩnh. Đã thay bằng câu nói tổng giá trị, số ngành và số nhóm HS2, tính từ dữ liệu; năm đã nằm ở tiêu đề (style guide §6.2). Lỗi này lộ ra khi xem slide, không lộ ra ở bất kỳ phép kiểm chữ nào |
 
 ## C. Bẫy kỹ thuật đã vấp — đừng vấp lại
 
