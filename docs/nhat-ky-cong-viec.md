@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 20/10/2026** · 13/30 việc Xong · `main` ở commit `adeefdb` (gộp PR #10)
+**Cập nhật 22/10/2026** · 25/31 việc Xong · `main` ở commit `8235561` (gộp PR #17)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -8,7 +8,10 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A9), chốt điều gì (B1–B12) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A17), chốt điều gì (B1–B23) | `docs/phat-hien-va-quyet-dinh.md` |
+| **Mạch thuyết trình — năm nhịp, kết bằng đề xuất** | `docs/phat-hien-va-quyet-dinh.md` §E |
+| Các mục của báo cáo cuối đã viết | `.report/final/` — một file một mục (**B21**) |
+| Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
 | Chạy lại pipeline thế nào, số liệu đã đo | `README.md` |
 | Câu hỏi nghiên cứu, thông điệp, đối tượng | `docs/cau-hoi-nghien-cuu.md` |
 | Màu, font, cỡ hình, quy ước nhãn | `docs/style-guide.md` |
@@ -23,18 +26,33 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 > Complexity của Harvard: 231 nước, 27.535 luồng xuất khẩu, tổng 21,66 nghìn tỷ USD.
 > Trên mạng đó, đi tìm **vị trí của Việt Nam**.
 >
-> Câu trả lời tìm được, nói bằng một cặp số: từ 2015 đến 2023, xuất khẩu Việt Nam
-> **tăng 2,28 lần** nhưng số bạn hàng **giảm từ 181 xuống 166** — trong khi trung vị
-> cả thế giới là **tăng 1**. Tiền vào nhiều hơn qua ít kênh hơn: 3 thị trường đầu
-> (Hoa Kỳ, Trung Quốc, Hàn Quốc) chiếm **52,41%** hàng xuất, còn 9 nước ASEAN còn
-> lại cộng lại chỉ **7,77%**.
+> Câu trả lời tìm được, nói bằng một cặp số: xuất khẩu **gấp 75 lần** từ 1995 đến
+> 2023, nhưng **tiền dồn lại vào ít cửa** — 3 thị trường đầu (Hoa Kỳ, Trung Quốc,
+> Hàn Quốc) nhận **52,41%** hàng xuất, so với **39,25%** năm 2013, còn 9 nước ASEAN
+> còn lại cộng lại chỉ **7,77%**. Đo bằng HHI thì rõ hình chữ V: đáy **0,0662**
+> (2013) → **0,1226** (2023), **cao hơn cả mức 1995**.
+>
+> ⚠️ Chỗ này đã **sửa phép đo** ngày 22/10/2026. Câu cũ dựa vào "số bạn hàng giảm
+> từ 181 xuống 166" — số đúng, nhưng **A16** đo được rằng phép đếm bạn hàng không
+> bền: 47 nước rời khỏi danh sách giữa 2002 và 2023 chỉ mang theo **0,59%** kim
+> ngạch, và ở mức sàn 100 triệu USD thì số kênh lại **tăng** 68 → 83. Dùng câu tập
+> trung giá trị, đừng dùng câu số đếm.
 >
 > Nên "hội nhập sâu" và "phụ thuộc hẹp" ở đây là **cùng một hiện tượng**, và đó là
 > điều các biểu đồ phải cho người xem thấy.
 
 Ba con số đỡ cho câu đó: xuất khẩu Việt Nam **hạng 16/231** về giá trị, nhưng
-**hạng 66/231** về số bạn hàng và **hạng 78/230** về chỉ số phức tạp kinh tế (ECI
-+0,579). Bán nhiều, bán tới ít chỗ, bán thứ không khó làm.
+**hạng 78/230** về chỉ số phức tạp kinh tế (ECI +0,579) và **hạng 30/97** về mức
+tập trung giá trị trong nhóm nước xuất trên 10 tỷ USD. Bán nhiều, bán thứ không
+khó làm, và dồn tiền vào ít cửa. *(Dòng này trước ghi "hạng 66/231 về số bạn
+hàng" — đã bỏ theo A16, vì đó là phép đo không bền.)*
+
+**Và đồ án không dừng ở mô tả.** Kết bằng một đề xuất: dồn ưu tiên vào **thiết bị
+quang học – đo lường – y tế** (RCA 0,905; PCI +0,934) và **máy móc công nghiệp**
+(0,954; +0,783) — hai nhóm khó nhất trong rổ mà Việt Nam đã có chỗ đứng — thay vì
+đào sâu thêm vào lắp ráp điện tử. Đề xuất ấy do một **quy tắc viết trong code**
+chọn ra, và quy tắc đó chạy lại ở 2007 thì chỉ đúng vào điện tử trước đợt bùng
+nổ, chạy ở 2015 thì sắt thép tám năm sau chạm RCA 1,00 (A14, A17).
 
 ---
 
@@ -56,44 +74,45 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T04 | Hệ thống thị giác: màu, font, cỡ hình, nhãn | Xong | `docs/style-guide.md`, `src/check_palette.py` |
 | T05 | Dữ liệu giả đúng schema để vẽ trước | Xong | `src/make_mock.py` → `data/mock/` |
 
-### Giai đoạn 2 — Dữ liệu (4/6 Xong, 1 đang làm)
+### Giai đoạn 2 — Dữ liệu (5/6 Xong)
 
 | Mã | Việc | Trạng thái | Sản phẩm thật |
 |---|---|---|---|
 | T06 | Tải Atlas từ Harvard Dataverse | Xong | `src/download_atlas.py` (dữ liệu thô **không** vào git) |
 | T07 | Làm sạch, xuất file trung gian, gắn vùng địa lý | Xong | `src/build_intermediate.py` → `nodes/edges/tree/country_product/country_year.csv` |
 | T08 | Đối chiếu Atlas với BACI và Comtrade | **Chưa** | *cần tài khoản CEPII + khóa API Comtrade — chỉ thành viên nhóm làm được* |
-| T09 | Thống kê mô tả mạng lưới theo từng năm | **Đang làm** | `network_stats.csv` (30 năm) xong; **còn thiếu biểu đồ phân bố bậc log-log** |
+| T09 | Thống kê mô tả mạng lưới theo từng năm | Xong | `network_stats.csv` (30 năm) + `src/make_degree_loglog.py` → `output/degree_loglog_2023.*` (và `_1995.*`) |
 | T10 | Chốt ngưỡng lọc cạnh, biện minh bằng số | Xong | `threshold_coverage.csv`, quy tắc ở README §"Quy tắc lọc cạnh" |
 | T11 | Kiểm chất lượng cây HS92 4 tầng | Xong | `src/check_tree.py` |
 
-### Giai đoạn 3 — Trực quan hóa (4/10 Xong)
+### Giai đoạn 3 — Trực quan hóa (11/11 Xong)
 
 | Mã | Việc | Trạng thái | Sản phẩm thật |
 |---|---|---|---|
 | T12 | Treemap cơ cấu xuất khẩu VN, 2 mốc | Xong | `src/make_hierarchy_charts.py --year 1995\|2023` → `output/treemap_vnm_1995.*`, `_2023.*` |
 | T13 | Sunburst 4 tầng cây sản phẩm | Xong | cùng script → `output/sunburst_vnm_1995.*`, `_2023.*` |
 | T14 | Small multiples so VN với Thái–Mã–Indo | Xong | `src/make_small_multiples.py` → `output/small_multiples_vnm-tha-mys-idn_2023.*` |
-| T15 | Node-link mạng đã lọc, mã hóa bậc + cộng đồng | **Chưa** | — (T18 đã mở đường: có bậc và cộng đồng để mã hóa) |
-| T16 | Hai ma trận kề, một theo alphabet một theo cụm | **Chưa** | — (thứ tự cụm lấy ở `metrics.csv` dòng `filtered`) |
-| T17 | Chord diagram giữa các khối, VN làm trọng tâm | **Chưa** | — |
+| T15 | Node-link mạng đã lọc, mã hóa bậc + cộng đồng | Xong | `src/make_node_link.py` → `output/node_link_2023.*` · bảng màu cụm mới ở `reference_data.py`, kiểm bằng `check_palette.py` |
+| T16 | Hai ma trận kề, một theo alphabet một theo cụm | Xong | `src/make_adjacency_matrix.py --year 2023\|1995` → `output/adjacency_alpha_*.{html,png}`, `adjacency_cluster_*.*` · phát hiện **A10**, quyết định **B15**, **B16** |
+| T17 | Chord diagram giữa các khối, VN làm trọng tâm | Xong | `src/make_chord.py --year 2023\|1995` → `output/chord_bloc_*.{html,png}` · 8 khối suy từ `nodes.csv` · phát hiện **A11**, quyết định **B17** |
 | T18 | Chỉ số mạng: bậc, độ mạnh, betweenness, cộng đồng | Xong | `src/compute_metrics.py` → `metrics.csv` (304 dòng), `metrics_top20.csv` |
-| T19 | Sankey nhập → VN → xuất (kiểm giả thuyết trung chuyển) | **Chưa** | — |
-| T20 | Small multiples theo thời gian 1995·2005·2015·2023 | **Chưa** | — (phát hiện **A9** viết sẵn cho hình này) |
-| T21 | Streamgraph 10 ngành, 1995–2023 | **Chưa** | — |
+| T19 | Sankey nhập → VN → xuất (kiểm giả thuyết trung chuyển) | Xong | `src/make_sankey.py` → `sankey_vietnam_{1995,2023}` · phát hiện **A12** |
+| T20 | Small multiples theo thời gian 1995·2005·2015·2023 | Xong | `src/make_time_multiples.py` → `time_multiples_{xuat,nhap}` · **A13** sửa lại A9 |
+| T21 | Streamgraph 10 ngành, 1995–2023 | Xong | `src/make_streamgraph.py` → `stream_sectors_1995_2023` · hai tầng, không dùng nền lượn |
+| **T31** | **Mặt phẳng quyết định RCA × PCI — hình mang ĐỀ XUẤT** | Xong | `src/make_decision_plane.py` → `decision_plane_{2015,2023}` · phát hiện **A14**, quyết định **B18** |
 
-### Giai đoạn 4 — Tích hợp (0/5) · Giai đoạn 5 — Hoàn thiện (0/4)
+### Giai đoạn 4 — Tích hợp (4/5) · Giai đoạn 5 — Hoàn thiện (0/4)
 
 | Mã | Việc | Trạng thái | Ghi chú đã có sẵn cho việc đó |
 |---|---|---|---|
-| T22 | Áp hệ thống thị giác lên toàn bộ biểu đồ 3 người | Chưa | 4 biểu đồ đầu **đã** đi qua `fmt_vn`/`fmt_pct`/`fmt_usd` + `separators=",."` (PR #9) |
+| T22 | Áp hệ thống thị giác lên toàn bộ biểu đồ 3 người | Xong | sửa lỗi đơn vị **B16** cho T09, T12–T15 và bố cục lại cả năm; `R.xuat_png` là chỗ duy nhất định nghĩa phép xuất (**B19**) |
 | T23 | Rà soát chéo, mỗi người review 2 hình của người khác | Chưa | checklist ở `style-guide.md` §7 |
-| T24 | Kiểm khả năng đọc: nhãn, chú giải, tương phản, mù màu | Chưa | bảng màu đã kiểm mù màu sẵn ở T04 |
-| T25 | Viết phần Phương pháp luận | Chưa | **phải nêu**: hạn chế D1–D5, nút `3501` lệch cây HS92, mã `XXXX dưới 99` |
-| T26 | Viết phần Phát hiện | Chưa | nguyên mục A1–A9 của sổ phát hiện là bản thảo |
-| T27 | Ráp báo cáo cuối theo mạch 4 hồi | Chưa | mạch chuyện đề xuất ở sổ phát hiện §E |
+| T24 | Kiểm khả năng đọc: nhãn, chú giải, tương phản, mù màu | Xong | `src/check_readability.py` — 5 phép kiểm, chạy được trong CI, hiện **ĐẠT** |
+| T25 | Viết phần Phương pháp luận | Xong | `.report/final/02-phuong-phap-luan.md` — 12 mục (T27 chuyển 5 mục sang phụ lục), mỗi số kèm lệnh lấy lại · phát hiện **A15** (đồ thị lọc đổi dấu cán cân), quyết định **B21**, **B22** |
+| T26 | Viết phần Phát hiện | Xong | 9 mục, T27 tách thành bốn hồi `03-quy-mo` … `06-y-nghia` · phát hiện **A16** (phép đếm bạn hàng không bền), sửa **A13** và **A4**, sửa tiêu đề T20 |
+| T27 | Ráp báo cáo cuối theo mạch 5 nhịp | Xong | 10 file mục trong `.report/final/` + `src/build_report.py` → `output/bao-cao-cuoi.{md,html}`; viết mới **Tóm tắt, Mở đầu, Quy mô, Đề xuất, Kết luận**; chốt số hiệu mục (**B23**); phát hiện **A17** |
 | T28 | Slide thuyết trình | Chưa | §0 sổ này là bản nháp lời mở |
-| T29 | Diễn tập + 10 câu phản biện | Chưa | §4 sổ này có 7 câu kèm câu trả lời |
+| T29 | Diễn tập + 10 câu phản biện | Chưa | §4 sổ này có **9** câu kèm câu trả lời |
 | T30 | Dọn repo, README tái lập được | Chưa | README đã có mục tải dữ liệu + chạy pipeline |
 
 ---
@@ -111,6 +130,13 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | 20/10 | #8 | hai script 3D cho slide; **hàm định dạng số tiếng Việt**; file phân công bắt kịp thực tế | — |
 | 20/10 | #9 | 13 chỗ in số trên 4 biểu đồ đầu đi qua hàm định dạng | tiền đề cho T22 |
 | 20/10 | #10 | chỉ số mạng theo nước, trên **hai** đồ thị; phát hiện A7, A8, A9 | T18 |
+| 20/10 | #11 | **sổ nhật ký công việc** (chính sổ này); README chỉ đường sang nó | — |
+| 21/10 | #12 | biểu đồ log-log phân bố bậc + ba con số bác giả thuyết scale-free; A3 thêm mức lệch 1995 | T09 |
+| 21/10 | #13 | node-link mạng đã lọc (271 cặp nước); **bảng màu cụm riêng** đã qua kiểm mù màu; B13, B14 | T15 |
+| 21/10 | #14 | `CLAUDE.md` + skill `/viec-tiep`: mọi context mới tự biết luật repo và chuẩn "hình thế nào là xong" | — |
+| 22/10 | #15 | **toàn bộ phần R3**: T19 Sankey, T20 small multiples, T21 dòng chảy, T22 sửa lỗi đơn vị cho 5 hình cũ, T24 kiểm khả năng đọc, **T31 hình mang đề xuất**; A12–A14, B18–B20, §E viết lại | T19–T22, T24, T31 |
+| 22/10 | #16 | **phần Phương pháp luận** của báo cáo cuối (12 mục); A15 — dùng đồ thị đã lọc cho Sankey sẽ đổi dấu cán cân; B21, B22 | T25 |
+| 22/10 | #17 | **phần Phát hiện** của báo cáo cuối (9 mục); **A16 — phép đếm bạn hàng không bền, thay bằng tập trung giá trị (HHI)**; sửa A13 (đỉnh thật 2002/208) và A4 (67,84% chứ không phải 68,50%); sửa tiêu đề hình T20 vì nó in một câu sai | T26 |
 
 ¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
@@ -133,12 +159,42 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 | Gini giá trị cạnh | 0,9569 | cùng file |
 | Tổng xuất khẩu thế giới | 21,66 nghìn tỷ USD | cùng file, cột `total_export_value` |
 | Xuất khẩu Việt Nam | 385,5390 tỷ USD = **75,3×** năm 1995 | `country_year.csv`, lọc `VNM` |
+| Mua của Trung Quốc · bán lại | 133,05 tỷ · 86,11 tỷ → **−46,94 tỷ** | `src/make_sankey.py` |
+| Mua của Hoa Kỳ · bán sang | 9,83 tỷ · 95,16 tỷ → **+85,33 tỷ** | cùng lệnh |
+| Hàng vào từ Đông Á | **68,3%** | cùng lệnh |
+| Tập trung đầu ra (HHI) | đáy **0,0662** (2013) → **0,1226** (2023), cao hơn mức 1995 (0,1209) | `src/make_time_multiples.py` (khối A16) |
+| Tập trung đầu vào (HHI) | **0,1979** — gấp 1,6 lần đầu ra; top-3 nhà cung cấp **61,3%** | cùng lệnh, `--direction nhap` |
+| Hạng tập trung so với thế giới | **30/97** nước xuất trên 10 tỷ USD (2015 còn **dưới** trung vị) | đếm trên `edges.csv` |
+| Số bạn hàng xuất — ⚠️ phép đo KHÔNG bền | 98 → **208 (đỉnh 2002)** → 181 → **166**; nhưng trên 100 triệu USD thì **13 → 83** | `src/make_time_multiples.py` (khối A16) |
+| Thế giới lớn lên bao nhiêu | **4,51×** (4.803,3 → 21.656,9 tỷ USD) — Việt Nam nhanh hơn **16,7 lần** | `src/analyze_network.py` · `edges.csv` |
+| Hạng xuất khẩu của Việt Nam | **61/211** (1995) → **16/230** (2023); nhiều nhất ASEAN, trên Malaysia 353,9 và Singapore 346,6 tỷ | đếm trên `edges.csv` |
+| RCA có tự đi lên không — nền so sánh | **không**: chỉ **45,4%** trong 97 nhóm tăng 2015→2023, trung vị **−0,0178**; riêng PCI > 0 thì 62,8% | `country_product.csv` (A17) |
+| Quy tắc chọn chạy ở năm 2007 | chỉ ra **điện tử** khi RCA mới 0,573 và xuất 3,4 tỷ → 2023 là 2,230 và **115,4 tỷ USD** | `src/make_decision_plane.py --year 2007 --since 1999` |
+| Điện tử trong rổ hàng | 0,6% (1995) → **29,9%** (2023) | `src/make_streamgraph.py` |
+| Nông sản trong rổ hàng | 42,9% → 11,6% | cùng lệnh |
+| Máy móc công nghiệp RCA | 0,46 (2015) → **0,95** (2023), PCI +0,78 | `src/make_decision_plane.py` |
+| Thiết bị quang học, y tế RCA | 0,75 → **0,91**, PCI **+0,93** | cùng lệnh |
+| Rổ hàng còn kẹt ở góc "hàng dễ" | **36,2%** (2015 là 44,7%) | cùng lệnh |
 | Thị phần thế giới · hạng | 1,780% · **16**/231 | `metrics_top20.csv` dòng 16 |
 | Bạn hàng xuất khẩu · hạng | 166 · **66**/231 | `metrics.csv`, `VNM`/`full`, cột `degree_out` |
 | ECI · hạng | +0,579 · **78**/230 | cùng dòng, cột `eci`, `eci_rank` |
 | 3 thị trường đầu | **52,41%** (Hoa Kỳ 95,2 · Trung Quốc 86,1 · Hàn Quốc 20,8 tỷ USD) | đếm trên `edges.csv` |
 | 9 nước ASEAN còn lại | **7,77%** | đếm trên `edges.csv` |
-| Mạng đã lọc (T10) | 73 nút · 416 cạnh · 67,84% giá trị | `threshold_coverage.csv` dòng `CHOSEN` |
+| Mạng đã lọc (T10) | 73 nút · 416 cạnh (= **271 cặp nước**) · 67,84% giá trị | `threshold_coverage.csv` dòng `CHOSEN` |
+| Việt Nam trên đồ thị đã lọc | **12 cặp**, dày nhất là Trung Quốc **219,2 tỷ USD** (gấp 2,3 lần Hoa Kỳ) | `python src/make_node_link.py` (in ra cuối) |
+| Bác giả thuyết scale-free | R² **0,51** · lệch tới **41,3 lần** | `python src/make_degree_loglog.py` (in ra cuối) |
+| Lệch khỏi phân bố đều | **0,056** (năm 1995 còn 0,180) | cùng lệnh, chạy thêm `--year 1995` |
+| Giá trị nằm trong khối cụm | **69,7%** (năm 1995 còn là **83,8%**) | `python src/make_adjacency_matrix.py --year 2023\|1995` (khối kiểm chứng) |
+| Xếp lại hàng/cột theo cụm | khoảng cách tới đường chéo **0,398 → 0,258**, giảm **35,1%** (ngẫu nhiên 0,341) | cùng lệnh |
+| Ba khối năm 2023 · năm 1995 | **41 / 25 / 7** quanh Trung Quốc, Đức, Hoa Kỳ · **34 / 27 / 2** quanh **Hoa Kỳ**, Đức, Brazil | cùng lệnh, mục "Các khối" |
+| Hàng/cột Việt Nam trên ma trận | **8 ô xuất + 10 ô nhập** (năm 1995: **3 + 3**) | cùng lệnh, dòng cuối |
+| Bạn hàng lớn thứ hai của Việt Nam | **ASEAN 33,4%** năm 1995 → **châu Mỹ 18,5%** năm 2023; ASEAN tụt còn 8,4% | `python src/make_chord.py --year 1995` và `--year 2023` |
+| Đông Á trong rổ của Việt Nam | 59,1% → **70,9%** | cùng lệnh, mục "Việt Nam nối với" |
+| Thương mại nội khối (8 khối địa lý) | 60,5% → **48,4%** | cùng lệnh, dòng "Nội khối" |
+| Còn chỗ cho bảng màu thứ ba không | **không** — màu thứ ba chỉ cách ΔE **14,2**, dưới sàn 15 | `python src/probe_colour_space.py` |
+| Nếu Sankey dùng đồ thị đã lọc | cán cân **đổi dấu**: +53,45 tỷ (thặng dư) → **−15,17 tỷ** (thâm hụt); 166→8 nước bán ra, 149→10 nước mua vào | `src/make_sankey.py` + lọc `edges.csv` theo `above_threshold` |
+| Ô `Chưa phân loại` trong rổ hàng | **11,83%** = 45,60 tỷ USD, RCA 2,4408, PCI −1,206 — là mã `XXXX` của Atlas, đã loại khỏi đề xuất | `src/make_decision_plane.py` · `src/check_tree.py` |
+| Cây HS92 kiểm ra sạch không | **31 mục: 29 ĐẠT, 1 lỗi, 1 lưu ý** — `3501` nằm dưới `34` thay vì `35`, cùng ngành 6 nên không hình nào lệch | `python src/check_tree.py` |
 
 Hai cái bẫy khi đọc bảng này:
 
@@ -150,7 +206,7 @@ Hai cái bẫy khi đọc bảng này:
 
 ---
 
-## 4. Bảy câu chắc chắn bị hỏi — câu trả lời đã có sẵn
+## 4. Chín câu chắc chắn bị hỏi — câu trả lời đã có sẵn
 
 Đây là **vật liệu cho T29**, chưa phải T29: T29 cần 10 câu và phải diễn tập thành tiếng.
 
@@ -176,10 +232,14 @@ tiền lấy từ mạng đầy đủ vì kim ngạch là đại lượng thật
 ngưỡng ta tự chọn. → A7.
 
 **4. Mạng lưới thương mại có scale-free không?**
-**Không**, và đã kiểm chứ không đoán: độ lệch CCDF lớn nhất so với phân bố đều chỉ
-0,056. Biểu đồ log-log của T09 sẽ **không ra đường thẳng** — đó là kết quả đúng, không
-phải lỗi dữ liệu. Lý do dễ hiểu: mỗi nước chỉ có khoảng 230 đối tác khả dĩ, nên bậc bị
-chặn trên, khác hẳn mạng web hay mạng trích dẫn. → A3.
+**Không**, và đã kiểm chứ không đoán. Biểu đồ log-log của T09
+(`output/degree_loglog_2023.png`) **không ra đường thẳng**, và hình tự mang bằng chứng
+đi kèm: đường thẳng khớp nhất chỉ đạt **R² = 0,51**, có chỗ lệch **41,3 lần**, và nếu
+kéo về phía bậc thấp nó đòi CCDF vượt 100% — vô nghĩa, vì CCDF là tỉ lệ. Ngược lại,
+CCDF thật chỉ lệch **0,056** khỏi một phân bố **đều**. Lý do dễ hiểu: mỗi nước chỉ có
+khoảng 230 đối tác khả dĩ, nên bậc bị chặn trên, khác hẳn mạng web hay mạng trích dẫn.
+Nếu bị hỏi tiếp "thế 1995 thì sao": lệch 0,180 — **mạng không chỉ dày thêm mà còn đều
+ra**, trong khi Gini giá trị cạnh đứng yên. → A3.
 
 **5. Thuật toán phát hiện cộng đồng có tìm ra ASEAN không?**
 Không. Cả 10 nước ASEAN rơi vào **cùng một cụm** với Trung Quốc, Nhật, Hàn, Ấn và vùng
@@ -201,21 +261,60 @@ qua được phép kiểm đó, và phép kiểm nằm trong repo để ai muố
 thành viên nhóm xin được. Phải nói thật trong phần Phương pháp luận, kèm các hạn chế
 D1–D5. Nói trước thì là giới hạn đã nhận; để hội đồng phát hiện thì là lỗ hổng.
 
+**8. Việt Nam có đang mất bạn hàng không?**
+**Không, và chính nhóm đã bác câu đó của chính mình.** Đếm thô thì số bạn hàng rơi từ
+đỉnh **208 nước (2002)** xuống **166 (2023)**. Nhưng 47 nước rời khỏi danh sách mang
+theo đúng **0,59%** kim ngạch — trung vị một luồng xuất khẩu đi từ **1,0 triệu USD**
+(2002) lên **103,6 triệu USD** (2023), nên danh sách ngắn đi vì các luồng tí hon biến
+mất. Đặt một mức sàn vào là kết luận đảo chiều: trên **100 triệu USD** thì số kênh
+**tăng 13 → 83**, và hạng thế giới của Việt Nam theo số bạn hàng trên 10 triệu USD đi
+từ 65/211 lên **24/231**. Điều thật sự xảy ra là **tiền dồn lại**, không phải cửa
+đóng lại: HHI đáy 0,0662 (2013) → **0,1226** (2023), top-3 nhận **52,41%**. → A16,
+và tiêu đề T20 đã sửa theo.
+
+**9. RCA của hai nhóm được đề xuất còn dưới 1 — lấy gì chắc nó vượt?**
+**Không chắc, và báo cáo nói đúng như vậy — nhưng có nền so sánh.** Thứ nhất, quy
+tắc chọn đã chạy trên hai năm quá khứ và cả hai lần đều chỉ đúng chỗ: chạy ở 2007
+nó chọn **điện tử** khi nhóm đó mới xuất 3,4 tỷ USD với RCA 0,573 (2023: 2,230 và
+115,4 tỷ); chạy ở 2015 nó chọn thiết bị quang học và sắt thép, và **sắt thép đã
+chạm RCA 1,003**. Thứ hai, RCA **không tự đi lên**: trong 97 nhóm hàng chỉ 45,4%
+tăng giữa 2015 và 2023, trung vị **−0,0178**, còn nhóm đã có RCA ≥ 1,5 thì chỉ 25%
+tăng tiếp. Thứ ba — và phải nói thẳng — điều kiện mang sức dự báo là **PCI > 0**
+(62,8% số nhóm tăng, so với 31,5% ở hàng dễ), chứ không phải dải RCA 0,5–1,5; còn
+lớp thoả trọn quy tắc thì chỉ 6 nhóm, quá nhỏ để kết luận thống kê. → A17, §7.2.
+
 ---
 
 ## 5. Việc còn lại, theo thứ tự nên làm
 
-1. **T09 — biểu đồ log-log** (việc duy nhất đang dở). Dữ liệu đã có sẵn cột `ccdf`
-   trong `degree_distribution.csv`. Nhớ: đường **không** thẳng, và phải ghi chú ngay
-   trên hình rằng đó là kết quả, không phải lỗi.
-2. **T15 node-link** — 416 cạnh, không mũi tên (B5), kích thước theo bậc và màu theo
-   cụm lấy từ `metrics.csv` dòng `filtered`, viền đen 1,5px cho Việt Nam (B12).
-3. **T16 hai ma trận kề** — hình vuông 6,30 × 6,30, `SEQUENTIAL_SCALE`, thứ tự cụm
-   lấy cùng chỗ.
-4. **T17 chord**, rồi **T19 Sankey**, **T20 small multiples theo thời gian**,
-   **T21 streamgraph**.
-5. **Hỏi R3** về T19–T21 trước khi tự làm hộ — nhánh `huyhihi` chưa có commit nào.
-6. **T08** khi có tài khoản; **T25** viết sẵn được ngay vì hạn chế đã ghi đủ.
+Toàn bộ phần hình đã xong, và **báo cáo cuối đã ráp xong** — 10 mục trong
+`.report/final/`, ráp bằng `src/build_report.py` ra `output/bao-cao-cuoi.{md,html}`,
+khoảng 19 trang thân + 3 trang phụ lục. Việc còn lại là trình bày và rà soát,
+không việc nào phải bắt đầu từ trang trắng.
+
+1. **T28 slide** — báo cáo đã ráp xong, slide đi theo đúng mạch đó: năm nhịp
+   của **§E**, kết bằng đề xuất ở §7 của báo cáo. Nguồn chữ có sẵn: `00-tom-tat.md`
+   là bản một trang, §1.3 là bảng năm nhịp, §7.3 là hai câu đề xuất. Mỗi người
+   trình bày phần mình sở hữu (checklist nộp bài, mục 3).
+2. **T23 rà soát chéo** — mỗi người review 2 hình của người khác, checklist ở
+   `style-guide.md` §7. Chạy `src/check_readability.py` trước cho đỡ mất công.
+   **Đã thấy một lỗi khi ráp:** phụ đề treemap in câu *"Bấm vào một nhóm để xem…"*
+   — một lời hướng dẫn tương tác nằm trên ảnh tĩnh trong báo cáo nộp. Sửa ở T23.
+3. **T29 diễn tập + 10 câu phản biện** — §4 sổ này đã có **9** câu kèm câu trả
+   lời (câu 9 là câu của A17: *"RCA dưới 1 thì lấy gì chắc nó vượt?"*). Cần thêm
+   **1 câu**, chọn trong hai chỗ yếu còn lại: *"sao không chọn điện tử?"* hoặc
+   *"ECI đo hàng đi qua hay hàng ở lại?"* — câu sau đã có sẵn câu trả lời ở D2/D5
+   và §2.4 của báo cáo.
+4. **T30 dọn repo**; **T08** chỉ làm được khi có tài khoản CEPII + Comtrade.
+
+**Chỗ yếu cần biết trước khi lên trình bày.** Đề xuất ở T31 dựa trên RCA và PCI
+— hai chỉ số **đo rổ hàng gộp**, nên chúng nói *cái gì đi qua Việt Nam*, chưa hẳn
+*cái gì ở lại*. Không có bảng vào–ra thì không tách được, và phải nói thẳng điều
+đó chứ đừng để người chấm hỏi ra (D2, D5). Điểm mạnh bù lại: quy tắc chọn của
+T31 **đã chạy lại trên hai năm quá khứ** và cả hai lần đều chỉ đúng chỗ (2007 →
+điện tử, 2015 → sắt thép vượt ngưỡng), trên một nền mà RCA **không** tự đi lên —
+xem A14 và A17. Nhưng A17 cũng đo được rằng sức dự báo nằm ở điều kiện **PCI > 0**
+chứ không ở dải RCA, và lớp thoả trọn quy tắc chỉ có 6 nhóm; nói đúng chừng đó.
 
 Hai quyết định còn treo:
 
@@ -251,84 +350,3 @@ Mỗi lần gộp một PR, sửa đúng ba chỗ, mất khoảng hai phút:
 
 Phát hiện mới thì **không** ghi vào đây — ghi vào `phat-hien-va-quyet-dinh.md` theo
 số A tiếp theo, rồi ở đây chỉ trỏ sang. Sổ này giữ mỏng để còn đọc được một lượt.
-
----
-
-## 7. Đợt 21/10/2026 — làm nốt phần còn lại của cả nhóm
-
-Phúc và Dương Quang Huy đang bận việc khác, nên đợt này làm trọn các việc còn
-treo. Ghi lại ở đây để hai bạn **không phải đọc code mới nắm được**.
-
-### Việc đã xong
-
-| Mã | Việc | Sản phẩm | Ghi chú quan trọng |
-|---|---|---|---|
-| T08 | Kiểm chất lượng dữ liệu | `src/compare_mirror.py` | **Đổi cách làm** — xem bên dưới |
-| T09 | Phân bố bậc log-log | `output/degree_dist_out.*` | bác bỏ giả định scale-free |
-| T15 | Node-link | `output/node_link_2023.*` | cụm mã hóa bằng xám + hình dạng |
-| T16 | Hai ma trận kề | `output/adjacency_2023.*` | cùng 416 cạnh với T15 |
-| T17 | Chord | `output/chord_2023.*` | dùng đồ thị ĐẦY ĐỦ, không lọc |
-| T19 | Sankey | `output/sankey_vnm_2023.*` | giá trị gia tăng 13,9% |
-| T20 | Vị trí VN theo thời gian | `output/time_multiples.*` | tiền tăng, cửa giảm |
-| T21 | Streamgraph | `output/streamgraph_vnm_*.*` | hai bản: tỷ trọng và tuyệt đối |
-| T25 | Phương pháp luận | `docs/phuong-phap-luan.md` | |
-| T26 | Phát hiện | `docs/phat-hien.md` | 14 phát hiện F1–F14 |
-| T27 | Trang web | `web/` + `src/build_web.py` | tĩnh, chạy được trên Pages |
-| T29 | Câu phản biện | `docs/cau-hoi-phan-bien.md` | 12 câu + 3 câu phòng hờ |
-| T30 | README | `README.md` | đã bổ sung 10 script mới |
-
-Thêm một tài liệu không nằm trong danh sách task:
-**`docs/ket-luan-cho-thuyet-trinh.md`** — mở file này trước khi lên trình bày.
-Nó gom mọi con số theo từng người, kèm cách nói và các chỗ dễ nói quá lời.
-
-### Ba thay đổi về cách làm, cần cả nhóm biết
-
-**1. T08 đổi hướng, và đó là một phát hiện.** Phân công ghi "đối chiếu Atlas với
-BACI và Comtrade". Ba nguồn đó **không độc lập** — Atlas và BACI đều dẫn xuất từ
-Comtrade. Thay bằng phép **chênh lệch gương** ngay trong dữ liệu sẵn có. Kết
-quả: **2.093/2.093 luồng trùng khít 100,0%**, tức Atlas đã hòa giải số liệu
-trước khi phát hành, nên ta **không tự đo được sai số của nó**. Nói ra điều này
-trung thực hơn là trình bày một bảng ba cột số giống nhau.
-
-**2. Cộng đồng KHÔNG được tô màu.** Đã đo 7 bảng 3 màu ứng viên; bảng nào cũng
-tụt xuống ΔE 2,6–6,6 so với màu ngành gần nhất khi mô phỏng mù màu. Bảng 10
-ngành đã chiếm hết gam an toàn. Dùng **3 nấc xám + 3 hình dạng**, giữ ΔE 20,1 ở
-cả ba dạng mù màu. Hằng số ở `reference_data.py`, mục `COMMUNITY_FILL`.
-
-**3. Ba hình mạng lưới dùng ba tập cạnh khác nhau, có chủ ý.** T15 và T16 dùng
-đồ thị đã lọc (416 cạnh) vì phải so được với nhau. T17 và T20 dùng đồ thị đầy
-đủ — chord đã gộp thành 10 khối nên không cần lọc, còn T20 thì câu hỏi chính là
-*đếm bạn hàng*, mà ngưỡng lại cắt đúng cái đuôi cần đếm. Khác biệt này ghi trên
-chú thích từng hình.
-
-### Hai lỗi đã mắc và đã sửa — để không ai lặp lại
-
-**Ngưỡng tuyệt đối thiên vị nước lớn.** Bản đầu của chord áp ngưỡng 0,15% tổng
-thế giới cho mọi dải, và **xóa mất 4 trong 8 luồng của Việt Nam** — vì Việt Nam
-chỉ chiếm 1,8% xuất khẩu thế giới nên luồng "rất lớn với Việt Nam" vẫn "nhỏ với
-thế giới". Một hình tên là "lấy Việt Nam làm trọng tâm" lại giấu phần lớn luồng
-của Việt Nam. Đã sửa: dải có Việt Nam thì miễn ngưỡng. Đây đúng là cái bẫy mà
-phát hiện A5 đã ghi, gặp lại ở một chỗ khác.
-
-**Mẫu số sai trong chú thích chord.** Tổng độ dài cung đếm mỗi luồng hai lần
-(một lần phía xuất, một lần phía nhập), nên chú thích ghi "34,9 nghìn tỷ USD
-thương mại" trong khi tổng thật là 21,7. Đúng để chia cung, sai để làm mẫu số
-cho thị phần. Đã tách hai biến ra.
-
-### Dữ liệu: đã đủ
-
-`check_raw_data.py` báo **DAT**. Hai file từng thiếu (`cc_year.csv`,
-`hs92_country_year.csv`) đã tải về. Ba file đối chiếu chéo khớp 0,000%.
-`data/processed/` có đủ 10 file.
-
-### Còn lại cho cả nhóm
-
-- **T22 (đồng bộ thị giác)** — 10 biểu đồ đều đã dùng `reference_data.py`, dấu
-  thập phân tiếng Việt và viền trắng theo style guide. Còn việc rà lại bằng mắt
-  trên máy chiếu thật.
-- **T23 (rà soát chéo)** — **không tự làm được**, theo đúng nguyên tắc #4: không
-  ai tự duyệt sản phẩm của chính mình. Phúc và Dương Quang Huy cần review.
-- **T24 (kiểm khả năng đọc)** — `check_palette.py` thoát 0. Còn việc kiểm nhãn
-  chồng nhau ở khổ chiếu thật.
-- **T28 (slide)** — mỗi người tự làm phần mình, lấy số từ
-  `docs/ket-luan-cho-thuyet-trinh.md`.

@@ -23,10 +23,12 @@ import math
 import sys
 
 try:
-    from reference_data import SECTOR_NAME_VI, SECTOR_PALETTE
+    from reference_data import (COMMUNITY_NAME_VI, COMMUNITY_PALETTE,
+                                SECTOR_NAME_VI, SECTOR_PALETTE)
 except ImportError:  # chạy từ thư mục gốc
     sys.path.insert(0, 'src')
-    from reference_data import SECTOR_NAME_VI, SECTOR_PALETTE
+    from reference_data import (COMMUNITY_NAME_VI, COMMUNITY_PALETTE,
+                                SECTOR_NAME_VI, SECTOR_PALETTE)
 
 
 # --- ngưỡng đã chốt, xem docs/style-guide.md mục "Vì sao các ngưỡng này" ---
@@ -170,10 +172,10 @@ def pairwise(colors):
     return worst, wi, wj
 
 
-def check(palette, label):
+def check(palette, label, name_map=None):
     ids = sorted(palette)
     colors = [palette[i] for i in ids]
-    names = [SECTOR_NAME_VI.get(i, str(i)) for i in ids]
+    names = [(name_map or SECTOR_NAME_VI).get(i, str(i)) for i in ids]
     fails = []
 
     print('=' * 78)
@@ -182,7 +184,7 @@ def check(palette, label):
 
     print('\n1. TƯƠNG PHẢN WCAG')
     print('%-3s %-30s %-8s %8s %7s  %-6s %s'
-          % ('#', 'Ngành', 'Hex', 'vs trắng', 'vs đen', 'chữ', 'ghi chú'))
+          % ('#', 'Tên', 'Hex', 'vs trắng', 'vs đen', 'chữ', 'ghi chú'))
     for i, c, n in zip(ids, colors, names):
         cw, cb = contrast(c, '#FFFFFF'), contrast(c, '#000000')
         text = 'trắng' if cw >= cb else 'đen'
@@ -202,7 +204,7 @@ def check(palette, label):
 
     print('\n2. MÔ PHỎNG MÙ MÀU (màu người mù màu thực sự nhìn thấy)')
     print('%-3s %-30s %-8s %-8s %-8s %-8s'
-          % ('#', 'Ngành', 'gốc', 'protan', 'deutan', 'tritan'))
+          % ('#', 'Tên', 'gốc', 'protan', 'deutan', 'tritan'))
     for i, c, n in zip(ids, colors, names):
         print('%-3d %-30s %-8s %-8s %-8s %-8s'
               % (i, n, c, simulate(c, 'protan'), simulate(c, 'deutan'),
@@ -224,8 +226,35 @@ def check(palette, label):
     return fails
 
 
+def cross_distance(pal_a, pal_b):
+    """ΔE2000 nhỏ nhất giữa HAI bảng màu khác nhau.
+
+    Hai bảng cùng xuất hiện trong một báo cáo (màu ngành ở treemap, màu cụm ở
+    node-link) nên phải khác nhau đủ xa: người đọc không được phép tưởng cụm
+    Louvain là một ngành hàng.
+    """
+    worst, pair = float('inf'), (None, None)
+    for ia in sorted(pal_a):
+        for ib in sorted(pal_b):
+            d = ciede2000(to_lab(pal_a[ia]), to_lab(pal_b[ib]))
+            if d < worst:
+                worst, pair = d, (ia, ib)
+    return worst, pair
+
+
 def main():
     fails = check(SECTOR_PALETTE, 'BẢNG MÀU 10 NGÀNH CẤP 1 HS92 (T04)')
+    fails += check(COMMUNITY_PALETTE, 'BẢNG MÀU 3 CỤM LOUVAIN (T15)',
+                   COMMUNITY_NAME_VI)
+
+    print('\n4. KHOẢNG CÁCH GIỮA HAI BẢNG MÀU')
+    d, (i, j) = cross_distance(SECTOR_PALETTE, COMMUNITY_PALETTE)
+    ok = 'ĐẠT ' if d >= MIN_DE_NORMAL else 'HỎNG'
+    print('  %s  cặp gần nhất ΔE = %5.1f  (ngưỡng %.0f)  màu ngành %s ↔ %s'
+          % (ok, d, MIN_DE_NORMAL, SECTOR_NAME_VI[i], COMMUNITY_NAME_VI[j]))
+    if d < MIN_DE_NORMAL:
+        fails.append('màu cụm %s chỉ cách màu ngành %s ΔE %.1f'
+                     % (COMMUNITY_NAME_VI[j], SECTOR_NAME_VI[i], d))
     print('\n' + '=' * 78)
     if fails:
         print('KHÔNG ĐẠT — %d vấn đề:' % len(fails))

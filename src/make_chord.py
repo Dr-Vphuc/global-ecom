@@ -1,40 +1,30 @@
-"""Chord diagram luồng thương mại giữa các khối, Việt Nam làm trọng tâm (T17).
+# -*- coding: utf-8 -*-
+"""T17 — Chord: luồng thương mại giữa các khối và vùng, Việt Nam làm trọng tâm.
 
-Chord là cách thứ ba để nhìn cùng một mạng lưới, sau node-link (T15) và ma trận
-kề (T16). Mỗi cung trên vòng tròn là một khối; mỗi dải ruy-băng là dòng hàng
-giữa hai khối, bề rộng tỷ lệ với giá trị.
+Ba quyết định đã chốt trong script này, mỗi cái đều có số đo đứng sau:
 
-Ba khác biệt có chủ ý so với T15 và T16
----------------------------------------
-1. **Dùng đồ thị ĐẦY ĐỦ, không lọc ngưỡng.** Ngưỡng ở T10 sinh ra để cứu hình
-   node-link khỏi 27.535 cạnh chồng lên nhau. Chord không gặp vấn đề đó vì nó
-   đã gộp 231 nước thành một nhúm khối — mỗi cặp khối chỉ còn một dải. Lọc thêm
-   chỉ làm mất 32% giá trị mà không được gì. Khác biệt này phải nói ra, vì nếu
-   không người đọc sẽ tưởng ba hình dùng cùng một tập cạnh.
+1. **Khối suy ra từ dữ liệu, không gán tay.** nodes.csv có sẵn region và
+   continent. Trong đồ thị đã lọc, vùng South-East Asia TRÙNG KHÍT 10 nước
+   ASEAN ở cả 1995 lẫn 2023, nên "khối" chỉ là: Việt Nam tách riêng (đề tài lấy
+   nó làm trọng tâm), ASEAN còn lại, Đông Á tách khỏi phần Á còn lại (A10 cho
+   thấy cực Đông Á mới là cực chứa Việt Nam), rồi bốn châu còn lại. Script tự
+   kiểm mọi nước thuộc ĐÚNG MỘT khối và in bảng đối chiếu.
 
-   Số khối KHÔNG viết cứng ở đâu cả — nó đếm từ dữ liệu, vì khối "Khác" (vùng
-   cực, mã không phải quốc gia) chỉ xuất hiện ở những năm có số liệu cho nhóm
-   đó. Bản đầu của hình này ghi cứng "9 khối" trong phụ đề trong khi thực tế vẽ
-   10 cung — một con số sai in ngay trên hình.
+2. **Khối mã hoá bằng VỊ TRÍ, không bằng màu (B17).** Đã đo: sau 10 màu ngành
+   (T04) và 3 màu cụm (T15), tìm tham lam maximin trên lưới 868 màu in được thì
+   màu thứ ba của một bảng mới chỉ còn cách các màu đã chiếm ΔE2000 = 14,2 —
+   dưới sàn 15 — mà hai màu đầu tìm được lại là #00FF00 và #FF00FF, tức thuật
+   toán đã phải bới vào góc gamut. Không còn chỗ cho bảng màu thứ ba. Trên một
+   vòng tròn thì khối đã có vị trí cố định và nhãn riêng, nên hue không cần
+   thiết: cung và dải dùng độ sáng, Việt Nam nổi lên bằng viền đen theo B12.
 
-2. **Việt Nam tách thành một khối riêng**, không nằm trong Đông Nam Á. Cả bài
-   nói về Việt Nam; để nó lẫn vào 10 nước ASEAN khác thì chính câu hỏi nghiên
-   cứu biến mất khỏi hình.
+3. **Gộp hai chiều thành một dải, theo B13.** Đối ứng 0,84 nên vẽ hai nửa song
+   song chỉ tốn mực. Bề dày = tổng hai chiều của phần vượt ngưỡng. Chiều của
+   luồng là việc của T19 (Sankey) — ghi rõ trên hình để không ai đọc nhầm.
 
-3. **Không tô màu theo khối.** Chín khối cần chín màu, mà bảng 10 màu ngành đã
-   chiếm hết gam an toàn cho người mù màu (đo ở ``reference_data.py``). Thay vì
-   bịa thêm một bảng màu trùng với bảng ngành, hình này tô theo NGHĨA: dải nào
-   có Việt Nam thì đậm, dải còn lại xám nhạt. Mã hóa đó vừa trả lời đúng câu
-   "Việt Nam làm trọng tâm", vừa không nợ thêm một bảng màu nào.
-
-Chạy
-----
-    python src/make_chord.py
-    python src/make_chord.py --year 1995
+Chạy:
+    PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_chord.py --year 2023
 """
-
-from __future__ import annotations
-
 import argparse
 import csv
 import math
@@ -42,290 +32,532 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-import graph_common as GC  # noqa: E402
-import reference_data as R  # noqa: E402
+import reference_data as R                                    # noqa: E402
 
 try:
     import plotly.graph_objects as go
 except ImportError:
-    sys.exit("Thiếu plotly. Chạy: python -m pip install plotly kaleido")
+    sys.exit("Thiếu plotly. Chạy: pip install -r requirements.txt")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROC = os.path.join(ROOT, "data", "processed")
+EDGES_CSV = os.path.join(ROOT, "data", "processed", "edges.csv")
+NODES_CSV = os.path.join(ROOT, "data", "processed", "nodes.csv")
+OUTDIR = os.path.join(ROOT, "output")
 
-R_IN, R_OUT = 0.86, 0.96      # bán kính trong / ngoài của cung
-GAP = math.radians(2.6)        # khe giữa hai cung, tính bằng radian
-VN_FILL = "rgba(40,40,40,0.62)"        # dải có Việt Nam
-OTHER_FILL = "rgba(150,150,150,0.17)"  # dải còn lại
-# Dải nhỏ hơn ngưỡng này (tính theo tổng thế giới) thì bỏ, nếu không vòng tròn
-# đầy những sợi chỉ không đọc được.
-#
-# ⚠️ Ngưỡng này KHÔNG áp cho dải có Việt Nam. Việt Nam chỉ chiếm 2,1% thương
-# mại thế giới, nên một luồng rất lớn ĐỐI VỚI VIỆT NAM vẫn nhỏ so với thế giới:
-# luồng Việt Nam ↔ Đông Nam Á là 30 tỷ USD, dưới ngưỡng 32,5 tỷ, và bản đầu
-# tiên của hình này đã lặng lẽ xóa mất nó. Một hình mang tên "lấy Việt Nam làm
-# trọng tâm" mà giấu đi bốn trong tám luồng của Việt Nam thì tự phản lại tiêu
-# đề của chính nó. Ngưỡng tuyệt đối luôn thiên vị kẻ lớn — đây đúng là cái bẫy
-# mà phát hiện A5 đã ghi.
-MIN_SHARE = 0.0015
+# Khung hình tính bằng POINT theo B16: 1 đơn vị layout = 1 point in thật.
+PT_PER_INCH = 72.0
+CANVAS_PT = R.FIG_WIDTH_FULL * PT_PER_INCH            # 453,6
+LABEL_FLOOR_PT = 7.0
 
+# Thứ tự quanh vòng tròn: Việt Nam ở đỉnh, rồi theo chiều kim đồng hồ từ Đông
+# sang Tây. Thứ tự địa lý giữ dải ngắn ở chỗ thương mại dày nhất.
+BLOC_ORDER = ["VNM", "ASEAN", "EAS", "ASIA", "OCE", "AFR", "EUR", "AME"]
+BLOC_VI = {
+    "VNM": "Việt Nam",
+    "ASEAN": "ASEAN còn lại",
+    "EAS": "Đông Á",
+    "ASIA": "Châu Á còn lại",
+    "OCE": "Châu Đại Dương",
+    "AFR": "Châu Phi",
+    "EUR": "Châu Âu",
+    "AME": "Châu Mỹ",
+}
+FOCUS = "VNM"
 
-def log(msg):
-    print(msg)
-    sys.stdout.flush()
+# Không mở bảng màu mới (B17) — chỉ độ sáng, cộng viền đen cho Việt Nam (B12).
+ARC_FILL = "#5A5A5A"
+ARC_FOCUS = "#111111"
+RIB_FILL = "#A9A9A9"
+RIB_FOCUS = "#2E2E2E"
+ARC_EDGE = "#FFFFFF"
+TEXT_DIM = "#333333"
 
+GAP_DEG = 2.6              # khe giữa hai cung
+BAND_PT = 7.0              # bề dày vành cung
+LABEL_PAD = 4.0            # khe từ mép vành ra chữ
+MARGIN_X = 10.0
+TEXT_PAD = 6.0
+LINE_H = 1.33
+TEXT_W = CANVAS_PT - 2 * TEXT_PAD
 
-def bloc_of(iso, region_of):
-    if iso == "VNM":
-        return "viet_nam"
-    return R.BLOC_OF_REGION.get(region_of.get(iso, ""), "khac")
-
-
-def load_bloc_matrix(year):
-    """Gộp mọi luồng của một năm lên cấp khối. Trả về (ma trận, tổng thế giới)."""
-    region_of = {}
-    with open(os.path.join(PROC, "nodes.csv"), encoding="utf-8-sig") as fh:
-        for r in csv.DictReader(fh):
-            region_of[r["country_iso3"]] = r["region"]
-
-    m = {}
-    total = 0.0
-    path = os.path.join(PROC, "edges.csv")
-    if not os.path.exists(path):
-        sys.exit("Thiếu %s. Chạy: python src/build_intermediate.py" % path)
-    with open(path, encoding="utf-8-sig") as fh:
-        for r in csv.DictReader(fh):
-            if int(r["year"]) != year:
-                continue
-            a = bloc_of(r["source_iso3"], region_of)
-            b = bloc_of(r["target_iso3"], region_of)
-            v = float(r["export_value"])
-            m[(a, b)] = m.get((a, b), 0.0) + v
-            total += v
-    return m, total
+SOURCE_TEXT = ("Nguồn: Atlas of Economic Complexity (Harvard Growth Lab). "
+               "Đồ thị đã lọc theo quy tắc T10 (B4).")
 
 
-def arc_points(a0, a1, rad, n=40):
-    """Dãy điểm trên một cung tròn."""
-    return [(rad * math.cos(a0 + (a1 - a0) * i / n),
-             rad * math.sin(a0 + (a1 - a0) * i / n)) for i in range(n + 1)]
+# ---------------------------------------------------------------------------
+# Dữ liệu
+# ---------------------------------------------------------------------------
+def bloc_of(iso3, region, continent):
+    """Khối của một nước — suy ra, không tra bảng gán tay."""
+    if iso3 == FOCUS:
+        return "VNM"
+    if iso3 in R.ASEAN_ISO3:
+        return "ASEAN"
+    if continent == "Asia":
+        return "EAS" if region == "East Asia" else "ASIA"
+    return {"Europe": "EUR", "Americas": "AME",
+            "Africa": "AFR", "Oceania": "OCE"}.get(continent)
 
 
-def bezier(p0, p1, n=40):
-    """Đường cong bậc hai từ p0 tới p1, uốn về TÂM vòng tròn.
-
-    Điểm điều khiển đặt ở gốc tọa độ, nên mọi dải đều cong vào giữa. Đó là
-    điều làm chord đọc được: dải nối hai cung xa nhau thì cong sâu, dải nối hai
-    cung kề nhau thì gần như thẳng, mắt phân biệt được ngay độ "xa" của quan hệ.
-    """
-    out = []
-    for i in range(n + 1):
-        t = i / n
-        u = 1 - t
-        out.append((u * u * p0[0] + t * t * p1[0],
-                    u * u * p0[1] + t * t * p1[1]))
+def load_nodes():
+    """{ISO3: (tên tiếng Việt, khối)}."""
+    if not os.path.exists(NODES_CSV):
+        sys.exit("Chưa có %s.\nChạy trước: python src/build_intermediate.py"
+                 % NODES_CSV)
+    out = {}
+    with open(NODES_CSV, "r", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            out[row["country_iso3"]] = (
+                row["country_name_vi"] or row["country_name"],
+                bloc_of(row["country_iso3"], row["region"], row["continent"]))
     return out
 
 
-def path_of(points):
-    """Chuỗi SVG path khép kín từ danh sách điểm."""
-    d = "M %.5f,%.5f " % points[0]
-    for x, y in points[1:]:
-        d += "L %.5f,%.5f " % (x, y)
-    return d + "Z"
-
-
-def main():
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--year", type=int, default=R.REFERENCE_YEAR)
-    args = ap.parse_args()
-
-    log("Gộp luồng thương mại %d lên cấp khối..." % args.year)
-    m, total = load_bloc_matrix(args.year)
-    log("  tổng %s" % R.fmt_usd(total))
-
-    blocs = [b for b in R.BLOC_ORDER
-             if any(k[0] == b or k[1] == b for k in m)]
-    # Tổng của một khối = xuất đi + nhập về. Luồng nội khối đếm một lần, vì nó
-    # chiếm cả hai đầu của cùng một dải.
-    size = {}
-    for b in blocs:
-        out = sum(v for (a, c), v in m.items() if a == b and c != b)
-        inn = sum(v for (a, c), v in m.items() if c == b and a != b)
-        self_ = m.get((b, b), 0.0)
-        size[b] = out + inn + self_
-    blocs = [b for b in blocs if size[b] > 0]
-
-    # grand = tổng ĐỘ DÀI cung, dùng để chia góc. Nó KHÁC tổng thương mại:
-    # mỗi luồng A→B được tính hai lần, một lần vào cung của A (xuất) và một
-    # lần vào cung của B (nhập). Đó là đúng cho việc chia cung — cung của một
-    # khối phải phản ánh cả hàng đi lẫn hàng về. Nhưng tuyệt đối KHÔNG được
-    # dùng grand làm mẫu số cho câu "bao nhiêu % thương mại thế giới": làm vậy
-    # thì mọi tỷ lệ bị chia cho một số gần gấp đôi và đều sai.
-    # Mẫu số cho mọi phát biểu về thị phần là `total`, tổng xuất khẩu thật.
-    grand = sum(size.values())
-    span = 2 * math.pi - GAP * len(blocs)
-
-    # --- Chia cung cho từng khối ------------------------------------------
-    start = {}
-    ang = math.pi / 2          # Việt Nam bắt đầu ở đỉnh vòng tròn
-    for b in blocs:
-        w = span * size[b] / grand
-        start[b] = (ang, ang + w)
-        ang += w + GAP
-
-    # --- Trong mỗi cung, chia tiếp cho từng đối tác ------------------------
-    # Thứ tự đối tác theo BLOC_ORDER để dải giữa hai khối luôn gặp nhau ở đúng
-    # một chỗ, không bị xoắn.
-    sub = {}
-    for b in blocs:
-        a0, a1 = start[b]
-        cur = a0
-        for p in blocs:
-            v = m.get((b, p), 0.0) + (m.get((p, b), 0.0) if p != b else 0.0)
-            if v <= 0:
+def load_flows(year):
+    """[(nước xuất, nước nhập, USD)] — các luồng vượt ngưỡng của năm."""
+    if not os.path.exists(EDGES_CSV):
+        sys.exit("Chưa có %s.\nChạy trước: python src/build_intermediate.py"
+                 % EDGES_CSV)
+    out = []
+    with open(EDGES_CSV, "r", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            if int(row["year"]) != year:
                 continue
-            w = (a1 - a0) * v / size[b]
-            sub[(b, p)] = (cur, cur + w)
-            cur += w
+            if row["above_threshold"] not in ("TRUE", "True", "1"):
+                continue
+            out.append((row["source_iso3"], row["target_iso3"],
+                        float(row["export_value"])))
+    return out
 
-    shapes, hover_x, hover_y, hover_t = [], [], [], []
 
-    # --- Dải ruy-băng ------------------------------------------------------
-    drawn = 0
-    for i, a in enumerate(blocs):
-        for b in blocs[i:]:
-            v = m.get((a, b), 0.0) + (m.get((b, a), 0.0) if a != b else 0.0)
-            touches_vn = "viet_nam" in (a, b)
-            if v / total < MIN_SHARE and not touches_vn:
-                continue
-            if v <= 0:
-                continue
-            sa, sb = sub.get((a, b)), sub.get((b, a))
-            if sa is None or sb is None:
-                continue
-            pts = arc_points(sa[0], sa[1], R_IN)
-            pts += bezier(pts[-1], (R_IN * math.cos(sb[0]), R_IN * math.sin(sb[0])))
-            pts += arc_points(sb[0], sb[1], R_IN)
-            pts += bezier(pts[-1], (R_IN * math.cos(sa[0]), R_IN * math.sin(sa[0])))
-            shapes.append(dict(
-                type="path", path=path_of(pts),
-                fillcolor=VN_FILL if touches_vn else OTHER_FILL,
-                line=dict(width=0.4,
-                          color="#222222" if touches_vn else "rgba(140,140,140,0.35)"),
-                layer="below" if not touches_vn else "above",
-            ))
-            drawn += 1
-            # Điểm hover vô hình đặt ở giữa dải.
-            mid = ((sa[0] + sa[1] + sb[0] + sb[1]) / 4)
-            rr = R_IN * 0.55
-            hover_x.append(rr * math.cos(mid))
-            hover_y.append(rr * math.sin(mid))
-            ab = m.get((a, b), 0.0)
-            ba = m.get((b, a), 0.0)
-            if a == b:
-                hover_t.append("<b>%s ↔ nội khối</b><br>%s<extra></extra>"
-                               % (R.BLOC_NAME_VI[a], R.fmt_usd(ab)))
+def fold(flows, nodes):
+    """Gộp hai chiều (B13) về cặp khối không thứ tự.
+
+    pair[(a, b)] với a, b đã sắp theo BLOC_ORDER, tính cả cặp tự thân a == b.
+    """
+    rank = {b: i for i, b in enumerate(BLOC_ORDER)}
+    pair, members, unassigned = {}, {}, set()
+    for s, t, v in flows:
+        ok = True
+        for iso in (s, t):
+            bl = nodes.get(iso, (None, None))[1]
+            if bl is None:
+                unassigned.add(iso)
+                ok = False
             else:
-                hover_t.append(
-                    "<b>%s ↔ %s</b><br>%s → %s: %s<br>%s → %s: %s"
-                    "<br>tổng %s — %s thương mại thế giới<extra></extra>"
-                    % (R.BLOC_NAME_VI[a], R.BLOC_NAME_VI[b],
-                       R.BLOC_NAME_VI[a], R.BLOC_NAME_VI[b], R.fmt_usd(ab),
-                       R.BLOC_NAME_VI[b], R.BLOC_NAME_VI[a], R.fmt_usd(ba),
-                       R.fmt_usd(v), R.fmt_pct(v / total * 100)))
+                members.setdefault(bl, set()).add(iso)
+        if not ok:
+            continue
+        a, b = nodes[s][1], nodes[t][1]
+        key = (a, b) if rank[a] <= rank[b] else (b, a)
+        pair[key] = pair.get(key, 0.0) + v
+    return pair, members, unassigned
 
-    # --- Cung của từng khối ------------------------------------------------
-    ann = []
-    for b in blocs:
-        a0, a1 = start[b]
-        pts = arc_points(a0, a1, R_OUT) + list(reversed(arc_points(a0, a1, R_IN)))
-        is_vn = b == "viet_nam"
+
+def arc_values(pair):
+    """Giá trị chạm vào mỗi khối — cặp tự thân chỉ tính một lần."""
+    arc = dict((b, 0.0) for b in BLOC_ORDER)
+    for (a, b), v in pair.items():
+        if a == b:
+            arc[a] += v
+        else:
+            arc[a] += v
+            arc[b] += v
+    return arc
+
+
+# ---------------------------------------------------------------------------
+# Hình học
+# ---------------------------------------------------------------------------
+def pol(r, deg):
+    a = math.radians(deg)
+    return (r * math.cos(a), r * math.sin(a))
+
+
+def arc_pts(r, d0, d1, step=1.5):
+    n = max(2, int(abs(d1 - d0) / step) + 1)
+    return [pol(r, d0 + (d1 - d0) * i / float(n - 1)) for i in range(n)]
+
+
+def band_path(r_in, r_out, d0, d1):
+    pts = arc_pts(r_out, d0, d1) + arc_pts(r_in, d1, d0)
+    s = "M %.2f,%.2f " % pts[0]
+    s += " ".join("L %.2f,%.2f" % p for p in pts[1:])
+    return s + " Z"
+
+
+def ctrl_radius(r, deg_a, deg_b):
+    """Bán kính điểm điều khiển của dải, theo khoảng cách góc hai đầu.
+
+    Hai đầu đối diện nhau (180°) thì điểm điều khiển về đúng tâm và dải cắt
+    ngang vòng tròn. Hai đầu sát nhau — ĐIỂN HÌNH LÀ DẢI NỘI KHỐI — thì điểm
+    điều khiển nằm gần vành, nên dải chỉ là một thuỳ ôm lấy cung của chính nó.
+    Để nguyên tâm cho mọi dải thì dải nội khối của Đông Á, Châu Âu, Châu Mỹ
+    phình thành ba mảng chiếm hết lòng hình và che mất mọi dải khác.
+    """
+    d = abs(deg_a - deg_b) % 360.0
+    if d > 180.0:
+        d = 360.0 - d
+    k = math.cos(math.radians(d / 2.0))
+    return r * max(0.0, min(0.95, k))
+
+
+def ribbon_path(r, a0, a1, b0, b1):
+    """Chạy dọc cung nguồn, cong sang cung đích, rồi vòng về."""
+    pa = arc_pts(r, a0, a1)
+    pb = arc_pts(r, b0, b1)
+    c1 = pol(ctrl_radius(r, a1, b0), a1)
+    c2 = pol(ctrl_radius(r, a1, b0), b0)
+    c3 = pol(ctrl_radius(r, b1, a0), b1)
+    c4 = pol(ctrl_radius(r, b1, a0), a0)
+    s = "M %.2f,%.2f " % pa[0]
+    s += " ".join("L %.2f,%.2f" % p for p in pa[1:])
+    s += " C %.2f,%.2f %.2f,%.2f %.2f,%.2f " % (c1 + c2 + pb[0])
+    s += " ".join("L %.2f,%.2f" % p for p in pb[1:])
+    s += " C %.2f,%.2f %.2f,%.2f %.2f,%.2f Z" % (c3 + c4 + pa[0])
+    return s
+
+
+def layout_angles(arc, total_arc):
+    """Góc mỗi cung ∝ giá trị chạm vào khối. Việt Nam đặt giữa đỉnh."""
+    span = 360.0 - GAP_DEG * len(BLOC_ORDER)
+    angles = {}
+    cur = 90.0 + arc[FOCUS] / total_arc * span / 2.0
+    for bl in BLOC_ORDER:
+        w = arc[bl] / total_arc * span
+        angles[bl] = (cur - w, cur)
+        cur -= w + GAP_DEG
+    return angles
+
+
+def allocate(pair, arc, angles):
+    """Chia mỗi cung thành cung con, một cung con cho mỗi bạn hàng.
+
+    Cặp tự thân chiếm HAI cung con liền nhau (mỗi nửa giá trị) để khép thành
+    một vòng nằm gọn trong chính khối đó.
+    """
+    rank = {b: i for i, b in enumerate(BLOC_ORDER)}
+    sub = {}
+    for bl in BLOC_ORDER:
+        if arc[bl] <= 0:
+            continue
+        d0, d1 = angles[bl]
+        cur, parts = d1, []
+        for other in BLOC_ORDER:
+            key = (bl, other) if rank[bl] <= rank[other] else (other, bl)
+            v = pair.get(key, 0.0)
+            if v <= 0:
+                continue
+            if other == bl:
+                parts.append((key, v / 2.0, 0))
+                parts.append((key, v / 2.0, 1))
+            else:
+                parts.append((key, v, 0))
+        for key, v, half in parts:
+            w = v / arc[bl] * (d1 - d0)
+            sub[(bl, key, half)] = (cur - w, cur)
+            cur -= w
+    return sub
+
+
+# ---------------------------------------------------------------------------
+# Câu chữ dựng từ dữ liệu
+# ---------------------------------------------------------------------------
+def vn_profile(pair):
+    """Việt Nam nối với khối nào, bao nhiêu."""
+    by = {}
+    for (a, b), v in pair.items():
+        if a == FOCUS and b != FOCUS:
+            by[b] = by.get(b, 0.0) + v
+        elif b == FOCUS and a != FOCUS:
+            by[a] = by.get(a, 0.0) + v
+    return {"by_bloc": by, "total": sum(by.values())}
+
+
+def headline(year, pair, total, vn):
+    partners = sorted(((v, b) for b, v in vn["by_bloc"].items()), reverse=True)
+    top = partners[:2]
+    share = sum(v for v, _ in top) / vn["total"] * 100.0 if vn["total"] else 0.0
+    title = ("<b>%s nối với %s trong %s khối còn lại, nhưng %s và %s chiếm %s "
+             "giá trị thương mại của %s</b>"
+             % (BLOC_VI[FOCUS], R.fmt_vn(len(partners), 0),
+                R.fmt_vn(len(BLOC_ORDER) - 1, 0),
+                BLOC_VI[top[0][1]], BLOC_VI[top[1][1]],
+                R.fmt_pct(share, 1), BLOC_VI[FOCUS]))
+    inside = sum(v for (a, b), v in pair.items() if a == b)
+    sub = ("Mạng đã lọc %d · %s khối, mỗi nước thuộc đúng một khối · bề dày dải "
+           "= tổng hai chiều của phần vượt ngưỡng, không có chiều (B13) · %s "
+           "giá trị nằm trong nội bộ một khối."
+           % (year, R.fmt_vn(len(BLOC_ORDER), 0),
+              R.fmt_pct(inside / total * 100.0, 1)))
+    note = ("Cung dài theo giá trị chạm vào khối đó; dải nối hai khối, dải khép "
+            "trong một khối là thương mại nội khối. Khối phân biệt bằng VỊ TRÍ "
+            "chứ không bằng màu: sau 10 màu ngành và 3 màu cụm, màu thứ ba của "
+            "một bảng mới chỉ còn cách ΔE 14,2 — dưới sàn 15 (B17). Chiều của "
+            "luồng là việc của T19.")
+    return title, sub, note
+
+
+# ---------------------------------------------------------------------------
+# Hình
+# ---------------------------------------------------------------------------
+def build(year, pair, members, nodes):
+    arc = arc_values(pair)
+    total = sum(pair.values())
+    total_arc = sum(arc.values())
+    vn = vn_profile(pair)
+    title, sub, note = headline(year, pair, total, vn)
+
+    title = R.wrap_pt(title, R.FONT_SIZES["title"], TEXT_W, ratio=0.545)
+    sub = R.wrap_pt(sub, R.FONT_SIZES["subtitle"], TEXT_W)
+    note = R.wrap_pt(note, R.FONT_SIZES["annotation"], TEXT_W)
+
+    m_t = (TEXT_PAD + R.n_lines(title) * R.FONT_SIZES["title"] * LINE_H
+           + R.n_lines(sub) * R.FONT_SIZES["subtitle"] * LINE_H + 8.0)
+    m_b = (TEXT_PAD + R.n_lines(note) * R.FONT_SIZES["annotation"] * LINE_H
+           + R.FONT_SIZES["footnote"] * LINE_H + 10.0)
+    plot_w = CANVAS_PT - 2 * MARGIN_X
+    plot_h = CANVAS_PT - m_t - m_b
+    block_h = 2 * LABEL_FLOOR_PT * LINE_H
+    # Chừa chỗ cho hai nấc đẩy nhãn, mỗi nấc một dòng chữ.
+    label_room = block_h + LABEL_PAD + 2 * (LABEL_FLOOR_PT * LINE_H + 2.0)
+    r_out = min(plot_w, plot_h) / 2.0 - label_room
+    r_in = r_out - BAND_PT
+
+    angles = layout_angles(arc, total_arc)
+    sub_arcs = allocate(pair, arc, angles)
+
+    shapes, hov_x, hov_y, hov_t = [], [], [], []
+
+    # Dải: vẽ dải lớn trước để dải nhỏ không bị che; Việt Nam vẽ sau cùng.
+    rank = {b: i for i, b in enumerate(BLOC_ORDER)}
+    order = sorted(pair.items(), key=lambda kv: (FOCUS in kv[0], kv[1]))
+    for (a, b), v in order:
+        if (a, (a, b), 0) not in sub_arcs:
+            continue
+        if a == b:
+            a0, a1 = sub_arcs[(a, (a, b), 0)]
+            b0, b1 = sub_arcs[(a, (a, b), 1)]
+        else:
+            a0, a1 = sub_arcs[(a, (a, b), 0)]
+            b0, b1 = sub_arcs[(b, (a, b), 0)]
+        focus = FOCUS in (a, b)
         shapes.append(dict(
-            type="path", path=path_of(pts),
-            fillcolor="#2A2A2A" if is_vn else "#B8B8B8",
-            line=dict(color="#FFFFFF", width=1), layer="above",
-        ))
-        mid = (a0 + a1) / 2
-        deg = math.degrees(mid) % 360
-        ann.append(dict(
-            x=1.045 * math.cos(mid), y=1.045 * math.sin(mid),
-            text=("<b>%s</b>" % R.BLOC_NAME_VI[b]) if is_vn else R.BLOC_NAME_VI[b],
-            showarrow=False,
-            xanchor="left" if 90 > deg or deg > 270 else "right",
-            font=dict(size=R.FONT_SIZES["legend"],
-                      color="#000000" if is_vn else "#444444"),
-        ))
+            type="path", path=ribbon_path(r_in, a0, a1, b0, b1),
+            fillcolor=RIB_FOCUS if focus else RIB_FILL,
+            opacity=0.80 if focus else 0.42,
+            line=dict(color=R.HIGHLIGHT_STROKE if focus else "rgba(0,0,0,0)",
+                      width=0.6 if focus else 0),
+            layer="below" if not focus else "above"))
+        mx, my = pol(r_in * 0.42, (a0 + a1) / 2.0)
+        nx, ny = pol(r_in * 0.42, (b0 + b1) / 2.0)
+        hov_x.append((mx + nx) / 2.0)
+        hov_y.append((my + ny) / 2.0)
+        same = " (nội khối)" if a == b else ""
+        hov_t.append("%s ↔ %s%s<br>%s · %s tổng"
+                     % (BLOC_VI[a], BLOC_VI[b], same, R.fmt_usd(v, 1),
+                        R.fmt_pct(v / total * 100.0, 1)))
 
-    vn_out = sum(v for (a, b), v in m.items()
-                 if a == "viet_nam" and b != "viet_nam")
-    vn_total = size.get("viet_nam", 0.0)
+    # Cung + nhãn
+    ann, placed = [], []
+    for bl in BLOC_ORDER:
+        d0, d1 = angles[bl]
+        focus = bl == FOCUS
+        shapes.append(dict(
+            type="path", path=band_path(r_in, r_out, d0, d1),
+            fillcolor=ARC_FOCUS if focus else ARC_FILL,
+            line=dict(color=R.HIGHLIGHT_STROKE if focus else ARC_EDGE,
+                      width=1.5 if focus else 0.6),
+            layer="above"))
+        mid = (d0 + d1) / 2.0
+        name = BLOC_VI[bl]
+        line1 = name
+        line2 = "%s nước · %s" % (R.fmt_vn(len(members.get(bl, ())), 0),
+                                  R.fmt_pct(arc[bl] / total_arc * 100.0, 1))
+        cosm = math.cos(math.radians(mid))
+        sinm = math.sin(math.radians(mid))
+        xa = "left" if cosm > 0.15 else ("right" if cosm < -0.15 else "center")
+        ya = "bottom" if sinm > 0 else "top"
+
+        # Nhãn nào đè nhãn đã đặt thì đẩy ra xa tâm một nấc và nối lại bằng nét
+        # dẫn. Hai cung mỏng cạnh nhau ở đáy (Châu Phi 0,8% và Châu Đại Dương
+        # 1,9%) chắc chắn đè nhau nếu để nguyên bán kính. Nhãn đã bị đẩy thì
+        # rút còn MỘT dòng, nên mỗi nấc chỉ tốn nửa chỗ và hai nấc vẫn nằm
+        # trong phần lề đã chừa — đẩy mà vẫn hai dòng thì nhãn tụt xuống đè
+        # khối chú thích dưới chân hình.
+        step = LABEL_FLOOR_PT * LINE_H + 2.0
+        for bump in (0, 1, 2):
+            one = bump > 0
+            txt = ("%s · %s" % (line1, line2)) if one else None
+            w = ((len(txt) if one else max(len(line1), len(line2)))
+                 * LABEL_FLOOR_PT * 0.52)
+            h = (1 if one else 2) * LABEL_FLOOR_PT * LINE_H
+            lx, ly = pol(r_out + LABEL_PAD + bump * step, mid)
+            x0 = lx if xa == "left" else (lx - w if xa == "right" else lx - w / 2)
+            y0 = ly if ya == "bottom" else ly - h
+            box = (x0, y0, x0 + w, y0 + h)
+            if not any(box[0] < p[2] and p[0] < box[2]
+                       and box[1] < p[3] and p[1] < box[3] for p in placed):
+                break
+        placed.append(box)
+        body = txt if bump else ("%s<br>%s" % (line1, line2))
+        if bump:
+            ax, ay = pol(r_out + 1.0, mid)
+            bx, by = pol(r_out + LABEL_PAD + bump * step - 1.0, mid)
+            shapes.append(dict(type="line", x0=ax, y0=ay, x1=bx, y1=by,
+                               line=dict(color="#9A9A9A", width=0.5),
+                               layer="below"))
+        if focus:
+            body = body.replace(line1, "<b>%s</b>" % line1, 1)
+        ann.append(dict(
+            x=lx, y=ly, xref="x", yref="y", showarrow=False,
+            xanchor=xa, yanchor=ya, align=xa if xa != "center" else "center",
+            text=body,
+            font=dict(size=LABEL_FLOOR_PT,
+                      color="#000000" if focus else TEXT_DIM)))
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(
-        x=hover_x, y=hover_y, mode="markers",
-        marker=dict(size=16, color="rgba(0,0,0,0)"),
-        hovertemplate=hover_t, showlegend=False,
-    ))
+        x=hov_x, y=hov_y, mode="markers", hoverinfo="text", hovertext=hov_t,
+        marker=dict(size=9, color="rgba(0,0,0,0)"), showlegend=False))
+    fig.update_layout(
+        shapes=shapes, annotations=ann,
+        font=dict(family=", ".join(R.FONT_STACK),
+                  size=R.FONT_SIZES["annotation"]),
+        separators=",.",
+        margin=dict(l=MARGIN_X, r=MARGIN_X, t=m_t, b=m_b),
+        paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF",
+        hovermode="closest", showlegend=False)
+    fig.update_xaxes(visible=False, range=[-plot_w / 2.0, plot_w / 2.0],
+                     constrain="domain")
+    fig.update_yaxes(visible=False, range=[-plot_h / 2.0, plot_h / 2.0],
+                     scaleanchor="x", scaleratio=1, constrain="domain")
 
-    top2 = sorted(((b, v) for (a, b), v in m.items()
-                   if a == "viet_nam" and b != "viet_nam"),
-                  key=lambda kv: -kv[1])[:2]
-    share2 = sum(v for _, v in top2) / vn_out * 100 if vn_out else 0
+    # Tiêu đề đặt tay như T16: layout.title tự đo chỗ và cắt mất dòng đầu.
+    def block(txt, y_from_top, size, color=None):
+        fig.add_annotation(
+            text=txt, showarrow=False, xref="paper", yref="paper",
+            x=0, y=1 + (m_t - y_from_top) / plot_h,
+            xshift=-(MARGIN_X - TEXT_PAD),
+            xanchor="left", yanchor="top", align="left",
+            font=dict(size=size, color=color))
 
-    lay = GC.base_layout(
-        title="%s hàng Việt Nam bán ra đi về %s và %s"
-              % (R.fmt_pct(share2), R.BLOC_NAME_VI[top2[0][0]],
-                 R.BLOC_NAME_VI[top2[1][0]]),
-        subtitle="Luồng thương mại giữa %d khối, năm %d. Bề rộng dải = giá trị "
-                 "hai chiều. Dải có Việt Nam tô đậm, dải còn lại xám nhạt. "
-                 "Việt Nam tách riêng khỏi Đông Nam Á vì cả bài nói về Việt Nam."
-                 % (len(blocs), args.year),
-        note="Nguồn: Atlas of Economic Complexity (Harvard Growth Lab), năm %d. "
-             "Hình này dùng TOÀN BỘ %s xuất khẩu, KHÔNG lọc ngưỡng như T15 và "
-             "T16 — gộp 231 nước thành %d khối đã đủ làm hình đọc được. "
-             "Dải nhỏ hơn %s tổng bị bỏ để vòng tròn không đầy sợi chỉ."
-             % (args.year, R.fmt_usd(total), len(blocs),
-                R.fmt_pct(MIN_SHARE * 100, 2)),
-        shapes=shapes,
-        xaxis=dict(visible=False, range=[-1.42, 1.42]),
-        yaxis=dict(visible=False, range=[-1.16, 1.16],
-                   scaleanchor="x", scaleratio=1),
-        margin=dict(t=108, l=10, r=10, b=58),
-        showlegend=False,
-    )
-    lay["annotations"] = ann + list(lay["annotations"])
-    fig.update_layout(**lay)
+    block(title, TEXT_PAD, R.FONT_SIZES["title"])
+    block(sub, TEXT_PAD + R.n_lines(title) * R.FONT_SIZES["title"] * LINE_H,
+          R.FONT_SIZES["subtitle"], TEXT_DIM)
 
-    GC.save(fig, "chord_%d" % args.year, width=1250, height=1150, log=log)
-    log("  %d dải được vẽ" % drawn)
+    def bottom(txt, y_from_plot, size, color):
+        fig.add_annotation(
+            text=txt, showarrow=False, xref="paper", yref="paper",
+            x=0, y=-(y_from_plot / plot_h), xshift=-(MARGIN_X - TEXT_PAD),
+            xanchor="left", yanchor="top", align="left",
+            font=dict(size=size, color=color))
 
-    # --- Bằng chứng cho tiêu đề -------------------------------------------
-    log("")
-    log("Việt Nam xuất đi đâu, năm %d (cơ sở của tiêu đề):" % args.year)
-    rows = sorted(((b, v) for (a, b), v in m.items()
-                   if a == "viet_nam" and b != "viet_nam"), key=lambda kv: -kv[1])
-    cum = 0.0
-    for b, v in rows:
-        cum += v
-        log("  %-22s %14s  %6s   (cộng dồn %s)"
-            % (R.BLOC_NAME_VI[b], R.fmt_usd(v), R.fmt_pct(v / vn_out * 100),
-               R.fmt_pct(cum / vn_out * 100)))
-    if len(rows) >= 2:
-        two = rows[0][1] + rows[1][1]
-        log("")
-        log("  -> %s + %s = %s tổng xuất khẩu của Việt Nam."
-            % (R.BLOC_NAME_VI[rows[0][0]], R.BLOC_NAME_VI[rows[1][0]],
-               R.fmt_pct(two / vn_out * 100)))
-    log("")
-    log("  Việt Nam: xuất %s = %s tổng xuất khẩu thế giới (%s)."
-        % (R.fmt_usd(vn_out), R.fmt_pct(vn_out / total * 100),
-           R.fmt_usd(total)))
-    log("  Thương mại hai chiều của Việt Nam (xuất + nhập): %s."
-        % R.fmt_usd(vn_total))
+    bottom(note, 10.0, R.FONT_SIZES["annotation"], TEXT_DIM)
+    bottom(SOURCE_TEXT,
+           10.0 + R.n_lines(note) * R.FONT_SIZES["annotation"] * LINE_H,
+           R.FONT_SIZES["footnote"], "#777777")
+    return fig, arc, total, total_arc, vn
+
+
+def save(fig, name):
+    os.makedirs(OUTDIR, exist_ok=True)
+    html = os.path.join(OUTDIR, name + ".html")
+    fig.write_html(html, include_plotlyjs="cdn", config={"displayModeBar": False})
+    print("  %s" % html)
+    try:
+        png = os.path.join(OUTDIR, name + ".png")
+        fig.write_image(png, width=int(round(CANVAS_PT)),
+                        height=int(round(CANVAS_PT)),
+                        scale=(R.FIG_WIDTH_FULL * R.FIG_DPI_PRINT)
+                              / round(CANVAS_PT))
+        print("  %s" % png)
+    except Exception as exc:
+        print("  (không xuất được PNG: %s — bản .html vẫn dùng được)" % exc)
+
+
+# ---------------------------------------------------------------------------
+# Khối kiểm chứng
+# ---------------------------------------------------------------------------
+def report(year, flows, pair, members, unassigned, arc, total, total_arc, vn,
+           nodes):
+    print("\n" + "=" * 70)
+    print("KIỂM CHỨNG — chord khối và vùng, năm %d" % year)
+    print("=" * 70)
+    n_country = len(set([s for s, _, _ in flows] + [t for _, t, _ in flows]))
+    print("  Đồ thị đã lọc: %s nước, %s luồng có hướng, tổng %s"
+          % (R.fmt_vn(n_country, 0), R.fmt_vn(len(flows), 0),
+             R.fmt_usd(total, 2)))
+    print("  Gộp hai chiều (B13): %s luồng → %s cặp khối"
+          % (R.fmt_vn(len(flows), 0), R.fmt_vn(len(pair), 0)))
+
+    print("\n  Mỗi nước thuộc đúng một khối?")
+    assigned = sum(len(v) for v in members.values())
+    overlap = []
+    for i, a in enumerate(BLOC_ORDER):
+        for b in BLOC_ORDER[i + 1:]:
+            both = members.get(a, set()) & members.get(b, set())
+            if both:
+                overlap.append((a, b, sorted(both)))
+    print("    %s nước trong đồ thị, %s nước đã gán, %s nước chưa gán, "
+          "%s khối chồng nhau"
+          % (R.fmt_vn(n_country, 0), R.fmt_vn(assigned, 0),
+             R.fmt_vn(len(unassigned), 0), R.fmt_vn(len(overlap), 0)))
+    if unassigned:
+        print("    CHƯA GÁN: %s" % ", ".join(sorted(unassigned)))
+    for a, b, both in overlap:
+        print("    CHỒNG: %s ∩ %s = %s" % (a, b, ", ".join(both)))
+
+    print("\n  %-18s %6s  %14s  %7s  %7s"
+          % ("Khối", "nước", "giá trị", "% cung", "% tổng"))
+    for bl in BLOC_ORDER:
+        print("  %-18s %6s  %14s  %7s  %7s"
+              % (BLOC_VI[bl], R.fmt_vn(len(members.get(bl, ())), 0),
+                 R.fmt_usd(arc[bl], 1),
+                 R.fmt_pct(arc[bl] / total_arc * 100.0, 1),
+                 R.fmt_pct(arc[bl] / (2 * total) * 100.0, 1)))
+
+    inside = sum(v for (a, b), v in pair.items() if a == b)
+    print("\n  Nội khối %s / %s = %s giá trị"
+          % (R.fmt_usd(inside, 1), R.fmt_usd(total, 1),
+             R.fmt_pct(inside / total * 100.0, 1)))
+    print("  Tổng mọi dải %s — khớp tổng luồng vượt ngưỡng %s, lệch %s USD"
+          % (R.fmt_usd(sum(pair.values()), 2), R.fmt_usd(total, 2),
+             R.fmt_vn(sum(pair.values()) - total, 0)))
+
+    print("\n  %s nối với %s khối:" % (BLOC_VI[FOCUS], len(vn["by_bloc"])))
+    for v, b in sorted(((v, b) for b, v in vn["by_bloc"].items()), reverse=True):
+        print("    %-18s %12s   %7s của Việt Nam"
+              % (BLOC_VI[b], R.fmt_usd(v, 1),
+                 R.fmt_pct(v / vn["total"] * 100.0, 1)))
+    out_v = sum(v for s, t, v in flows if s == FOCUS)
+    in_v = sum(v for s, t, v in flows if t == FOCUS)
+    print("    Chiều (không vẽ ở đây, để dành T19): xuất %s · nhập %s"
+          % (R.fmt_usd(out_v, 1), R.fmt_usd(in_v, 1)))
+    big = sorted(((v, s, t) for s, t, v in flows
+                  if FOCUS in (s, t)), reverse=True)[:3]
+    for v, s, t in big:
+        print("      %s → %s  %s" % (nodes[s][0], nodes[t][0], R.fmt_usd(v, 1)))
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--year", type=int, default=R.REFERENCE_YEAR)
+    args = ap.parse_args()
+
+    nodes = load_nodes()
+    flows = load_flows(args.year)
+    if not flows:
+        sys.exit("Không có luồng vượt ngưỡng nào năm %d." % args.year)
+    pair, members, unassigned = fold(flows, nodes)
+
+    fig, arc, total, total_arc, vn = build(args.year, pair, members, nodes)
+    print("Đã vẽ:")
+    save(fig, "chord_bloc_%d" % args.year)
+    report(args.year, flows, pair, members, unassigned, arc, total, total_arc,
+           vn, nodes)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

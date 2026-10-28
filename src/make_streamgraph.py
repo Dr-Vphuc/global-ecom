@@ -1,248 +1,299 @@
-"""Streamgraph cơ cấu xuất khẩu Việt Nam theo 10 ngành, 1995–2023 (T21).
+# -*- coding: utf-8 -*-
+"""Dòng chảy cơ cấu xuất khẩu Việt Nam 1995–2023, 10 ngành (T21).
 
-Streamgraph là biểu đồ vùng chồng có đường nền ĐỐI XỨNG quanh trục giữa thay vì
-nằm trên trục 0. Đổi lấy gì và được gì:
+Hình này trả lời "Việt Nam BÁN GÌ, và cái đó đổi thế nào trong 28 năm". Nó là
+nhịp mở của mạch chuyện: rổ hàng đã được xây lại gần như từ đầu, và chính chỗ
+xây lại ấy dẫn tới đề xuất ở T31.
 
-    mất   — không đọc được giá trị tuyệt đối của một ngành ở một năm, vì không
-            có trục gốc chung để đo lên.
-    được  — thấy rõ HÌNH DẠNG của từng dải qua thời gian, và thấy được tổng
-            thể phình ra, vì không ngành nào bị ép nằm sát trục đáy và chịu
-            méo hơn các ngành khác.
+Vì sao KHÔNG vẽ streamgraph đường nền lượn theo kiểu ThemeRiver
+---------------------------------------------------------------
+Đã thử và bỏ, vì một lý do đo được chứ không phải vì thẩm mỹ: tổng xuất khẩu
+1995 là 5,1 tỷ USD còn 2023 là 385,5 tỷ, gấp **75 lần**. Trên bất kỳ trục tuyến
+tính nào — đường nền lượn hay không — bề dày năm 1995 chỉ còn khoảng 1,3% chiều
+cao khung, tức mỏng hơn một nét bút. Cơ cấu của đầu kỳ, thứ mà hình này sinh ra
+để kể, sẽ không nhìn thấy gì cả.
 
-Nên hình này để trả lời "ngành nào lớn lên, ngành nào teo đi", KHÔNG để tra
-"năm 2010 điện tử bao nhiêu tỷ". Ai cần con số đó thì tra treemap ở T12 hoặc
-bảng in ra cuối script này.
+Nên chia làm hai tầng, mỗi tầng trả lời đúng một câu:
 
-Hai bản được xuất ra, và nên dùng cả hai
------------------------------------------
-    streamgraph_vnm_tuyet_doi.*  — bề dày = tỷ USD. Thấy quy mô phình lên.
-    streamgraph_vnm_ty_trong.*   — chuẩn hóa về 100% mỗi năm. Thấy cơ cấu
-                                    chuyển dịch, không bị quy mô át đi.
+* **Tầng trên** — tổng xuất khẩu theo giá trị tuyệt đối. Trả lời "lớn lên bao
+  nhiêu", và chỉ cần một dải mỏng là đủ.
+* **Tầng dưới** — cùng dữ liệu nhưng chuẩn hóa về 100%. Trả lời "đổi cơ cấu thế
+  nào", và vì đã bỏ quy mô đi nên năm 1995 đọc được ngang năm 2023.
 
-Bản tỷ trọng mới là bản trả lời đúng câu hỏi của đồ án. Ở bản tuyệt đối, mọi
-ngành đều phình to nên mắt đọc ra "cái gì cũng tăng" — đúng nhưng vô nghĩa, vì
-tổng tăng 75 lần. Chuyển dịch cơ cấu chỉ hiện ra khi bỏ quy mô đi.
+Mất gì khi tách: không đọc được trực tiếp giá trị tuyệt đối của từng ngành. Đổi
+lại là thứ quan trọng hơn ở đây — hai câu hỏi không còn giẫm lên nhau.
+
+Nhãn ngành dán thẳng lên dải, không dùng chú giải: mắt khỏi phải nhảy đi nhảy
+lại giữa dải và bảng màu. Dải nào mỏng quá không dán được thì kể tên ở ghi chú.
 
 Chạy
 ----
     python src/make_streamgraph.py
-    python src/make_streamgraph.py --country THA
+    python src/make_streamgraph.py --from-year 2005
 """
 
-from __future__ import annotations
+from __future__ import print_function
 
 import argparse
-import csv
 import os
 import sys
 
+import pandas as pd
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-import graph_common as GC  # noqa: E402
 import reference_data as R  # noqa: E402
-from make_hierarchy_charts import load_tree, sector_index  # noqa: E402
 
-try:
-    import plotly.graph_objects as go
-except ImportError:
-    sys.exit("Thiếu plotly. Chạy: python -m pip install plotly kaleido")
+DATA = os.path.join("data", "processed")
+OUTDIR = "output"
+FOCUS = "VNM"
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ATLAS = os.path.join(ROOT, "data", "atlas")
+PT_PER_INCH = 72.0
+CANVAS_PT = R.FIG_WIDTH_FULL * PT_PER_INCH
+CANVAS_H = 390.0
+MARGIN_X = 10.0
+MARGIN_L = 34.0
+TEXT_PAD = 6.0
+LINE_H = 1.33
+LABEL_FLOOR_PT = 7.0
 
-FIRST_YEAR, LAST_YEAR = 1995, R.LAST_COMPLETE_YEAR
+LABEL_MIN_SHARE = 6.0     # dải mỏng hơn mức này thì không dán nhãn lên được
+GRID = "#E6E6E6"
+TEXT_DIM = "#555555"
 
-
-def log(msg):
-    print(msg)
-    sys.stdout.flush()
-
-
-def load_series(country, tree):
-    """{năm: {số ngành: giá trị}} cho một nước, đọc thẳng từ cp_year_hs2.csv."""
-    index = sector_index(tree)
-    path = os.path.join(ATLAS, "cp_year_hs2.csv")
-    if not os.path.exists(path):
-        sys.exit("Thiếu %s. Chạy: python src/download_atlas.py" % path)
-    acc = {}
-    with open(path, encoding="utf-8-sig") as fh:
-        for r in csv.DictReader(fh):
-            if r["country_iso3_code"] != country:
-                continue
-            y = int(r["year"])
-            if not (FIRST_YEAR <= y <= LAST_YEAR):
-                continue
-            try:
-                v = float(r["export_value"] or 0)
-            except ValueError:
-                continue
-            if v <= 0:
-                continue
-            hit = index.get(int(r["product_id"]))
-            if hit is None:
-                continue
-            acc.setdefault(y, {})[hit[1]] = acc.setdefault(y, {}).get(hit[1], 0.0) + v
-    return acc
+SOURCE_TEXT = ("Nguồn: Atlas of Economic Complexity (Harvard Growth Lab), "
+               "xuất khẩu theo nhóm HS92 gộp lên 10 ngành cấp 1.")
 
 
-def stream_bands(years, series, order, normalise):
-    """Tính mép dưới và mép trên của từng dải, nền đối xứng quanh trục giữa.
-
-    Đường nền "wiggle" của Byron & Wattenberg tối ưu cho độ gập ghềnh, nhưng ở
-    đây chỉ có 10 dải và 29 năm nên nền đối xứng đơn giản cho hình sạch hơn mà
-    không phải giải thích thêm một thuật toán nữa trong báo cáo.
-    """
-    lower, upper = {}, {}
-    for y in years:
-        vals = series.get(y, {})
-        total = sum(vals.values()) or 1.0
-        scale = 100.0 / total if normalise else 1.0
-        stacked = sum(vals.get(s, 0.0) for s in order) * scale
-        base = -stacked / 2.0
-        for s in order:
-            v = vals.get(s, 0.0) * scale
-            lower.setdefault(s, []).append(base)
-            base += v
-            upper.setdefault(s, []).append(base)
-    return lower, upper
+def load(from_year, to_year):
+    tree = pd.read_csv(os.path.join(DATA, "tree.csv"))
+    cp = pd.read_csv(os.path.join(DATA, "country_product.csv"))
+    cp = cp[(cp["country_iso3"] == FOCUS) & (cp["year"] >= from_year)
+            & (cp["year"] <= to_year)].copy()
+    cp["sector_id"] = cp["product_id"].map(
+        tree.set_index("product_id")["sector_id"])
+    wide = cp.pivot_table(index="year", columns="sector_id",
+                          values="export_value", aggfunc="sum").fillna(0.0)
+    wide = wide.sort_index()
+    return wide
 
 
-def build(years, series, normalise, country_vi):
-    # Ngành vẽ theo thứ tự ID, KHÔNG theo độ lớn: thứ tự phải giống nhau giữa
-    # hai bản và giống mọi hình khác của đồ án, nếu không người xem phải học
-    # lại vị trí dải ở mỗi hình.
-    order = sorted(R.SECTOR_PALETTE)
-    lower, upper = stream_bands(years, series, order, normalise)
+def biggest_moves(share):
+    """Ngành lên nhiều nhất và xuống nhiều nhất, tính bằng điểm phần trăm."""
+    d = share.iloc[-1] - share.iloc[0]
+    return int(d.idxmax()), float(d.max()), int(d.idxmin()), float(d.min())
 
-    fig = go.Figure()
-    for s in order:
-        name = R.SECTOR_NAME_VI[s]
-        color = R.SECTOR_PALETTE[s]
-        # Vẽ mỗi dải bằng một đa giác khép kín: đi hết mép trên rồi quay ngược
-        # theo mép dưới. Không dùng stackgroup của plotly vì nó chỉ chồng từ
-        # trục 0 lên, không làm được nền đối xứng.
-        xs = list(years) + list(reversed(years))
-        ys = upper[s] + list(reversed(lower[s]))
-        if normalise:
-            hov = ["<b>%s</b><br>%d: %s tổng xuất khẩu<extra></extra>"
-                   % (name, y, R.fmt_pct(upper[s][i] - lower[s][i]))
-                   for i, y in enumerate(years)]
+
+def headline(wide, share):
+    y0, y1 = int(share.index[0]), int(share.index[-1])
+    up, dup, dn, ddn = biggest_moves(share)
+    tot0, tot1 = float(wide.iloc[0].sum()), float(wide.iloc[-1].sum())
+    up_vi = R.SECTOR_NAME_VI.get(up, str(up))
+    dn_vi = R.SECTOR_NAME_VI.get(dn, str(dn))
+    title = ("Rổ hàng được xây lại: %s từ %s lên %s, %s từ %s xuống %s"
+             % (up_vi, R.fmt_pct(share.iloc[0][up]),
+                R.fmt_pct(share.iloc[-1][up]), dn_vi,
+                R.fmt_pct(share.iloc[0][dn]), R.fmt_pct(share.iloc[-1][dn])))
+    sub = ("Việt Nam %d–%d: tổng xuất khẩu %s → %s, gấp %s lần. Tầng trên là "
+           "quy mô, tầng dưới là cùng dữ liệu chuẩn hóa về 100%% — phải tách "
+           "ra vì ở thang tuyến tính, cơ cấu năm %d chỉ còn dày %s khung."
+           % (y0, y1, R.fmt_usd(tot0), R.fmt_usd(tot1),
+              R.fmt_vn(tot1 / tot0, 0), y0, R.fmt_pct(tot0 / tot1 * 100.0)))
+    return title, sub
+
+
+def build(wide, share, thin_names):
+    title, sub = headline(wide, share)
+    t_w = CANVAS_PT - MARGIN_L - MARGIN_X - 2 * TEXT_PAD
+    title_w = R.wrap_pt(title, R.FONT_SIZES["title"], t_w)
+    sub_w = R.wrap_pt(sub, R.FONT_SIZES["subtitle"], t_w)
+    note = ("Màu là ngành hàng, cùng bảng màu với mọi hình khác của đồ án. "
+            "Dải quá mỏng nên không dán được nhãn: %s. Tỷ trọng tính trên giá "
+            "trị xuất khẩu, không phải số mặt hàng." % thin_names)
+    note_w = R.wrap_pt(note, R.FONT_SIZES["annotation"], t_w)
+    src_w = R.wrap_pt(SOURCE_TEXT, R.FONT_SIZES["footnote"], t_w)
+
+    m_t = (TEXT_PAD + R.n_lines(title_w) * R.FONT_SIZES["title"] * LINE_H
+           + R.n_lines(sub_w) * R.FONT_SIZES["subtitle"] * LINE_H
+           + 2 * TEXT_PAD)
+    m_b = (22.0 + R.n_lines(note_w) * R.FONT_SIZES["annotation"] * LINE_H
+           + R.n_lines(src_w) * R.FONT_SIZES["footnote"] * LINE_H + TEXT_PAD)
+    plot_h = CANVAS_H - m_t - m_b
+
+    fig = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        row_heights=[0.24, 0.76], vertical_spacing=0.05)
+
+    years = [int(y) for y in wide.index]
+    total = (wide.sum(axis=1) / 1e9).tolist()
+    fig.add_trace(go.Scatter(
+        x=years, y=total, mode="lines", fill="tozeroy",
+        line=dict(color="#4A4A4A", width=1.0), fillcolor="#D9D9D9",
+        hovertemplate="%{x}<br>%{y:.1f} tỷ USD<extra></extra>",
+        showlegend=False), row=1, col=1)
+
+    # Thứ tự xếp chồng: ngành giảm mạnh nhất nằm dưới cùng, tăng mạnh nhất trên
+    # cùng. Nhờ vậy chỗ giao nhau của hai xu thế nằm giữa khung, đúng chỗ mắt
+    # nhìn vào đầu tiên, thay vì bị đẩy ra rìa.
+    order = (share.iloc[-1] - share.iloc[0]).sort_values().index.tolist()
+    for sid in order:
+        fig.add_trace(go.Scatter(
+            x=years, y=share[sid].tolist(), mode="lines",
+            stackgroup="one", line=dict(width=0.4, color="#FFFFFF"),
+            fillcolor=R.SECTOR_PALETTE[int(sid)],
+            name=R.SECTOR_NAME_VI.get(int(sid), str(sid)),
+            hovertemplate=("%{x}<br>" + R.SECTOR_NAME_VI.get(int(sid), str(sid))
+                           + " %{y:.1f}%<extra></extra>"),
+            showlegend=False), row=2, col=1)
+
+    # nhãn dán thẳng lên dải, ở năm dải đó dày nhất
+    cum = share[order].cumsum(axis=1)
+    for sid in order:
+        s = share[sid]
+        if s.max() < LABEL_MIN_SHARE:
+            continue
+        yr = s.idxmax()
+        mid = cum.loc[yr, sid] - s.loc[yr] / 2.0
+        # Dải dày nhất ở ngay mép khung thì nhãn căn giữa sẽ bị cắt mất nửa:
+        # "Nông sản, gỗ và giấy" dày nhất đúng năm 1995 nên chỉ còn "gỗ và giấy".
+        if int(yr) == years[0]:
+            xa = "left"
+        elif int(yr) == years[-1]:
+            xa = "right"
         else:
-            hov = ["<b>%s</b><br>%d: %s<extra></extra>"
-                   % (name, y, R.fmt_usd(upper[s][i] - lower[s][i]))
-                   for i, y in enumerate(years)]
-        fig.add_trace(go.Scatter(
-            x=xs, y=ys, fill="toself", mode="lines", name=name,
-            fillcolor=color, line=dict(color="#FFFFFF", width=0.7),
-            hoveron="fills", hoverinfo="text",
-            text=name, legendgroup=name,
-        ))
-        # Trace mỏng chạy giữa dải, chỉ để hover ra số theo từng năm — hoveron
-        # fills của plotly chỉ trả về MỘT nhãn cho cả vùng, không theo điểm.
-        mid = [(upper[s][i] + lower[s][i]) / 2 for i in range(len(years))]
-        fig.add_trace(go.Scatter(
-            x=list(years), y=mid, mode="lines", showlegend=False,
-            line=dict(color="rgba(0,0,0,0)", width=14),
-            hovertemplate=hov, legendgroup=name,
-        ))
+            xa = "center"
+        fig.add_annotation(
+            x=int(yr), y=mid, xref="x2", yref="y2",
+            text=R.SECTOR_NAME_VI.get(int(sid), str(sid)),
+            showarrow=False, xanchor=xa, yanchor="middle",
+            xshift=2 if xa == "left" else (-2 if xa == "right" else 0),
+            font=dict(size=LABEL_FLOOR_PT,
+                      color=R.SECTOR_TEXT_ON_FILL.get(int(sid), "#000000")))
+
+    tick_years = [y for y in R.MILESTONE_YEARS if y in years]
+    fig.update_xaxes(tickmode="array", tickvals=tick_years,
+                     ticktext=[str(y) for y in tick_years],
+                     tickfont=dict(size=R.FONT_SIZES["tick"]),
+                     gridcolor=GRID, zeroline=False, row=2, col=1)
+    fig.update_xaxes(showticklabels=False, gridcolor=GRID, row=1, col=1)
+    fig.update_yaxes(title=dict(text="tỷ USD",
+                                font=dict(size=R.FONT_SIZES["axis"])),
+                     tickfont=dict(size=R.FONT_SIZES["tick"]),
+                     gridcolor=GRID, zeroline=False, row=1, col=1)
+    fig.update_yaxes(title=dict(text="phần trăm rổ hàng",
+                                font=dict(size=R.FONT_SIZES["axis"])),
+                     range=[0, 100], tickmode="array",
+                     tickvals=[0, 25, 50, 75, 100],
+                     ticktext=[R.fmt_pct(v, 0) for v in (0, 25, 50, 75, 100)],
+                     tickfont=dict(size=R.FONT_SIZES["tick"]),
+                     gridcolor=GRID, zeroline=False, row=2, col=1)
+    fig.update_layout(
+        font=dict(family=", ".join(R.FONT_STACK),
+                  size=R.FONT_SIZES["annotation"]),
+        separators=",.",
+        margin=dict(l=MARGIN_L, r=MARGIN_X, t=m_t, b=m_b),
+        paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF",
+        hovermode="x unified", showlegend=False)
+
+    def block(txt, y_from_top, size, color=None):
+        fig.add_annotation(text=txt, showarrow=False, xref="paper",
+                           yref="paper", x=0,
+                           y=1 + (m_t - y_from_top) / plot_h,
+                           xshift=-(MARGIN_L - TEXT_PAD), xanchor="left",
+                           yanchor="top", align="left",
+                           font=dict(size=size, color=color))
+
+    block(title_w, TEXT_PAD, R.FONT_SIZES["title"])
+    block(sub_w, TEXT_PAD + R.n_lines(title_w) * R.FONT_SIZES["title"] * LINE_H,
+          R.FONT_SIZES["subtitle"], TEXT_DIM)
+
+    def bottom(txt, y_from_plot, size, color):
+        fig.add_annotation(text=txt, showarrow=False, xref="paper",
+                           yref="paper", x=0, y=-(y_from_plot / plot_h),
+                           xshift=-(MARGIN_L - TEXT_PAD), xanchor="left",
+                           yanchor="top", align="left",
+                           font=dict(size=size, color=color))
+
+    bottom(note_w, 22.0, R.FONT_SIZES["annotation"], TEXT_DIM)
+    bottom(src_w, 22.0 + R.n_lines(note_w) * R.FONT_SIZES["annotation"] * LINE_H,
+           R.FONT_SIZES["footnote"], "#777777")
     return fig
 
 
+def save(fig, name):
+    os.makedirs(OUTDIR, exist_ok=True)
+    html = os.path.join(OUTDIR, name + ".html")
+    fig.write_html(html, include_plotlyjs="cdn",
+                   config={"displayModeBar": False})
+    print("  %s" % html)
+    try:
+        png = os.path.join(OUTDIR, name + ".png")
+        fig.write_image(png, width=int(round(CANVAS_PT)),
+                        height=int(round(CANVAS_H)),
+                        scale=(R.FIG_WIDTH_FULL * R.FIG_DPI_PRINT)
+                              / round(CANVAS_PT))
+        print("  %s" % png)
+    except Exception as exc:
+        print("  (không xuất được PNG: %s)" % exc)
+
+
+def report(wide, share):
+    print("\n" + "=" * 70)
+    print("KIỂM CHỨNG — dòng chảy cơ cấu xuất khẩu Việt Nam")
+    print("=" * 70)
+    y0, y1 = int(share.index[0]), int(share.index[-1])
+    tot0, tot1 = float(wide.iloc[0].sum()), float(wide.iloc[-1].sum())
+    print("  %d–%d, %s năm liên tục, %s ngành cấp 1"
+          % (y0, y1, R.fmt_vn(len(share), 0), R.fmt_vn(share.shape[1], 0)))
+    print("  Tổng xuất khẩu %s → %s, gấp %s lần"
+          % (R.fmt_usd(tot0, 2), R.fmt_usd(tot1, 2),
+             R.fmt_vn(tot1 / tot0, 1)))
+    print("  Cơ cấu năm %d chiếm %s chiều cao nếu vẽ chung thang tuyến tính "
+          "— lý do tách hai tầng" % (y0, R.fmt_pct(tot0 / tot1 * 100.0)))
+
+    print("\n  Tỷ trọng theo ngành ở các năm mốc:")
+    cols = [y for y in R.MILESTONE_YEARS if y in share.index]
+    hdr = "    %-26s" % "ngành" + "".join("%9s" % y for y in cols) + "   đổi"
+    print(hdr)
+    for sid in (share.iloc[-1] - share.iloc[0]).sort_values(
+            ascending=False).index:
+        nm = R.SECTOR_NAME_VI.get(int(sid), str(sid))
+        row = "    %-26s" % nm[:26]
+        for y in cols:
+            row += "%9s" % R.fmt_pct(share.loc[y, sid])
+        d = share.iloc[-1][sid] - share.iloc[0][sid]
+        row += "  %+6.1f đ%%" % d
+        print(row)
+
+    bad = share.sum(axis=1)
+    print("\n  Mỗi năm tỷ trọng có cộng đủ 100%% không? lệch lớn nhất %s"
+          % R.fmt_vn(float((bad - 100.0).abs().max()), 6))
+    assert float((bad - 100.0).abs().max()) < 1e-6, "tỷ trọng không khớp 100%"
+    up, dup, dn, ddn = biggest_moves(share)
+    print("  Lên nhiều nhất: %s %+.1f điểm %%  ·  xuống nhiều nhất: %s %+.1f điểm %%"
+          % (R.SECTOR_NAME_VI.get(up, up), dup,
+             R.SECTOR_NAME_VI.get(dn, dn), ddn))
+    thin = [R.SECTOR_NAME_VI.get(int(s), str(s)) for s in share.columns
+            if share[s].max() < LABEL_MIN_SHARE]
+    print("  Dải quá mỏng không dán nhãn (%s): %s"
+          % (R.fmt_vn(len(thin), 0), ", ".join(thin) if thin else "không có"))
+    return thin
+
+
 def main():
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--country", default="VNM")
-    args = ap.parse_args()
-    iso = args.country.upper()
-    country_vi = R.COUNTRY_VI.get(iso, (iso,))[0]
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--from-year", type=int, default=1995)
+    ap.add_argument("--to-year", type=int, default=R.REFERENCE_YEAR)
+    a = ap.parse_args()
 
-    log("Đọc cây HS92...")
-    tree = load_tree()
-    log("Đọc xuất khẩu %s %d–%d..." % (iso, FIRST_YEAR, LAST_YEAR))
-    series = load_series(iso, tree)
-    years = sorted(series)
-    if not years:
-        sys.exit("Không có dữ liệu cho %s" % iso)
-    # Ghi rõ "mốc năm" chứ không ghi "năm": 1995–2023 có 29 MỐC dữ liệu nhưng
-    # chỉ 28 NĂM trôi qua. Tiêu đề biểu đồ nói về mức tăng giữa hai đầu nên
-    # dùng 28; dòng log này đếm số điểm dữ liệu nên là 29. Không ghi rõ thì
-    # hai con số trông như mâu thuẫn.
-    log("  %d mốc năm, %d–%d (tức %d năm trôi qua)"
-        % (len(years), years[0], years[-1], years[-1] - years[0]))
-
-    first, last = years[0], years[-1]
-    tot_first = sum(series[first].values())
-    tot_last = sum(series[last].values())
-
-    def share(y, s):
-        t = sum(series[y].values()) or 1.0
-        return series[y].get(s, 0.0) / t * 100
-
-    # Ngành chuyển dịch mạnh nhất — dùng cho tiêu đề, tính từ dữ liệu.
-    moves = sorted(R.SECTOR_PALETTE,
-                   key=lambda s: -(share(last, s) - share(first, s)))
-    up, down = moves[0], moves[-1]
-
-    for normalise, stem, tt, sub in [
-        (True, "streamgraph_%s_ty_trong" % iso.lower(),
-         "%s: %s thay %s làm ngành xuất khẩu chính"
-         % (country_vi, R.SECTOR_NAME_VI[up], R.SECTOR_NAME_VI[down].lower()),
-         "Tỷ trọng 10 ngành cấp 1 của hệ HS92 trong tổng xuất khẩu, mỗi năm "
-         "chuẩn hóa về 100%%. %s đi từ %s lên %s; %s đi từ %s xuống %s."
-         % (R.SECTOR_NAME_VI[up], R.fmt_pct(share(first, up)),
-            R.fmt_pct(share(last, up)), R.SECTOR_NAME_VI[down],
-            R.fmt_pct(share(first, down)), R.fmt_pct(share(last, down)))),
-        (False, "streamgraph_%s_tuyet_doi" % iso.lower(),
-         "%s: quy mô xuất khẩu tăng %s lần trong %d năm"
-         % (country_vi, R.fmt_vn(tot_last / tot_first if tot_first else 0),
-            last - first),
-         "Giá trị tuyệt đối, USD hiện hành. Bề dày tổng = tổng kim ngạch: %s "
-         "năm %d lên %s năm %d. Bản này cho thấy QUY MÔ; muốn thấy chuyển dịch "
-         "CƠ CẤU thì xem bản tỷ trọng."
-         % (R.fmt_usd(tot_first), first, R.fmt_usd(tot_last), last)),
-    ]:
-        fig = build(years, series, normalise, country_vi)
-        fig.update_layout(**GC.base_layout(
-            title=tt, subtitle=sub,
-            note="Nguồn: Atlas of Economic Complexity (Harvard Growth Lab), "
-                 "phân loại HS92 cấp 1. Nền ĐỐI XỨNG quanh trục giữa: trục dọc "
-                 "KHÔNG có gốc 0 nên chỉ đọc được bề dày của dải, không đọc "
-                 "được độ cao. Màu 10 ngành dùng chung với mọi hình khác của "
-                 "đồ án.",
-            xaxis=dict(title="", gridcolor="#EEEEEE", zeroline=False,
-                       dtick=5, range=[first, last]),
-            yaxis=dict(visible=False, zeroline=False, showgrid=False),
-            legend=dict(orientation="h", yanchor="top", y=-0.08,
-                        xanchor="left", x=0, font=dict(size=R.FONT_SIZES["footnote"]),
-                        traceorder="normal"),
-            margin=dict(t=108, l=16, r=16, b=116),
-            hovermode="closest",
-        ))
-        GC.save(fig, stem, width=1500, height=900, log=log)
-
-    # --- Bảng số, vì streamgraph cố ý không cho tra số --------------------
-    log("")
-    log("Tỷ trọng 10 ngành — tra số ở đây, vì streamgraph không tra được:")
-    log("  %-30s %8s %8s %9s" % ("ngành", str(first), str(last), "đổi"))
-    log("  " + "-" * 60)
-    for s in sorted(R.SECTOR_PALETTE):
-        a, b = share(first, s), share(last, s)
-        # Dau "+" phai ghep tay: fmt_vn khong co tuy chon hien dau duong, ma
-        # cot nay can dau de phan biet nganh len voi nganh xuong.
-        d = b - a
-        log("  %-30s %8s %8s %9s" % (R.SECTOR_NAME_VI[s], R.fmt_pct(a),
-                                     R.fmt_pct(b),
-                                     ("+" if d >= 0 else "") + R.fmt_vn(d)))
-    log("")
-    log("  Lên mạnh nhất  : %-28s +%s điểm %%"
-        % (R.SECTOR_NAME_VI[up], R.fmt_vn(share(last, up) - share(first, up))))
-    log("  Xuống mạnh nhất: %-28s %s điểm %%"
-        % (R.SECTOR_NAME_VI[down], R.fmt_vn(share(last, down) - share(first, down))))
-    log("")
-    log("  Tổng: %s (%d) -> %s (%d), tăng %s lần."
-        % (R.fmt_usd(tot_first), first, R.fmt_usd(tot_last), last,
-           R.fmt_vn(tot_last / tot_first if tot_first else 0)))
+    wide = load(a.from_year, a.to_year)
+    share = wide.div(wide.sum(axis=1), axis=0) * 100.0
+    thin = report(wide, share)
+    fig = build(wide, share, ", ".join(thin) if thin else "không có")
+    print("\nĐã dựng dòng chảy cơ cấu %d–%d:" % (a.from_year, a.to_year))
+    save(fig, "stream_sectors_%d_%d" % (a.from_year, a.to_year))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

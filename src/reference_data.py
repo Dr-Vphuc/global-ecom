@@ -389,6 +389,34 @@ SECTOR_NAME_VI = {
 SEQUENTIAL_SCALE = ["#FFFFE5", "#FEE391", "#FE9929", "#CC4C02", "#662506"]
 
 # ---------------------------------------------------------------------------
+# Màu cụm Louvain — T15, node-link.
+#
+# Quy tắc §3.1 của style guide: 10 màu ngành CHỈ để chỉ ngành hàng, không được
+# mượn sang chỉ cụm. Nên cụm có bảng riêng, và bảng riêng cũng phải qua đúng
+# bộ kiểm của T04. Đã đo bằng `src/check_palette.py`:
+#
+#   ΔE2000 nhỏ nhất trong bảng  24,7 mắt thường · 20,7 protan · 17,0 deutan
+#                               · 13,5 tritan      (ngưỡng 15 / 10)
+#   ΔE2000 tới màu ngành gần nhất  20,0            (ngưỡng 15)
+#
+# Khóa là THỨ HẠNG CỠ CỤM chứ không phải số hiệu Louvain: số hiệu là nhãn tùy
+# ý, chạy lại với hạt giống khác có thể hoán vị, còn "cụm đông nhất" thì không.
+# ---------------------------------------------------------------------------
+COMMUNITY_PALETTE = {
+    0: "#2166AC",   # cụm đông nhất
+    1: "#D55E00",   # cụm thứ hai
+    2: "#B2182B",   # cụm thứ ba
+}
+
+COMMUNITY_NAME_VI = {
+    0: "Cụm đông nhất",
+    1: "Cụm thứ hai",
+    2: "Cụm thứ ba",
+}
+
+COMMUNITY_COLOR_FALLBACK = "#999999"   # cụm thứ tư trở đi, nếu năm khác có
+
+# ---------------------------------------------------------------------------
 # Làm nổi Việt Nam — BẰNG HÌNH DẠNG, KHÔNG BẰNG MÀU.
 #
 # Đã thử thêm màu thứ 11 để nhấn Việt Nam. Không còn chỗ: mọi màu cam/đỏ đủ
@@ -664,111 +692,114 @@ HS2_NAME_VI = {
 }
 
 
+def wrap_pt(text, font_pt, width_pt, ratio=0.52):
+    """Ngắt dòng theo BỀ RỘNG THẬT tính bằng point, không theo số ký tự đoán mò.
+
+    `ratio` là bề rộng trung bình một ký tự so với cỡ chữ, đo xấp xỉ cho
+    Segoe UI / Arial. Khung hình rộng 453,6pt nên một dòng 13pt chỉ chứa
+    khoảng 67 ký tự — ngắt sai là tiêu đề tràn ra ngoài mép.
+
+    Dùng chung cho mọi hình đặt khung bằng point theo B16.
+    """
+    limit = max(8, int(width_pt / (font_pt * ratio)))
+    lines, cur = [], ""
+    for word in text.split(" "):
+        probe = (cur + " " + word).strip()
+        if len(probe) <= limit or not cur:
+            cur = probe
+        else:
+            lines.append(cur)
+            cur = word
+    if cur:
+        lines.append(cur)
+    return "<br>".join(lines)
+
+
+def n_lines(wrapped):
+    """Số dòng của một chuỗi đã qua `wrap_pt` — để tính lề trên/dưới."""
+    return wrapped.count("<br>") + 1
+
+
 # ---------------------------------------------------------------------------
-# Mã hóa CỘNG ĐỒNG trong các hình mạng lưới (T15, T16, T17).
+# Tên tiếng Việt cho các NHÓM HÀNG cấp 2 (HS2) hay xuất hiện trên hình.
 #
-# Cộng đồng KHÔNG được tô bằng màu. Lý do đo được, không phải thẩm mỹ: đã thử
-# tìm một bảng 3 màu đủ xa 10 màu ngành ở trên. Bảy bảng ứng viên (Paul Tol
-# high-contrast, Tol bright, Okabe–Ito và bốn biến thể) đều đạt khoảng cách nội
-# bộ rất tốt (ΔE 26–46 ở mắt thường) nhưng khi mô phỏng mù màu thì khoảng cách
-# tới màu ngành gần nhất tụt xuống ΔE 2,6–6,6 — tức là trùng với một màu ngành.
-# Bảng 10 ngành đã chiếm hết gam an toàn cho người mù màu; không còn chỗ. Đây
-# đúng là kết luận mà mục "Làm nổi Việt Nam" ở trên đã gặp khi tìm màu thứ 11.
+# `tree.csv` chỉ có tên tiếng Anh, nên trước T31 mọi nhãn nhóm hàng trên T12,
+# T13, T14 đều là tiếng Anh giữa một bài tiếng Việt. Bảng này phủ những nhóm
+# thật sự được dán nhãn — tức các nhóm lớn của rổ hàng Việt Nam — và `ten_nhom`
+# tự lùi về tên tiếng Anh cho phần đuôi, vốn chỉ là chấm nhỏ không có nhãn.
 #
-# Nên cộng đồng được mã hóa HAI LẦN, dư thừa có chủ ý:
-#   - độ sáng: ba nấc xám, ΔE nội bộ 20,1 / 36,5 / 61,0
-#   - hình dạng: ba ký hiệu điểm khác nhau
-#
-# Xám không có sắc độ nên mô phỏng mù màu KHÔNG làm nó đổi: cặp gần nhau nhất
-# vẫn là ΔE 20,1 với cả protan, deutan và tritan. Người mù màu hoàn toàn (đơn
-# sắc) vẫn đọc được hình này — điều mà không bảng màu nào làm nổi.
-#
-# ⚠️ Nấc sáng nhất #E8E8E8 chỉ cách màu ngành "Khác" #DDDDDD có ΔE 2,4. Không
-# sửa, vì (a) ngành "Khác" vốn được chọn xám nhạt để tự chìm xuống, và (b)
-# không hình nào trong đồ án vẽ ngành và cộng đồng cùng lúc — người xem không
-# bao giờ thấy hai thứ cạnh nhau để mà lẫn. Nhưng ai gộp hai thứ vào một hình
-# thì phải đọc dòng này trước.
+# Dịch theo nghĩa chương HS, không dịch từng chữ: "Apparatuses (optical,
+# medical, etc.)" là chương 90, gọi đúng là "thiết bị quang học, y tế".
 # ---------------------------------------------------------------------------
-COMMUNITY_FILL = {0: "#E8E8E8", 1: "#9A9A9A", 2: "#3A3A3A"}
-
-# Ký hiệu điểm cho plotly. Tròn / vuông / thoi — ba dáng phân biệt được cả khi
-# nút nhỏ 6px trên máy chiếu.
-COMMUNITY_SYMBOL = {0: "circle", 1: "square", 2: "diamond"}
-
-# Màu viền nút. Nút xám đậm cần viền sáng, nút xám nhạt cần viền tối, nếu không
-# mép nút biến mất vào nền.
-COMMUNITY_STROKE = {0: "#888888", 1: "#FFFFFF", 2: "#FFFFFF"}
-
-# Tên cụm được đặt theo NỘI DUNG tìm thấy, không phải theo số thứ tự Louvain
-# trả về. Số cụm do louvain() trong compute_metrics.py đánh lại theo kích thước
-# giảm dần, nên cụm 0 luôn là cụm đông nhất. Ai chạy lại với --seed khác phải
-# kiểm lại ba cái tên này còn đúng không.
-# Đã kiểm thành phần thật của từng cụm trên metrics.csv năm 2023 trước khi đặt
-# tên, vì một cái tên sai in trên biểu đồ là một tuyên bố sai:
-#   cụm 0: 41 nước — 29 châu Á, 5 châu Phi, 4 châu Mỹ, 2 châu Đại Dương, 1 Âu.
-#          Lớn nhất: CHN JPN KOR HKG TWN IND VNM SGP. Việt Nam nằm ở đây.
-#   cụm 1: 25 nước — 21 châu Âu. Lớn nhất: DEU FRA NLD ITA GBR BEL CHE ESP.
-#   cụm 2:  7 nước — 6 châu Mỹ. Lớn nhất: USA MEX CAN ISR COL PAN DOM.
-COMMUNITY_NAME_VI = {
-    0: "Khối châu Á do Trung Quốc dẫn đầu",
-    1: "Khối châu Âu",
-    2: "Khối Bắc Mỹ do Hoa Kỳ dẫn đầu",
+PRODUCT_NAME_VI = {
+    "Electrical machinery and equipment": "Máy điện và thiết bị điện",
+    "Industrial Machinery": "Máy móc công nghiệp",
+    "Footwear": "Giày dép",
+    "Apparel, not knit": "May mặc, không dệt kim",
+    "Apparel, knit": "May mặc, dệt kim",
+    "Furniture": "Nội thất",
+    "Apparatuses (optical, medical, etc.)": "Thiết bị quang học, y tế",
+    "Iron and steel": "Sắt thép",
+    "Articles of iron or steel": "Sản phẩm từ sắt thép",
+    "Plastics": "Nhựa",
+    "Fruits and nuts": "Trái cây và hạt",
+    "Fish": "Thủy sản",
+    "Rubber": "Cao su",
+    "Wood": "Gỗ",
+    "Vehicles": "Phương tiện vận tải",
+    "Coffee, tea and spices": "Cà phê, chè và gia vị",
+    "Cereals": "Ngũ cốc",
+    "Toys": "Đồ chơi và dụng cụ thể thao",
+    "Mineral fuels, oils and waxes": "Nhiên liệu khoáng",
+    "Articles of leather": "Sản phẩm từ da",
+    "Cotton": "Bông",
+    "Preparations of meat or fish": "Chế biến từ thịt và cá",
+    "Paper and paperboard": "Giấy và bìa",
+    "Aluminium": "Nhôm",
+    "Copper": "Đồng",
+    "Other made up textile articles": "Hàng dệt may khác",
+    "Salt, sulphur, lime, cement, etc.": "Muối, lưu huỳnh, xi măng",
+    "Preparations of vegetables, fruit, or nuts": "Chế biến rau quả",
+    "Inorganic chemicals": "Hóa chất vô cơ",
+    "Miscellaneous chemical products": "Hóa chất khác",
+    "Flours, starches and malts": "Bột, tinh bột và mạch nha",
+    "Other": "Chưa phân loại",
 }
 
-# Bản ngắn, dùng khi chỗ hẹp (chú giải trong hình, nhãn trục ma trận).
-COMMUNITY_SHORT_VI = {0: "Châu Á", 1: "Châu Âu", 2: "Bắc Mỹ"}
 
-# Màu cho dải ruy-băng và nền ô ma trận khi KHÔNG mã hóa cộng đồng: dùng
-# SEQUENTIAL_SCALE ở trên. Hằng số này chỉ để ghi lại rằng lựa chọn đó là có ý.
-MATRIX_EMPTY_CELL = "#FFFFFF"
+def ten_nhom(name):
+    """Tên tiếng Việt của một nhóm hàng cấp 2, lùi về tên gốc nếu chưa có."""
+    return PRODUCT_NAME_VI.get(name, name)
 
 
 # ---------------------------------------------------------------------------
-# Gom 23 vùng địa lý thành 8 KHỐI — dùng cho chord diagram (T17).
+# Xuất PNG ở KHUNG POINT — sửa lỗi đơn vị ghi ở B16.
 #
-# 23 vùng là quá nhiều cho một vòng chord: bốn vùng cuối (Polynesia, Micronesia,
-# Vùng cực, Melanesia) cộng lại chưa tới 0,1% thương mại thế giới nhưng vẫn
-# chiếm bốn cung và bốn nhãn. Gom lại còn 8 khối thì cung nhỏ nhất vẫn đọc được.
+# Các script đời đầu gọi `write_image(width=FIG_WIDTH_FULL * FIG_DPI_SCREEN)`,
+# tức khung rộng 6,30 × 200 = 1.260 đơn vị, rồi truyền thẳng FONT_SIZES vào.
+# Nhưng FONT_SIZES là POINT, còn khung lại đang đếm bằng PIXEL. Cỡ chữ khai báo
+# 14 in ra thật chỉ 14 / 1.260 × 6,30 × 72 = 5,04 pt — nhỏ hơn khai báo đúng
+# 200/72 = 2,78 lần. Dòng nguồn khai 7 pt in ra 2,52 pt, dưới sàn 7 pt của
+# style guide §7.
 #
-# Ranh giới gom theo địa lý thuần, KHÔNG theo khối kinh tế (EU, RCEP, CPTPP):
-# dùng khối kinh tế sẽ phải giải thích vì sao Anh nằm ngoài EU từ 2020, Việt Nam
-# ở trong cả RCEP lẫn CPTPP, và một nước có thể thuộc nhiều khối cùng lúc — tức
-# là không phân hoạch được. Địa lý thì phân hoạch được và không ai cãi.
+# Cách sửa: đặt khung bằng ĐÚNG số point của khổ hình, rồi để `scale` lo phần
+# độ phân giải. Khi ấy cỡ chữ khai báo bao nhiêu point thì in ra bấy nhiêu.
 # ---------------------------------------------------------------------------
-BLOC_OF_REGION = {
-    "East Asia": "dong_a",
-    "South-East Asia": "dong_nam_a",
-    "South Asia": "nam_tay_a", "West Asia": "nam_tay_a",
-    "Central Asia": "nam_tay_a",
-    "Northern Europe": "chau_au", "Western Europe": "chau_au",
-    "Eastern Europe": "chau_au", "Southern Europe": "chau_au",
-    "Northern America": "bac_my",
-    "Central America": "my_latinh", "South America": "my_latinh",
-    "Caribbean": "my_latinh",
-    "Northern Africa": "chau_phi", "Western Africa": "chau_phi",
-    "Middle Africa": "chau_phi", "Eastern Africa": "chau_phi",
-    "Southern Africa": "chau_phi",
-    "Australia and New Zealand": "chau_dai_duong",
-    "Melanesia": "chau_dai_duong", "Micronesia": "chau_dai_duong",
-    "Polynesia": "chau_dai_duong",
-    "Antarctica": "khac", "Other": "khac",
-}
+PT_PER_INCH = 72.0
+PX_PER_PT_CU = FIG_DPI_SCREEN / PT_PER_INCH   # 2,7778 — hệ số quy đổi khung cũ
 
-BLOC_NAME_VI = {
-    "viet_nam": "Việt Nam",
-    "dong_a": "Đông Á",
-    "dong_nam_a": "Đông Nam Á (trừ VN)",
-    "nam_tay_a": "Nam và Tây Á",
-    "chau_au": "Châu Âu",
-    "bac_my": "Bắc Mỹ",
-    "my_latinh": "Mỹ Latinh",
-    "chau_phi": "Châu Phi",
-    "chau_dai_duong": "Châu Đại Dương",
-    "khac": "Khác",
-}
 
-# Thứ tự quanh vòng chord. Việt Nam đặt ở ĐẦU để cung của nó bắt đầu đúng đỉnh
-# vòng tròn, và hai khối bạn hàng lớn nhất của Việt Nam (Đông Á, Bắc Mỹ) đặt
-# ngay hai bên để dải ruy-băng chính không phải vắt ngang cả hình.
-BLOC_ORDER = ["viet_nam", "dong_a", "dong_nam_a", "nam_tay_a", "chau_au",
-              "chau_phi", "my_latinh", "bac_my", "chau_dai_duong", "khac"]
+def khung_pt(inch):
+    """Số point của một bề ngang/dọc tính bằng inch."""
+    return int(round(inch * PT_PER_INCH))
+
+
+def xuat_png(fig, path, w_inch=None, h_inch=None, dpi=None):
+    """Ghi PNG sao cho 1 đơn vị bố cục = 1 point, in ra ở `dpi` chấm mỗi inch."""
+    w_inch = FIG_WIDTH_FULL if w_inch is None else w_inch
+    h_inch = FIG_HEIGHT_DEFAULT if h_inch is None else h_inch
+    dpi = FIG_DPI_PRINT if dpi is None else dpi
+    w_pt, h_pt = khung_pt(w_inch), khung_pt(h_inch)
+    fig.write_image(path, width=w_pt, height=h_pt,
+                    scale=(w_inch * dpi) / float(w_pt))
+    return w_pt, h_pt
