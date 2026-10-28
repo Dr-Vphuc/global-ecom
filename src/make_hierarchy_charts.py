@@ -267,6 +267,19 @@ def _layout(title, subtitle, h_inch=None):
     )
 
 
+def _phu_de(d, cach_doc):
+    """Phụ đề ghi tổng giá trị, phạm vi (năm đã ở tiêu đề) — rồi một câu cách đọc mã hóa.
+
+    Không ghi tên loại biểu đồ, và không ghi lời hướng dẫn tương tác: phụ đề
+    in cả lên bản PNG tĩnh trong báo cáo, nơi không có gì để bấm (T23).
+    """
+    n_nganh = sum(1 for pid in d["parents"] if not pid)
+    n_nhom = len(d["parents"]) - n_nganh
+    return ("Tổng %s xuất khẩu hàng hóa · %s ngành, %s nhóm HS2 có giá trị. %s"
+            % (R.fmt_usd(d["total"]), R.fmt_vn(n_nganh, 0),
+               R.fmt_vn(n_nhom, 0), cach_doc))
+
+
 def make_treemap(d, country_vi, year):
     fig = go.Figure(go.Treemap(
         ids=d["ids"], labels=d["labels"], parents=d["parents"], values=d["values"],
@@ -281,8 +294,7 @@ def make_treemap(d, country_vi, year):
     top = d["labels"][0]
     fig.update_layout(**_layout(
         "%s: %s chiếm phần lớn nhất trong rổ hàng xuất khẩu năm %d" % (country_vi, top, year),
-        "Treemap — bố cục chữ nhật lấp đầy không gian. Diện tích ô tỉ lệ với giá trị xuất khẩu. "
-        "Bấm vào một ngành để xem các nhóm hàng bên trong.",
+        _phu_de(d, "Diện tích ô tỉ lệ với giá trị xuất khẩu."),
     ))
     return fig
 
@@ -346,9 +358,8 @@ def make_sunburst(d, country_vi, year, h_inch):
     ))
     fig.update_layout(**_layout(
         "%s: cùng dữ liệu đó, nhìn theo cấu trúc phân cấp — năm %d" % (country_vi, year),
-        "Sunburst — bố cục xuyên tâm lấp đầy không gian. Vành trong là 10 ngành cấp 1, "
-        "vành ngoài là các nhóm HS2. Lát quá mỏng để chứa một dòng chữ 7 pt thì "
-        "bỏ nhãn, số liệu xem khi rê chuột. Bấm vào một vành để khoan sâu.",
+        _phu_de(d, "Vành trong là ngành, vành ngoài là nhóm HS2; lát quá mỏng "
+                "để chứa một dòng chữ 7 pt thì bỏ nhãn."),
         h_inch))
     return fig
 

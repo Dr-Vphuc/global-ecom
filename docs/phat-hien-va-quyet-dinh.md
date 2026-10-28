@@ -651,6 +651,53 @@ có thêm một chỗ tựa bằng số: nhóm RCA ≥ 1,5 chỉ 25% tăng tiế
 Lấy lại số: ba lệnh ở bảng trên · bảng nền so sánh ghép hai năm của
 `data/processed/country_product.csv` theo `product_id` — viết thành §7.2.
 
+### A18. Hai bản khai của một luồng trùng khít — Atlas không để lại số gương để kiểm
+
+`data/atlas/cc_year.csv` · mọi năm trong file; bảng chính xét luồng từ 1 tỷ USD trở lên
+
+Mỗi luồng A→B được khai **hai lần**: hải quan A khai xuất (`export_value` của dòng
+A, B) và hải quan B khai nhập (`import_value` của dòng B, A). Ở số liệu thô của
+Comtrade hai con số này lệch nhau một cách có hệ thống: nước nhập khai theo giá CIF,
+tức đã cộng cước vận tải và bảo hiểm, nên thường cao hơn vài phần trăm. Đó là phép
+kiểm độc lập duy nhất có sẵn trong dữ liệu.
+
+Mẫu số là **mọi luồng được xét**, kể cả luồng đối tác không khai gì hoặc khai nhập 0
+(đó là các lệch lớn nhất có thể có; script không loại chúng).
+
+| Năm | Ngưỡng luồng | Luồng xét | Đối tác không khai | Đối tác khai nhập 0 | Trùng khít (lệch < 0,01%) |
+|---|---|---|---|---|---|
+| 2023 | ≥ 1 tỷ USD | 2.093 | 0 | 0 | **2.093 (100,0%)** |
+| 2023 | mọi luồng | 27.534 | 0 | 0 | **27.534 (100,0%)** |
+| 2010 | ≥ 1 tỷ USD | 1.625 | 0 | 0 | **1.625 (100,0%)** |
+| 2010 | mọi luồng | 26.549 | 0 | 0 | **26.549 (100,0%)** |
+| 1995 | ≥ 1 tỷ USD | 679 | 0 | 0 | **679 (100,0%)** |
+| 1995 | mọi luồng | 18.405 | 0 | 0 | **18.405 (100,0%)** |
+
+`--all-years` cho cùng kết quả ở **cả 30 năm** trong file. Ngưỡng 1 tỷ USD chỉ để
+tránh nhiễu tỷ lệ của luồng nhỏ; `--min-flow 0` cho thấy việc lọc không che giấu gì.
+
+Trung vị, phân vị 10 và phân vị 90 của độ lệch đều là **0,0%**. Không có luồng nào
+mang khoảng cách FOB/CIF dương.
+
+**Tách hai tầng.** *Đo được:* hai bản khai của mọi luồng trùng khít, nên bộ dữ liệu
+**không cho tự đo sai số của nó**. *Giải thích* (không rút ra được từ dữ liệu): đối
+xứng tuyệt đối nhất quán với việc nhà phát hành hoà giải trước khi phát hành, nhưng
+cũng nhất quán với việc cột nhập được dựng từ cột xuất của đối tác; dữ liệu không
+phân biệt hai khả năng. Nhóm chưa đối chiếu với tài liệu phương pháp của Growth Lab,
+nên chưa khẳng định ai hoà giải.
+
+Câu đúng để nói: *"hai bản khai trong số liệu đối xứng tuyệt đối, nhất quán với việc
+đã được hoà giải trước khi phát hành; nhóm dùng số đó và không có nguồn độc lập để
+kiểm chéo"*, chứ không phải *"đã đối chiếu ba nguồn và chúng khớp nhau"*: Atlas, BACI
+và Comtrade là ba bản xử lý của cùng một gốc Comtrade. Nếu hội đồng hỏi "sao biết
+không phải dựng sẵn": nhóm không biết và không cần biết, vì B9 chỉ cần số liệu nhất
+quán và công khai nguồn gốc. Đây là phần làm được của T08 khi chưa có tài khoản CEPII
+và khóa API.
+
+Lấy lại số: `src/compare_mirror.py --year 2023` và `--year 1995` →
+`data/processed/mirror_gap_2023.csv`, `mirror_gap_1995.csv`; thêm `--min-flow 0` →
+hậu tố `_min0`; `--all-years` in bảng tóm tắt từng năm.
+
 ---
 
 ## B. Quyết định đã chốt
@@ -667,7 +714,7 @@ Ghi lại kèm **lý do**, để sau này không ai phải mở lại tranh lu�
 | B6 | Giữ `USP`, `ANS` trong `nodes.csv` | để tái lập được con số cũ; `USP` không có luồng nào suốt 30 năm **và** vắng mặt khỏi file ECI — hai bằng chứng độc lập |
 | B7 | `sector_color` hiện là **bảng màu tạm** | phải thay ở T04 bằng bảng an toàn với người mù màu |
 | B8 | **Không commit dữ liệu thô** | Nguyên tắc #5 của nhóm; chỉ 3 bảng tra cứu nhỏ được whitelist |
-| B9 | Dùng **Atlas**, không cần BACI | Atlas cũng hoà giải số liệu gương — ba file Atlas khớp nhau 0,000% |
+| B9 | Dùng **Atlas**, không cần BACI | hai bản khai gương trong Atlas đối xứng tuyệt đối (A18), nhất quán với việc đã hoà giải — và ba file Atlas khớp nhau 0,000% |
 | B10 | **Chuỗi thời gian dừng ở 2023** | `PROVISIONAL_YEARS = [2024]`; vẽ tiếp 2024 thì phải ghi rõ là số tạm — xem A6 |
 | B11 | **Bảng màu 10 ngành: thang Tol muted, đổi Khoáng sản sang nâu đậm** | bảng Tableau 10 dùng tạm trước đó có Nông sản và Phương tiện vận tải trùng hẳn nhau với người mù lục (ΔE = 0,7). Bảng mới: ΔE nhỏ nhất 16,1 mắt thường, 11,6 qua cả ba dạng mù màu — `src/check_palette.py`, chi tiết ở `style-guide.md` |
 | B12 | **Làm nổi Việt Nam bằng hình dạng, không bằng màu** | đã thử thêm màu thứ 11: mọi màu cam/đỏ khác 10 màu ngành ở mắt thường (ΔE 22–27) đều tụt xuống ΔE 4–8 khi mô phỏng mù màu. Viền đen 1,5px + nhãn đậm thay cho màu riêng |
