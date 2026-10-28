@@ -1,0 +1,38 @@
+# Đẩy trang demo lên GitHub Pages.
+#
+# Không có bước build: site/ được dựng sẵn bằng `python src/build_web.py` và
+# commit vào repo, vì máy của GitHub không có dữ liệu thô để chạy pipeline
+# (Nguyên tắc #5 — dữ liệu thô không vào git). Workflow chỉ đẩy thư mục đó lên.
+#
+# Bật một lần: Settings → Pages → Build and deployment → Source: GitHub Actions.
+name: Trang demo
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
