@@ -53,6 +53,12 @@ nên dùng Atlas là dùng một bản đã thống nhất. Trộn thêm BACI ha
 phải tự hoà giải lại, tức là thêm một nguồn sai số mà không thêm thông tin. Đây là
 quyết định **B9**.
 
+Việc hoà giải đó đo được chứ không chỉ là lời của nhà phát hành: với **2.093** luồng
+từ 1 tỷ USD trở lên năm 2023, số nước xuất khai và số nước nhập khai **trùng khít ở
+cả 2.093 luồng**, và năm 1995 cũng vậy (679/679). Hệ quả là bộ dữ liệu **không cho
+tự đo sai số của nó**: không còn bản khai thứ hai độc lập để so (`src/compare_mirror.py`,
+phát hiện **A18**).
+
 Bằng chứng cho lựa chọn đó: ba file Atlas nói trên đo **cùng một nền thương mại từ
 ba góc khác nhau** — theo cặp nước, theo nước × sản phẩm, theo nước. Tổng xuất khẩu
 thế giới 2024 tính từ ba file khớp nhau **0,000%** (`src/check_raw_data.py`, mục 8).

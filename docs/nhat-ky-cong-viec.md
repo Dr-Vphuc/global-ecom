@@ -8,7 +8,7 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A17), chốt điều gì (B1–B23) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A18), chốt điều gì (B1–B23) | `docs/phat-hien-va-quyet-dinh.md` |
 | **Mạch thuyết trình — năm nhịp, kết bằng đề xuất** | `docs/phat-hien-va-quyet-dinh.md` §E |
 | Các mục của báo cáo cuối đã viết | `.report/final/` — một file một mục (**B21**) |
 | Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
@@ -74,13 +74,13 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T04 | Hệ thống thị giác: màu, font, cỡ hình, nhãn | Xong | `docs/style-guide.md`, `src/check_palette.py` |
 | T05 | Dữ liệu giả đúng schema để vẽ trước | Xong | `src/make_mock.py` → `data/mock/` |
 
-### Giai đoạn 2 — Dữ liệu (5/6 Xong)
+### Giai đoạn 2 — Dữ liệu (6/6 Xong)
 
 | Mã | Việc | Trạng thái | Sản phẩm thật |
 |---|---|---|---|
 | T06 | Tải Atlas từ Harvard Dataverse | Xong | `src/download_atlas.py` (dữ liệu thô **không** vào git) |
 | T07 | Làm sạch, xuất file trung gian, gắn vùng địa lý | Xong | `src/build_intermediate.py` → `nodes/edges/tree/country_product/country_year.csv` |
-| T08 | Đối chiếu Atlas với BACI và Comtrade | **Chưa** | *cần tài khoản CEPII + khóa API Comtrade — chỉ thành viên nhóm làm được* |
+| T08 | Đối chiếu Atlas với BACI và Comtrade | Xong | **đổi hướng**: BACI/Comtrade cùng gốc với Atlas nên không phải phép kiểm độc lập (B9); thay bằng chênh lệch gương `src/compare_mirror.py` → `mirror_gap.csv` · 2.093/2.093 luồng trùng khít · phát hiện **A18**, một đoạn ở §2.2 báo cáo |
 | T09 | Thống kê mô tả mạng lưới theo từng năm | Xong | `network_stats.csv` (30 năm) + `src/make_degree_loglog.py` → `output/degree_loglog_2023.*` (và `_1995.*`) |
 | T10 | Chốt ngưỡng lọc cạnh, biện minh bằng số | Xong | `threshold_coverage.csv`, quy tắc ở README §"Quy tắc lọc cạnh" |
 | T11 | Kiểm chất lượng cây HS92 4 tầng | Xong | `src/check_tree.py` |
@@ -101,19 +101,19 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T21 | Streamgraph 10 ngành, 1995–2023 | Xong | `src/make_streamgraph.py` → `stream_sectors_1995_2023` · hai tầng, không dùng nền lượn |
 | **T31** | **Mặt phẳng quyết định RCA × PCI — hình mang ĐỀ XUẤT** | Xong | `src/make_decision_plane.py` → `decision_plane_{2015,2023}` · phát hiện **A14**, quyết định **B18** |
 
-### Giai đoạn 4 — Tích hợp (4/5) · Giai đoạn 5 — Hoàn thiện (0/4)
+### Giai đoạn 4 — Tích hợp (4/5) · Giai đoạn 5 — Hoàn thiện (1/4)
 
 | Mã | Việc | Trạng thái | Ghi chú đã có sẵn cho việc đó |
 |---|---|---|---|
 | T22 | Áp hệ thống thị giác lên toàn bộ biểu đồ 3 người | Xong | sửa lỗi đơn vị **B16** cho T09, T12–T15 và bố cục lại cả năm; `R.xuat_png` là chỗ duy nhất định nghĩa phép xuất (**B19**) |
-| T23 | Rà soát chéo, mỗi người review 2 hình của người khác | Chưa | checklist ở `style-guide.md` §7 |
+| T23 | Rà soát chéo, mỗi người review 2 hình của người khác | Đang làm | đã sửa lỗi đã biết: phụ đề treemap/sunburst giờ ghi tổng giá trị + phạm vi, bỏ lời *"Bấm vào…"*; còn phần review chéo — checklist ở `style-guide.md` §7 |
 | T24 | Kiểm khả năng đọc: nhãn, chú giải, tương phản, mù màu | Xong | `src/check_readability.py` — 5 phép kiểm, chạy được trong CI, hiện **ĐẠT** |
 | T25 | Viết phần Phương pháp luận | Xong | `.report/final/02-phuong-phap-luan.md` — 12 mục (T27 chuyển 5 mục sang phụ lục), mỗi số kèm lệnh lấy lại · phát hiện **A15** (đồ thị lọc đổi dấu cán cân), quyết định **B21**, **B22** |
 | T26 | Viết phần Phát hiện | Xong | 9 mục, T27 tách thành bốn hồi `03-quy-mo` … `06-y-nghia` · phát hiện **A16** (phép đếm bạn hàng không bền), sửa **A13** và **A4**, sửa tiêu đề T20 |
 | T27 | Ráp báo cáo cuối theo mạch 5 nhịp | Xong | 10 file mục trong `.report/final/` + `src/build_report.py` → `output/bao-cao-cuoi.{md,html}`; viết mới **Tóm tắt, Mở đầu, Quy mô, Đề xuất, Kết luận**; chốt số hiệu mục (**B23**); phát hiện **A17** |
 | T28 | Slide thuyết trình | Chưa | §0 sổ này là bản nháp lời mở |
-| T29 | Diễn tập + 10 câu phản biện | Chưa | §4 sổ này có **9** câu kèm câu trả lời |
-| T30 | Dọn repo, README tái lập được | Chưa | README đã có mục tải dữ liệu + chạy pipeline |
+| T29 | Diễn tập + 10 câu phản biện | Đang làm | §4 sổ này đủ **10** câu kèm câu trả lời (câu 10: ECI đo hàng đi qua hay ở lại); còn diễn tập thành tiếng |
+| T30 | Dọn repo, README tái lập được | Đang làm | đã chạy lại 18 lệnh vẽ/kiểm/ráp trong README từ `data/processed/`, cả 18 thoát 0; còn dọn bản ảnh trùng trong `.report/` |
 
 ---
 
@@ -156,6 +156,7 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 |---|---|---|
 | Quy mô mạng | 231 nút · 27.535 cạnh | `data/processed/network_stats.csv` dòng 2023 |
 | Mật độ · đối ứng | 0,5183 · 0,8368 | cùng file |
+| Hai bản khai của một luồng | **2.093/2.093** luồng ≥ 1 tỷ USD trùng khít → Atlas đã hoà giải, không tự đo được sai số | `src/compare_mirror.py` (A18) |
 | Gini giá trị cạnh | 0,9569 | cùng file |
 | Tổng xuất khẩu thế giới | 21,66 nghìn tỷ USD | cùng file, cột `total_export_value` |
 | Xuất khẩu Việt Nam | 385,5390 tỷ USD = **75,3×** năm 1995 | `country_year.csv`, lọc `VNM` |
@@ -206,9 +207,9 @@ Hai cái bẫy khi đọc bảng này:
 
 ---
 
-## 4. Chín câu chắc chắn bị hỏi — câu trả lời đã có sẵn
+## 4. Mười câu chắc chắn bị hỏi — câu trả lời đã có sẵn
 
-Đây là **vật liệu cho T29**, chưa phải T29: T29 cần 10 câu và phải diễn tập thành tiếng.
+Đây là **vật liệu cho T29**: đã đủ 10 câu, còn phải diễn tập thành tiếng.
 
 **1. Dữ liệu đến 2024 mà sao lấy 2023?**
 Vì bản Atlas 2024 còn tạm. Đếm số cạnh theo năm thì thấy ngay: 27.323 (2015) →
@@ -257,9 +258,13 @@ qua được phép kiểm đó, và phép kiểm nằm trong repo để ai muố
 → `style-guide.md` §2.
 
 **7. Số của Atlas có khớp với số Việt Nam công bố không?**
-**Chưa đối chiếu được** — đó là T08, cần tài khoản CEPII và khóa API Comtrade mà chỉ
-thành viên nhóm xin được. Phải nói thật trong phần Phương pháp luận, kèm các hạn chế
-D1–D5. Nói trước thì là giới hạn đã nhận; để hội đồng phát hiện thì là lỗ hổng.
+**Với một nguồn độc lập thì chưa đối chiếu được** — BACI và Comtrade cần tài khoản
+CEPII và khóa API, mà kể cả có thì cả hai cùng gốc Comtrade với Atlas, nên không
+phải phép kiểm độc lập (B9). Cái đã đo được là **chênh lệch gương** ngay trong Atlas:
+mỗi luồng A→B có hai bản khai, của hải quan A và của hải quan B. Với 2.093 luồng
+trên 1 tỷ USD năm 2023, hai bản khai **trùng khít ở cả 2.093 luồng** — Atlas đã hoà
+giải số liệu trước khi phát hành, nên bộ dữ liệu này không cho tự đo sai số của nó.
+Phải nói đúng chừng đó, kèm các hạn chế D1–D5. → A18, `src/compare_mirror.py`.
 
 **8. Việt Nam có đang mất bạn hàng không?**
 **Không, và chính nhóm đã bác câu đó của chính mình.** Đếm thô thì số bạn hàng rơi từ
@@ -283,6 +288,18 @@ tăng tiếp. Thứ ba — và phải nói thẳng — điều kiện mang sức
 (62,8% số nhóm tăng, so với 31,5% ở hàng dễ), chứ không phải dải RCA 0,5–1,5; còn
 lớp thoả trọn quy tắc thì chỉ 6 nhóm, quá nhỏ để kết luận thống kê. → A17, §7.2.
 
+**10. ECI của Việt Nam đo hàng đi qua hay hàng ở lại?**
+**Hàng đi qua — và báo cáo nói điều đó trước khi bị hỏi.** ECI, PCI và RCA đều tính
+trên **xuất khẩu gộp**: một nước lắp ráp điện thoại được cộng trọn độ phức tạp của
+chiếc điện thoại, bất kể giữ lại bao nhiêu giá trị. Đường ECI đi từ **−1,00 (#181/211,
+1995)** lên **+0,58 (#78/230, 2023)** một phần đến từ 115,4 tỷ USD điện tử. Sankey
+(T19) cho thấy dấu hiệu hành lang — mua của Trung Quốc 133,05 tỷ, bán cho Hoa Kỳ
+95,16 tỷ — nhưng phần nhạt trên thanh Việt Nam là *xuất trừ nhập*, **không** phải
+giá trị tăng thêm trong nước. Tách được phần ở lại thì cần bảng vào–ra (OECD TiVA,
+ADB MRIO), mà Atlas không có. Vì vậy câu kết luận đúng là: *chỉ số đo sự tiến bộ
+này có một điểm mù, và ta biết điểm mù nằm ở đâu* — không phải "Việt Nam chỉ lắp
+ráp", cũng không phải "Việt Nam đã làm chủ công nghệ". → A2, A12, D2, D5, §2.4.
+
 ---
 
 ## 5. Việc còn lại, theo thứ tự nên làm
@@ -298,14 +315,11 @@ không việc nào phải bắt đầu từ trang trắng.
    trình bày phần mình sở hữu (checklist nộp bài, mục 3).
 2. **T23 rà soát chéo** — mỗi người review 2 hình của người khác, checklist ở
    `style-guide.md` §7. Chạy `src/check_readability.py` trước cho đỡ mất công.
-   **Đã thấy một lỗi khi ráp:** phụ đề treemap in câu *"Bấm vào một nhóm để xem…"*
-   — một lời hướng dẫn tương tác nằm trên ảnh tĩnh trong báo cáo nộp. Sửa ở T23.
-3. **T29 diễn tập + 10 câu phản biện** — §4 sổ này đã có **9** câu kèm câu trả
-   lời (câu 9 là câu của A17: *"RCA dưới 1 thì lấy gì chắc nó vượt?"*). Cần thêm
-   **1 câu**, chọn trong hai chỗ yếu còn lại: *"sao không chọn điện tử?"* hoặc
-   *"ECI đo hàng đi qua hay hàng ở lại?"* — câu sau đã có sẵn câu trả lời ở D2/D5
-   và §2.4 của báo cáo.
-4. **T30 dọn repo**; **T08** chỉ làm được khi có tài khoản CEPII + Comtrade.
+   Lỗi đã thấy khi ráp (phụ đề treemap in lời hướng dẫn tương tác) **đã sửa**.
+3. **T29 diễn tập** — §4 đã đủ 10 câu kèm câu trả lời; còn nói thành tiếng, bấm giờ.
+4. **T30 dọn repo** — pipeline đã chạy lại trọn vẹn; còn dọn ảnh trùng trong
+   `.report/` (xem bên dưới), nhớ sửa đường dẫn trong `main.tex` / `index.html`
+   nếu xoá.
 
 **Chỗ yếu cần biết trước khi lên trình bày.** Đề xuất ở T31 dựa trên RCA và PCI
 — hai chỉ số **đo rổ hàng gộp**, nên chúng nói *cái gì đi qua Việt Nam*, chưa hẳn
@@ -324,7 +338,7 @@ Hai quyết định còn treo:
   T12–T13; chỉ đoạn cone-tree 3D là riêng, mà cone-tree không có trong danh sách 30
   việc. Cần hỏi nhóm giữ hay bỏ.
 
-Ba thứ **đã thấy, chưa xử lý** — ghi ra để khỏi quên, không phải việc gấp:
+Hai thứ **đã thấy, chưa xử lý** — ghi ra để khỏi quên, không phải việc gấp:
 
 - **`.report/` nặng vô ích.** Sáu file PNG của chương 9 nằm **ba bản giống nhau**
   (`overleaf/img/`, `midterm/images/`, `midterm/assets/images/`), cộng
@@ -333,9 +347,6 @@ Ba thứ **đã thấy, chưa xử lý** — ghi ra để khỏi quên, không p
   merge commit chứ không squash, nên commit đã gỡ file ra vẫn không xoá được blob.
   **Đã thống nhất để nguyên** — viết lại lịch sử một repo nhóm đang dùng thì lợi ít
   hại nhiều. Từ nay gộp bằng squash.
-- **Phụ đề treemap đang giải thích loại biểu đồ** thay vì ghi năm / đơn vị / phạm vi,
-  và có câu *"Bấm vào một ngành để xem..."* — một lời hướng dẫn tương tác in trên ảnh
-  tĩnh. Vài nhãn lá cũng tụt dưới 7pt khi thu về khổ A4. Việc của **T22 và T24**.
 
 ---
 

@@ -351,6 +351,7 @@ global-ecom/
 │   ├── make_streamgraph.py    # rổ hàng được xây lại 1995–2023 (T21)
 │   ├── make_decision_plane.py # RCA × PCI — hình mang ĐỀ XUẤT (T31)
 │   ├── check_readability.py   # kiểm cỡ chữ, khung, tương phản, mù màu (T24)
+│   ├── compare_mirror.py      # chênh lệch gương: hai bản khai có độc lập không (T08, A18)
 │   ├── probe_colour_space.py  # còn chỗ cho bảng màu mới không (B17)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
@@ -452,6 +453,7 @@ python src/make_streamgraph.py        # T21 dòng chảy cơ cấu 1995–2023
 python src/make_decision_plane.py     # T31 mặt phẳng quyết định (đề xuất)
 python src/make_decision_plane.py --year 2015 --since 2007   # thử lại quy tắc
 python src/check_readability.py       # T24 kiểm khả năng đọc, ĐẠT thì trả 0
+python src/compare_mirror.py          # T08 chênh lệch gương; thêm --year 1995 để đối chứng
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 python src/make_decision_plane.py --year 2007 --since 1999  # quy tắc chạy ở 2007

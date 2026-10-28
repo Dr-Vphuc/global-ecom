@@ -651,6 +651,33 @@ có thêm một chỗ tựa bằng số: nhóm RCA ≥ 1,5 chỉ 25% tăng tiế
 Lấy lại số: ba lệnh ở bảng trên · bảng nền so sánh ghép hai năm của
 `data/processed/country_product.csv` theo `product_id` — viết thành §7.2.
 
+### A18. Hai bản khai của một luồng trùng khít — Atlas không để lại số gương để kiểm
+
+`data/atlas/cc_year.csv` · luồng từ 1 tỷ USD trở lên
+
+Mỗi luồng A→B được khai **hai lần**: hải quan A khai xuất (`export_value` của dòng
+A, B) và hải quan B khai nhập (`import_value` của dòng B, A). Ở số liệu thô của
+Comtrade hai con số này lệch nhau một cách có hệ thống: nước nhập khai theo giá CIF,
+tức đã cộng cước vận tải và bảo hiểm, nên thường cao hơn vài phần trăm. Đó là phép
+kiểm độc lập duy nhất có sẵn trong dữ liệu.
+
+| Năm | Luồng ≥ 1 tỷ USD | Có số đối ứng | Trùng khít (lệch < 0,01%) |
+|---|---|---|---|
+| 2023 | 2.093 | 2.093 | **2.093 (100,0%)** |
+| 1995 | 679 | 679 | **679 (100,0%)** |
+
+Trung vị, phân vị 10 và phân vị 90 của độ lệch đều là **0,0%**. Không có luồng nào
+mang khoảng cách FOB/CIF dương, nên số liệu đã được hoà giải về một con số trước khi
+phát hành (đúng như B9 đã ghi, giờ có số đo kèm theo).
+
+**Hệ quả phải nói ra:** bộ dữ liệu này **không cho tự đo sai số của nó**. Câu đúng
+là *"số liệu đã được Growth Lab hoà giải theo phương pháp của họ; nhóm dùng số đó và
+không có nguồn độc lập để kiểm chéo"*, chứ không phải *"đã đối chiếu ba nguồn và
+chúng khớp nhau"*: Atlas, BACI và Comtrade là ba bản xử lý của cùng một gốc
+Comtrade. Đây là phần làm được của T08 khi chưa có tài khoản CEPII và khóa API.
+
+Lấy lại số: `src/compare_mirror.py --year 2023` và `--year 1995` → `data/processed/mirror_gap.csv`
+
 ---
 
 ## B. Quyết định đã chốt
