@@ -40,8 +40,17 @@ Chạy
     python src/compare_mirror.py
     python src/compare_mirror.py --year 2015
     python src/compare_mirror.py --top 10
+    python src/compare_mirror.py --min-flow 0     # mọi luồng, không lọc theo cỡ
+    python src/compare_mirror.py --all-years      # tóm tắt mọi năm trong file
 
-Xuất ra ``data/processed/mirror_gap.csv`` — một dòng cho mỗi luồng được xét.
+Xuất ra ``data/processed/mirror_gap_<năm>.csv`` — một dòng cho mỗi luồng được xét.
+
+Phân biệt hai tầng kết luận
+---------------------------
+Script chỉ ĐO được một điều: hai bản khai của cùng một luồng có trùng khít hay
+không. Còn LÝ DO trùng khít (nhà phát hành hòa giải, hay cột nhập được dựng từ
+cột xuất của đối tác) thì dữ liệu này không phân biệt nổi. Output và tài liệu
+phải giữ ranh giới đó.
 """
 
 from __future__ import annotations
@@ -65,8 +74,15 @@ OUT = os.path.join(ROOT, "data", "processed")
 CIF_LOW, CIF_HIGH = 0.0, 15.0
 
 # Luồng nhỏ thì tỷ lệ chênh lệch dao động rất mạnh mà không có ý nghĩa gì —
-# một lô hàng lẻ ghi lệch năm là đủ làm sai 100%. Chỉ xét luồng đủ lớn.
+# một lô hàng lẻ ghi lệch năm là đủ làm sai 100%. Mặc định chỉ xét luồng đủ lớn;
+# chạy --min-flow 0 để chứng minh việc lọc không che giấu gì.
 MIN_FLOW = 1e9
+
+# Ngưỡng kết luận theo tỷ lệ luồng trùng khít (mẫu số = MỌI luồng được xét, kể cả
+# luồng không có số đối ứng). Giữa hai ngưỡng thì không kết luận.
+SYMMETRIC_MIN = 0.99     # từ mức này: hai bản khai đối xứng, phép kiểm vô hiệu
+INDEPENDENT_MAX = 0.05   # đến mức này: còn hai bản khai độc lập, phép kiểm dùng được
+IDENTICAL_PCT = 0.01     # |lệch| dưới mức này (%) coi là trùng khít
 
 
 def log(msg):
@@ -74,17 +90,21 @@ def log(msg):
     sys.stdout.flush()
 
 
-def load_pairs(year):
-    """Đọc cc_year.csv, trả về dict (A, B) -> (A khai xuất, A khai nhập)."""
+def load_pairs(years=None):
+    """Đọc cc_year.csv một lượt, trả về {năm: {(A, B): (A khai xuất, A khai nhập)}}.
+
+    ``years`` là tập năm cần giữ; None nghĩa là giữ mọi năm.
+    """
     path = os.path.join(ATLAS, "cc_year.csv")
     if not os.path.exists(path):
         sys.exit("Thiếu %s. Chạy: python src/download_atlas.py --only cc_year.csv"
                  % path)
 
-    pairs = {}
+    by_year = {}
     with open(path, encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            if int(r["year"]) != year:
+            year = int(r["year"])
+            if years is not None and year not in years:
                 continue
             a = r["country_iso3_code"].strip()
             b = r["partner_iso3_code"].strip()
@@ -98,53 +118,72 @@ def load_pairs(year):
                 imp = float(r["import_value"] or 0)
             except ValueError:
                 continue
-            pairs[(a, b)] = (exp, imp)
-    return pairs
+            by_year.setdefault(year, {})[(a, b)] = (exp, imp)
+    return by_year
 
 
-def mirror_rows(pairs):
+def mirror_rows(pairs, min_flow=MIN_FLOW):
     """Ghép mỗi luồng A→B với số đối ứng B khai, trả về danh sách đã tính lệch.
 
     Luồng A→B có hai người khai:
         - A khai xuất  = pairs[(A, B)][0]
         - B khai nhập  = pairs[(B, A)][1]
+
+    Mỗi dòng mang ``status``: ``paired`` (so được), ``no_mirror`` (B không khai
+    gì về A) hoặc ``importer_zero`` (B khai nhập 0). Hai trạng thái sau KHÔNG bị
+    loại khỏi thống kê — chúng là mismatch lớn nhất có thể có.
     """
     rows = []
     for (a, b), (exp_ab, _) in pairs.items():
-        if exp_ab < MIN_FLOW:
+        if exp_ab <= 0 or exp_ab < min_flow:
             continue
         back = pairs.get((b, a))
+        base = {"source": a, "target": b, "exporter_says": exp_ab}
         if back is None:
-            # B không khai gì về A — không có số gương, ghi riêng để đếm.
-            rows.append({"source": a, "target": b, "exporter_says": exp_ab,
-                         "importer_says": None, "gap_pct": None})
+            rows.append(dict(base, importer_says=None, gap_pct=None,
+                             status="no_mirror"))
             continue
         imp_ba = back[1]
         if imp_ba <= 0:
-            rows.append({"source": a, "target": b, "exporter_says": exp_ab,
-                         "importer_says": 0.0, "gap_pct": None})
+            rows.append(dict(base, importer_says=0.0, gap_pct=None,
+                             status="importer_zero"))
             continue
         # Dấu dương = nước nhập khai CAO HƠN nước xuất, tức chiều mà FOB/CIF
         # dự đoán. Lấy số nước xuất làm mẫu số vì đó là trọng số cạnh của đồ án.
-        rows.append({"source": a, "target": b, "exporter_says": exp_ab,
-                     "importer_says": imp_ba,
-                     "gap_pct": (imp_ba - exp_ab) / exp_ab * 100.0})
+        rows.append(dict(base, importer_says=imp_ba, status="paired",
+                         gap_pct=(imp_ba - exp_ab) / exp_ab * 100.0))
     return rows
+
+
+def is_identical(r):
+    return r["status"] == "paired" and abs(r["gap_pct"]) < IDENTICAL_PCT
+
+
+def verdict_on_symmetry(rows):
+    """Tỷ lệ trùng khít trên MỌI luồng xét -> (tỷ lệ, nhãn kết luận)."""
+    if not rows:
+        return 0.0, "empty"
+    share = sum(is_identical(r) for r in rows) / len(rows)
+    if share >= SYMMETRIC_MIN:
+        return share, "symmetric"
+    if share <= INDEPENDENT_MAX:
+        return share, "independent"
+    return share, "mixed"
 
 
 def classify(gap):
     """Chênh lệch này do đâu?
 
     Lệch đúng 0 KHÔNG phải "FOB/CIF giải thích được" — FOB/CIF luôn tạo ra một
-    khoảng cách dương. Lệch đúng 0 nghĩa là số liệu đã bị hòa giải thành một
-    con số duy nhất trước khi phát hành, tức là mất bản khai thứ hai. Phải tách
-    hai trường hợp này, nếu không bảng xếp loại sẽ báo "100% giải thích được"
-    trong khi thực tế là "100% không còn gì để kiểm".
+    khoảng cách dương. Lệch đúng 0 nghĩa là hai bản khai đối xứng tuyệt đối, tức
+    là không còn bản khai thứ hai độc lập để kiểm. Phải tách hai trường hợp này,
+    nếu không bảng xếp loại sẽ báo "100% giải thích được" trong khi thực tế là
+    "100% không còn gì để kiểm". (Vì sao đối xứng thì dữ liệu không nói.)
     """
     if gap is None:
         return "khong co so guong"
-    if abs(gap) < 0.01:
-        return "trung khit — da hoa giai, khong con so doc lap"
+    if abs(gap) < IDENTICAL_PCT:
+        return "trung khit — doi xung tuyet doi, khong con so doc lap"
     if CIF_LOW < gap <= CIF_HIGH:
         return "FOB/CIF giai thich duoc"
     if gap > CIF_HIGH:
@@ -188,12 +227,50 @@ def percentile(sorted_vals, q):
     return sorted_vals[lo] * (1 - frac) + sorted_vals[hi] * frac
 
 
+VERDICT_LINES = {
+    "symmetric": (
+        "Hai bản khai ĐỐI XỨNG tuyệt đối: phép kiểm gương KHÔNG dùng được.",
+        "Dữ liệu không cho biết vì sao đối xứng (nhà phát hành hòa giải, hay cột",
+        "nhập được dựng từ cột xuất của đối tác). Đó là phần giải thích, không",
+        "phải phần đo; muốn khẳng định phải dẫn tài liệu của nhà phát hành.",
+    ),
+    "independent": (
+        "Hai bản khai ĐỘC LẬP nhau: phép kiểm gương dùng được.",
+    ),
+    "mixed": (
+        "Tỷ lệ trùng khít ở khoảng giữa hai ngưỡng: KHÔNG kết luận.",
+        "Đọc phân bố bên dưới và xem từng luồng.",
+    ),
+    "empty": ("Không có luồng nào để xét.",),
+}
+
+
+def all_years_summary(by_year, min_flow):
+    log("")
+    log("%-6s %9s %10s %12s %10s  %s"
+        % ("Năm", "Luồng xét", "Không đối", "Nhập khai 0", "Trùng khít",
+           "Kết luận"))
+    log("  " + "-" * 70)
+    for year in sorted(by_year):
+        rows = mirror_rows(by_year[year], min_flow)
+        share, tag = verdict_on_symmetry(rows)
+        log("%-6d %9d %10d %12d %10s  %s"
+            % (year, len(rows),
+               sum(r["status"] == "no_mirror" for r in rows),
+               sum(r["status"] == "importer_zero" for r in rows),
+               R.fmt_pct(share * 100), tag))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--year", type=int, default=R.REFERENCE_YEAR)
     ap.add_argument("--top", type=int, default=5,
                     help="số luồng lớn nhất đưa vào bảng (mặc định 5)")
+    ap.add_argument("--min-flow", type=float, default=MIN_FLOW,
+                    help="chỉ xét luồng xuất khai từ mức này (USD); 0 = mọi luồng")
+    ap.add_argument("--all-years", action="store_true",
+                    help="chỉ in bảng tóm tắt mọi năm trong file, không ghi CSV")
     args = ap.parse_args()
 
     log("=" * 76)
@@ -202,33 +279,38 @@ def main():
 
     log("")
     log("Đọc cc_year.csv...")
-    pairs = load_pairs(args.year)
+    if args.all_years:
+        by_year = load_pairs()
+        log("  %d năm trong file; xét luồng từ %s trở lên"
+            % (len(by_year), R.fmt_usd(args.min_flow)))
+        all_years_summary(by_year, args.min_flow)
+        return
+    pairs = load_pairs({args.year}).get(args.year, {})
     log("  %d cặp nước có số liệu năm %d" % (len(pairs), args.year))
 
-    rows = mirror_rows(pairs)
+    rows = mirror_rows(pairs, args.min_flow)
     log("  %d luồng từ %s trở lên — chỉ xét những luồng này"
-        % (len(rows), R.fmt_usd(MIN_FLOW)))
+        % (len(rows), R.fmt_usd(args.min_flow)))
 
-    paired = [r for r in rows if r["gap_pct"] is not None]
-    orphan = [r for r in rows if r["gap_pct"] is None]
-    log("  %d luồng có số gương đối ứng, %d luồng không có"
-        % (len(paired), len(orphan)))
+    paired = [r for r in rows if r["status"] == "paired"]
+    no_mirror = [r for r in rows if r["status"] == "no_mirror"]
+    imp_zero = [r for r in rows if r["status"] == "importer_zero"]
+    log("  %d luồng có số gương đối ứng; %d luồng đối tác không khai gì; "
+        "%d luồng đối tác khai nhập 0" % (len(paired), len(no_mirror), len(imp_zero)))
 
-    # --- Phát hiện quan trọng nhất: Atlas đã hòa giải số liệu hay chưa? -----
-    identical = [r for r in paired if abs(r["gap_pct"]) < 0.01]
+    # --- Phát hiện quan trọng nhất: hai bản khai có độc lập không? ----------
+    # Mẫu số là MỌI luồng xét. Luồng thiếu đối ứng tính là "không trùng khít",
+    # nghĩa là chúng chỉ có thể làm kết luận "đối xứng" khó đạt hơn.
+    identical = [r for r in rows if is_identical(r)]
+    share, tag = verdict_on_symmetry(rows)
     log("")
-    log("CÂU HỎI ĐẦU TIÊN: Atlas giữ cả hai bản khai, hay đã hòa giải thành một số?")
-    log("  %d / %d luồng (%s) có hai số TRÙNG KHÍT nhau"
-        % (len(identical), len(paired),
-           R.fmt_pct(len(identical) / len(paired) * 100 if paired else 0)))
-    reconciled = len(identical) / len(paired) > 0.5 if paired else False
-    if reconciled:
-        log("  -> Atlas ĐÃ hòa giải. Hai con số không còn độc lập với nhau,")
-        log("     nên phép kiểm gương KHÔNG dùng được trên bộ dữ liệu này.")
-        log("     Đây chính là một giới hạn phải ghi vào phần Phương pháp luận:")
-        log("     ta KHÔNG thể tự đo sai số của dữ liệu mình đang dùng.")
-    else:
-        log("  -> Atlas GIỮ cả hai bản khai. Phép kiểm gương dùng được.")
+    log("CÂU HỎI ĐẦU TIÊN: hai bản khai của một luồng có còn độc lập với nhau không?")
+    log("  ĐO ĐƯỢC: %d / %d luồng (%s) có hai số TRÙNG KHÍT nhau"
+        % (len(identical), len(rows), R.fmt_pct(share * 100)))
+    log("  KẾT LUẬN (ngưỡng: đối xứng từ %s, độc lập đến %s):"
+        % (R.fmt_pct(SYMMETRIC_MIN * 100), R.fmt_pct(INDEPENDENT_MAX * 100)))
+    for n, line in enumerate(VERDICT_LINES[tag]):
+        log(("  -> " if n == 0 else "     ") + line)
 
     # --- Phân bố chênh lệch ------------------------------------------------
     gaps = sorted(r["gap_pct"] for r in paired)
@@ -242,14 +324,16 @@ def main():
         log("  nhỏ nhất   %s" % R.fmt_pct(gaps[0]))
         log("  lớn nhất   %s" % R.fmt_pct(gaps[-1]))
 
+    if rows:
         buckets = {}
-        for r in paired:
-            buckets[classify(r["gap_pct"])] = buckets.get(classify(r["gap_pct"]), 0) + 1
+        for r in rows:
+            r["verdict"] = classify(r["gap_pct"])
+            buckets[r["verdict"]] = buckets.get(r["verdict"], 0) + 1
         log("")
-        log("Xếp loại theo nguyên nhân:")
+        log("Xếp loại theo nguyên nhân (mẫu số: mọi luồng xét):")
         for k, v in sorted(buckets.items(), key=lambda kv: -kv[1]):
             log("  %-32s %4d luồng (%s)"
-                % (k, v, R.fmt_pct(v / len(paired) * 100)))
+                % (k, v, R.fmt_pct(v / len(rows) * 100)))
 
     # --- Bảng 1: năm luồng lớn nhất thế giới -------------------------------
     big = sorted(rows, key=lambda r: -r["exporter_says"])[:args.top]
@@ -264,13 +348,19 @@ def main():
           "Luồng của riêng nước trọng tâm, vì báo cáo nói về Việt Nam.")
 
     # --- Bảng 3: lệch nặng nhất --------------------------------------------
-    # Chỉ in bảng này khi thật sự CÓ luồng lệch. Nếu mọi luồng đều lệch 0 thì
-    # "năm luồng lệch nặng nhất" chỉ là năm dòng đầu theo thứ tự alphabet —
-    # một bảng trông như có phát hiện nhưng không chứa phát hiện nào.
-    real = [r for r in paired if abs(r["gap_pct"]) >= 0.01]
+    # Luồng đối tác khai nhập 0 là lệch nặng nhất có thể có (100% số nước xuất),
+    # nên xếp lên đầu. Luồng không có đối ứng nào thì không có số để lệch.
+    # Chỉ in bảng khi thật sự CÓ luồng lệch: nếu mọi luồng đều lệch 0 thì "năm
+    # luồng lệch nặng nhất" chỉ là năm dòng đầu theo thứ tự alphabet — một bảng
+    # trông như có phát hiện nhưng không chứa phát hiện nào.
+    def severity(r):
+        return 100.0 if r["status"] == "importer_zero" else abs(r["gap_pct"])
+
+    real = [r for r in rows if r["status"] == "importer_zero"
+            or (r["status"] == "paired" and not is_identical(r))]
     if real:
-        worst = sorted(real, key=lambda r: -abs(r["gap_pct"]))[:args.top]
-        table(worst, "BẢNG 3 — %d luồng lệch nặng nhất (trong các luồng lớn)"
+        worst = sorted(real, key=lambda r: -severity(r))[:args.top]
+        table(worst, "BẢNG 3 — %d luồng lệch nặng nhất (trong các luồng xét)"
                      % args.top,
               "Nếu có luồng nào lệch mạnh, nó nằm ở đây.")
     else:
@@ -281,18 +371,21 @@ def main():
         log("  nhưng không phải.")
 
     # --- Ghi file ----------------------------------------------------------
+    # Tên file mang năm (và mức lọc nếu khác mặc định) để lần chạy đối chứng
+    # không ghi đè bằng chứng của lần chạy chính.
     os.makedirs(OUT, exist_ok=True)
-    path = os.path.join(OUT, "mirror_gap.csv")
+    suffix = "" if args.min_flow == MIN_FLOW else "_min%g" % args.min_flow
+    path = os.path.join(OUT, "mirror_gap_%d%s.csv" % (args.year, suffix))
     with open(path, "w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["source_iso3", "target_iso3", "year", "exporter_reports",
-                    "importer_reports", "gap_pct", "verdict"])
+                    "importer_reports", "gap_pct", "status", "verdict"])
         for r in sorted(rows, key=lambda x: -x["exporter_says"]):
             w.writerow([r["source"], r["target"], args.year,
                         repr(r["exporter_says"]),
                         "" if r["importer_says"] is None else repr(r["importer_says"]),
                         "" if r["gap_pct"] is None else "%.4f" % r["gap_pct"],
-                        classify(r["gap_pct"])])
+                        r["status"], r["verdict"]])
     log("")
     log("-> %s  (%d dòng)" % (path, len(rows)))
 
@@ -301,21 +394,27 @@ def main():
     log("=" * 76)
     log("KẾT LUẬN ĐỂ VIẾT VÀO PHƯƠNG PHÁP LUẬN (T25)")
     log("=" * 76)
-    if reconciled:
-        log("Atlas đã hòa giải số liệu hai chiều trước khi phát hành: %s"
-            % R.fmt_pct(len(identical) / len(paired) * 100 if paired else 0)
-            + " các luồng lớn có hai bản khai trùng khít.")
+    if tag == "symmetric":
+        log("Đo được: %s các luồng xét (%d/%d) có hai bản khai trùng khít; %d luồng"
+            % (R.fmt_pct(share * 100), len(identical), len(rows),
+               len(no_mirror) + len(imp_zero)))
+        log("thiếu đối ứng hoặc nhập khai 0.")
         log("Hệ quả thẳng thắn: bộ dữ liệu này KHÔNG cho ta tự đo sai số của nó.")
         log("Không được nói 'đã đối chiếu ba nguồn và chúng khớp nhau' — ba cái")
         log("tên Atlas / BACI / Comtrade là ba bản xử lý của cùng một gốc Comtrade.")
-        log("Phải nói: 'số liệu đã được Growth Lab hòa giải theo phương pháp của")
-        log("họ; chúng tôi dùng số đó và không có nguồn độc lập để kiểm chéo.'")
-    else:
-        log("Atlas giữ cả hai bản khai, nên đo được chênh lệch gương thật sự.")
+        log("Phải nói: 'hai bản khai trong số liệu đối xứng tuyệt đối, nhất quán")
+        log("với việc đã được hòa giải trước khi phát hành; chúng tôi dùng số đó")
+        log("và không có nguồn độc lập để kiểm chéo.' Ai hòa giải thì dữ liệu")
+        log("không nói; chỉ khẳng định khi đã dẫn tài liệu của nhà phát hành.")
+    elif tag == "independent":
+        log("Hai bản khai độc lập, nên đo được chênh lệch gương thật sự.")
         log("Trung vị %s — nằm %s dải FOB/CIF (%s–%s)."
             % (R.fmt_pct(percentile(gaps, 0.5)),
                "trong" if CIF_LOW <= percentile(gaps, 0.5) <= CIF_HIGH else "ngoài",
                R.fmt_pct(CIF_LOW), R.fmt_pct(CIF_HIGH)))
+    else:
+        log("Không kết luận: tỷ lệ trùng khít %s nằm giữa hai ngưỡng."
+            % R.fmt_pct(share * 100))
     log("")
 
 

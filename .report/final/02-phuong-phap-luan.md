@@ -48,16 +48,19 @@ về để đọc, không đi vào phép tính nào.
 **Vì sao chỉ một nguồn.** Số liệu thương mại luôn tồn tại hai bản cho cùng một
 luồng: nước A báo "xuất sang B bao nhiêu", nước B báo "nhập từ A bao nhiêu", và
 hai số không bao giờ bằng nhau — khác nhau về giá CIF/FOB, về thời điểm ghi nhận,
-về chất lượng thống kê. Atlas đã **hoà giải** cặp số gương đó trước khi phát hành,
-nên dùng Atlas là dùng một bản đã thống nhất. Trộn thêm BACI hay Comtrade vào thì
+về chất lượng thống kê. Trong Atlas, cặp số gương đó đã được **thống nhất thành một
+con số** (đo ở đoạn dưới), nên dùng Atlas là dùng một bản đã thống nhất. Trộn thêm BACI hay Comtrade vào thì
 phải tự hoà giải lại, tức là thêm một nguồn sai số mà không thêm thông tin. Đây là
 quyết định **B9**.
 
-Việc hoà giải đó đo được chứ không chỉ là lời của nhà phát hành: với **2.093** luồng
-từ 1 tỷ USD trở lên năm 2023, số nước xuất khai và số nước nhập khai **trùng khít ở
-cả 2.093 luồng**, và năm 1995 cũng vậy (679/679). Hệ quả là bộ dữ liệu **không cho
-tự đo sai số của nó**: không còn bản khai thứ hai độc lập để so (`src/compare_mirror.py`,
-phát hiện **A18**).
+Điều đo được là sự đối xứng này: với **2.093** luồng từ 1 tỷ USD trở lên năm 2023,
+số nước xuất khai và số nước nhập khai **trùng khít ở cả 2.093 luồng**; không có luồng
+nào thiếu số đối ứng. Kết quả giữ nguyên khi bỏ ngưỡng 1 tỷ USD (27.534/27.534 luồng)
+và ở cả 30 năm trong dữ liệu (kiểm kỹ ở 1995, 2010, 2023). Hệ quả là bộ dữ liệu
+**không cho tự đo sai số của nó**: không còn bản khai thứ hai độc lập để so
+(`src/compare_mirror.py`, phát hiện **A18**). Đối xứng tuyệt đối nhất quán với việc đã
+hoà giải trước khi phát hành, nhưng dữ liệu không cho biết ai làm việc đó; nhóm dùng
+số như đã công bố.
 
 Bằng chứng cho lựa chọn đó: ba file Atlas nói trên đo **cùng một nền thương mại từ
 ba góc khác nhau** — theo cặp nước, theo nước × sản phẩm, theo nước. Tổng xuất khẩu

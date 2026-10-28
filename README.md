@@ -453,7 +453,7 @@ python src/make_streamgraph.py        # T21 dòng chảy cơ cấu 1995–2023
 python src/make_decision_plane.py     # T31 mặt phẳng quyết định (đề xuất)
 python src/make_decision_plane.py --year 2015 --since 2007   # thử lại quy tắc
 python src/check_readability.py       # T24 kiểm khả năng đọc, ĐẠT thì trả 0
-python src/compare_mirror.py          # T08 chênh lệch gương; thêm --year 1995 để đối chứng
+python src/compare_mirror.py          # T08 chênh lệch gương; thêm --year 1995 để đối chứng; --min-flow 0, --all-years
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 python src/make_decision_plane.py --year 2007 --since 1999  # quy tắc chạy ở 2007

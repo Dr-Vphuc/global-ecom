@@ -80,7 +80,7 @@ thuyết trình mà chưa sinh lại biểu đồ.
 |---|---|---|---|
 | T06 | Tải Atlas từ Harvard Dataverse | Xong | `src/download_atlas.py` (dữ liệu thô **không** vào git) |
 | T07 | Làm sạch, xuất file trung gian, gắn vùng địa lý | Xong | `src/build_intermediate.py` → `nodes/edges/tree/country_product/country_year.csv` |
-| T08 | Đối chiếu Atlas với BACI và Comtrade | Xong | **đổi hướng**: BACI/Comtrade cùng gốc với Atlas nên không phải phép kiểm độc lập (B9); thay bằng chênh lệch gương `src/compare_mirror.py` → `mirror_gap.csv` · 2.093/2.093 luồng trùng khít · phát hiện **A18**, một đoạn ở §2.2 báo cáo |
+| T08 | Đối chiếu Atlas với BACI và Comtrade | Xong | **đổi hướng**: BACI/Comtrade cùng gốc với Atlas nên không phải phép kiểm độc lập (B9); thay bằng chênh lệch gương `src/compare_mirror.py` → `mirror_gap_2023.csv` · 2.093/2.093 luồng ≥ 1 tỷ USD trùng khít (và 27.534/27.534 khi bỏ ngưỡng; cả 30 năm) · phát hiện **A18**, một đoạn ở §2.2 báo cáo |
 | T09 | Thống kê mô tả mạng lưới theo từng năm | Xong | `network_stats.csv` (30 năm) + `src/make_degree_loglog.py` → `output/degree_loglog_2023.*` (và `_1995.*`) |
 | T10 | Chốt ngưỡng lọc cạnh, biện minh bằng số | Xong | `threshold_coverage.csv`, quy tắc ở README §"Quy tắc lọc cạnh" |
 | T11 | Kiểm chất lượng cây HS92 4 tầng | Xong | `src/check_tree.py` |
@@ -156,7 +156,7 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 |---|---|---|
 | Quy mô mạng | 231 nút · 27.535 cạnh | `data/processed/network_stats.csv` dòng 2023 |
 | Mật độ · đối ứng | 0,5183 · 0,8368 | cùng file |
-| Hai bản khai của một luồng | **2.093/2.093** luồng ≥ 1 tỷ USD trùng khít → Atlas đã hoà giải, không tự đo được sai số | `src/compare_mirror.py` (A18) |
+| Hai bản khai của một luồng | **2.093/2.093** luồng ≥ 1 tỷ USD trùng khít, đối xứng tuyệt đối → không tự đo được sai số (ai hoà giải: dữ liệu không nói) | `src/compare_mirror.py` (A18) |
 | Gini giá trị cạnh | 0,9569 | cùng file |
 | Tổng xuất khẩu thế giới | 21,66 nghìn tỷ USD | cùng file, cột `total_export_value` |
 | Xuất khẩu Việt Nam | 385,5390 tỷ USD = **75,3×** năm 1995 | `country_year.csv`, lọc `VNM` |
@@ -262,9 +262,9 @@ qua được phép kiểm đó, và phép kiểm nằm trong repo để ai muố
 CEPII và khóa API, mà kể cả có thì cả hai cùng gốc Comtrade với Atlas, nên không
 phải phép kiểm độc lập (B9). Cái đã đo được là **chênh lệch gương** ngay trong Atlas:
 mỗi luồng A→B có hai bản khai, của hải quan A và của hải quan B. Với 2.093 luồng
-trên 1 tỷ USD năm 2023, hai bản khai **trùng khít ở cả 2.093 luồng** — Atlas đã hoà
-giải số liệu trước khi phát hành, nên bộ dữ liệu này không cho tự đo sai số của nó.
-Phải nói đúng chừng đó, kèm các hạn chế D1–D5. → A18, `src/compare_mirror.py`.
+trên 1 tỷ USD năm 2023, hai bản khai **trùng khít ở cả 2.093 luồng** (và ở mọi
+luồng, mọi năm) — đối xứng tuyệt đối, nên bộ dữ liệu này không cho tự đo sai số của
+nó; ai hoà giải thì dữ liệu không nói. Phải nói đúng chừng đó, kèm các hạn chế D1–D5. → A18, `src/compare_mirror.py`.
 
 **8. Việt Nam có đang mất bạn hàng không?**
 **Không, và chính nhóm đã bác câu đó của chính mình.** Đếm thô thì số bạn hàng rơi từ
