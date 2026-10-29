@@ -37,7 +37,7 @@ Chạy quy tắc trên dữ liệu 2023 thì **8 nhóm** lọt vào vòng chọn
 | Nhôm | 0,40 → 0,54 | +0,04 | 2,1 tỷ USD | |
 
 Quy tắc lấy **hai nhóm khó nhất** trong tám nhóm đó. Cả tám đều là lựa chọn hợp lệ
-theo bốn điều kiện ở §6.2; thứ phân biệt chúng là PCI, tức độ khó của hàng — và đó
+theo bốn điều kiện ở §6.3; thứ phân biệt chúng là PCI, tức độ khó của hàng — và đó
 đúng là chiều mà §6.1 cho thấy Việt Nam đang yếu nhất.
 
 Lấy lại: `PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/make_decision_plane.py --year 2023`
@@ -106,16 +106,24 @@ Lấy lại: ba lệnh ở cột *Lệnh* bảng trên · bảng nền so sánh 
 > USD) và **máy móc công nghiệp** (HS84; RCA 0,954; PCI +0,783; 39,85 tỷ USD) —
 > hai nhóm khó nhất trong rổ hàng mà Việt Nam **đã** có chỗ đứng và đang sát ngưỡng
 > lợi thế — thay vì đào sâu thêm vào **lắp ráp điện tử** (RCA đã 2,23, chiếm 29,94%
-> rổ hàng, và là khâu phụ thuộc nhập khẩu nhất của hành lang ở §5.2), và **không**
+> rổ hàng, và đầu vào đi qua đúng hành lang hẹp ở §5.2), và **không**
 > dồn thêm vào nhóm RCA cao – PCI thấp (thủy sản 2,75 / −1,59; cà phê 4,21 / −1,38;
 > trái cây 2,88 / −1,33), vốn đã giảm tỷ trọng suốt 28 năm.
 
-Hai nhóm này thoả cả bốn điều kiện mà §6.2 đã khoá: không đo bằng phép đếm bạn
+Hai nhóm này thoả cả bốn điều kiện mà §6.3 đã khoá: không đo bằng phép đếm bạn
 hàng, không dồn thêm vào điện tử, không dồn thêm vào góc hàng dễ, và có mốc bác bỏ
 viết sẵn (§7.5). Chúng cũng ở hai cỡ khác nhau, nên là hai loại việc khác nhau:
 HS84 đã **39,85 tỷ USD (10,34% rổ hàng)** — một nhóm lớn, mỗi điểm phần trăm RCA
 đổi được nhiều tiền; HS90 chỉ **11,32 tỷ (2,94%)** — một chỗ đặt cược nhỏ hơn
 nhưng là nhóm **khó nhất** còn lại trong rổ.
+
+Đề xuất A **không** dựa vào chuyện hai nhóm này giữ lại nhiều giá trị hơn điện tử.
+§6.2 cho thấy ngành máy móc giữ **47,5%** (khoảng 46,2–47,5%) so với **44,2%** của
+điện tử, và hàng càng khó thì càng ít ở lại (Spearman −0,47). Lý do còn đứng được
+là độ khó của hàng và việc rời khỏi rổ đang tập trung. Hệ quả phải nói trước: mỗi
+đô la xuất khẩu thêm ở hai nhóm này mang về khoảng 44–48% giá trị trong nước,
+thấp hơn bình quân cả rổ (50,5%), nên kim ngạch có thể tăng nhanh hơn phần ở lại.
+Vì thế đề xuất kèm một mốc đo phần ở lại (§7.4) và một điều kiện đổi ý (§7.5).
 
 > **Đề xuất B — về mức tập trung.** §5.3 là một phát hiện đòi một câu trả lời,
 > không chỉ một lời cảnh báo. Mục tiêu phải phát biểu bằng **tỷ trọng giá trị**,
@@ -142,14 +150,16 @@ Báo cáo **không dự báo** (ranh giới đã chốt ở T01), nên những c
 | Góc *đang kẹt* co lại | 36,2% rổ hàng | **< 36,2%** | `src/make_decision_plane.py` |
 | Tỷ trọng ba thị trường đầu | 52,41% | **< 52,41%**, đích 39,25% | `src/make_time_multiples.py` |
 | HHI đầu vào | 0,1979 | **< 0,1979** | `src/make_time_multiples.py --direction nhap` |
+| Phần giữ lại trong nước của khối `C26`+`C27`+`C28` (2022) | 44,2% | **≥ 44,2%**, tức ngừng tụt | `src/map_sector_isic.py` |
 
-Cả sáu mốc đều đọc được từ chính các script đã có, nên lần dữ liệu Atlas sau là
+Cả bảy mốc đều đọc được từ chính các script đã có, nên lần dữ liệu Atlas sau là
 kiểm lại được ngay — không cần viết thêm gì.
 
 ## 7.5 Điều gì sẽ làm nhóm đổi ý
 
 Một đề xuất có điều kiện bác bỏ thì mới là đề xuất; không có thì chỉ là một ý
-thích. Ba điều kiện, theo thứ tự dễ xảy ra:
+thích. Bốn điều kiện; ba điều kiện đầu theo thứ tự dễ xảy ra, điều kiện thứ tư được
+thêm sau khi có số TiVA (A19):
 
 1. **RCA của HS90 và HS84 chững lại dưới 1,00 trong vài kỳ dữ liệu tới.** Cả hai
    đã đi lên đều qua ba cửa sổ tám năm (§7.2), nên chững lại là tin trái chiều
@@ -161,6 +171,12 @@ thích. Ba điều kiện, theo thứ tự dễ xảy ra:
 3. **Đầu vào tự đa dạng hoá khỏi mức 68,3% từ một vùng duy nhất.** Thì luận cứ
    "hành lang hẹp ở cả hai đầu" (§5.2, §5.3) yếu đi, và đề xuất về rổ hàng không
    còn tựa vào được chỗ phụ thuộc nhập khẩu của điện tử.
+4. **Phần giữ lại trong nước của khối điện tử – máy móc tụt dưới 44,2% trong khi
+   RCA của HS84 và HS90 vượt 1,00.** Thì đề xuất đã làm kim ngạch tăng mà không
+   làm phần ở lại tăng, và "hàng khó hơn" không còn là lý do đủ để ưu tiên. Đây
+   là điều kiện mà **xu hướng đang đi về phía nó**: điện tử đã tụt 64,1% → 44,2%
+   từ 1995 đến 2022 (§6.2). Số TiVA dừng ở 2022 nên mốc này chỉ kiểm được khi OECD
+   ra bản mới.
 
 ## 7.6 Và đề xuất này không nói điều gì
 
@@ -174,8 +190,8 @@ của lập luận:
   hàng **gộp**, nên chúng đo *cái gì đi qua Việt Nam*, chưa hẳn *cái gì ở lại* —
   đúng hạn chế **D2** và **D5** ở §8.1. TiVA 2025 cho số ở mức ngành: nhóm ghép với
   điện tử và máy móc (khối `C26`+`C27`+`C28`) giữ khoảng 44% trong nước năm 2022.
-  Nhưng đó là số của cả ngành, không tách riêng HS84 và HS90 được, nên báo cáo
-  vẫn **không đo được** riêng hai nhóm ấy.
+  Nhưng đó là số của cả ngành, không tách riêng HS84 và HS90 được (§6.2), nên báo
+  cáo vẫn **không đo được** riêng hai nhóm ấy.
 - **Không nói hai nhóm ấy là hai nhóm tốt nhất có thể.** Chúng là hai nhóm **khó
   nhất trong tám nhóm thoả quy tắc** (§7.1). Đổi `N_PICK` hoặc nới `RCA_HI` thì
   danh sách đổi, và bảng tám nhóm ở §7.1 để ngay đó cho người đọc tự xét.

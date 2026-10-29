@@ -448,8 +448,8 @@ SLIDES = [
                "Quy tắc: xuất trên {min_xuat} · PCI dương · RCA trong dải "
                "[{rca_lo}; {rca_hi}) · RCA **đang tăng** → lấy hai nhóm PCI cao "
                "nhất. Chạy năm khác thì ra nhóm khác.",
-               "**Không** dồn thêm vào lắp ráp điện tử (RCA đã {rca_dien}, và là "
-               "khâu phụ thuộc nhập khẩu nhất); **không** dồn vào nhóm RCA cao – "
+               "**Không** dồn thêm vào lắp ráp điện tử (RCA đã {rca_dien}, và đầu "
+               "vào đi qua hành lang hẹp); **không** dồn vào nhóm RCA cao – "
                "PCI thấp, vốn đã giảm tỷ trọng suốt 28 năm"],
          notes="Đọc quy tắc trước, tên nhóm sau. Thứ tự đó quan trọng: nó cho thấy "
                "đề xuất là đầu ra của một phép lọc, không phải sở thích của nhóm."),
