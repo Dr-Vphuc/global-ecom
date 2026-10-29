@@ -78,8 +78,10 @@ hạng 5 trong ASEAN).
 đi ấy đang hẹp lại:** tỷ trọng ba thị trường đầu **52,41%** so với 39,25% năm 2013,
 HHI **0,1226** đã vượt mức của năm 1995, và lợi thế so sánh mạnh nhất vẫn đúng ở
 nơi hàng dễ nhất (giày dép RCA 7,52 / PCI −0,49) trong khi hai nhóm khó nhất rổ
-hàng vẫn ở RCA **dưới 1**. Từ đó ra đề xuất ở phần 7, và nó kèm sẵn ba điều kiện
-để bị bác bỏ.
+hàng vẫn ở RCA **dưới 1**. Từ đó ra đề xuất ở phần 7, và nó kèm sẵn bốn điều kiện
+để bị bác bỏ. Một trong bốn đo phần giá trị ở lại: số TiVA cho thấy hai nhóm được đề
+xuất giữ khoảng 44–48% giá trị trong nước, không hơn điện tử (§6.2), nên đề xuất
+đứng trên độ khó của hàng và mức tập trung chứ không đứng trên việc giữ nhiều hơn.
 
 **Một kết luận về phương pháp, và nó đáng kể hơn vẻ ngoài.** Trong lúc làm, đồ án
 đã **tự bác hai phát biểu của chính mình** vì đo lại thì không đúng:

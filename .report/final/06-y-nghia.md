@@ -2,8 +2,8 @@
 
 Hồi bốn trả lời câu hỏi con **(c)** ở §1.1 — *Việt Nam bán cái gì, và cái đó đáng
 giá đến đâu* — rồi chuyển thành bản lề sang phần Đề xuất. §6.1 là **phát hiện
-trung tâm của cả đồ án**; §6.2 biến bốn hồi bằng chứng thành bốn điều kiện mà bất
-kỳ đề xuất nào cũng phải thoả.
+trung tâm của cả đồ án**; §6.2 hỏi phần nào của kim ngạch ấy thực sự ở lại Việt
+Nam; §6.3 biến bằng chứng thành bốn điều kiện mà bất kỳ đề xuất nào cũng phải thoả.
 
 ## 6.1 Trèo lên bằng gì: lợi thế mạnh nhất nằm đúng ở nơi hàng dễ nhất
 
@@ -65,7 +65,63 @@ Lấy lại: `src/make_decision_plane.py` · `src/make_hierarchy_charts.py`
 
 ---
 
-## 6.2 Những phát hiện này ràng buộc phần Đề xuất như thế nào
+## 6.2 Hàng đi qua không bằng hàng ở lại: phần giá trị làm ra trong nước
+
+`src/map_sector_isic.py` · OECD TiVA 2025 · Việt Nam, **2022** (TiVA dừng ở năm đó,
+không phải 2023 của đồ án)
+
+Mọi con số ở §6.1 là kim ngạch xuất khẩu **gộp**. *Giá trị gia tăng trong nước* là
+phần tiền thực sự được tạo ra bên trong lãnh thổ — doanh thu xuất khẩu trừ phần
+linh kiện, nguyên liệu mua từ nước ngoài — và Atlas không đo được nó vì thiếu bảng
+cân đối liên ngành (hạn chế D2, D5). Bộ TiVA (*Trade in Value Added*) của OECD dựng
+từ đúng loại bảng đó, phủ Việt Nam, 50 ngành, 1995–2022. Ghép 10 ngành của đồ án
+sang mã ngành của TiVA qua nhóm HS2 (bảng ghép `data/reference/hs2_to_isic4.csv`,
+quyết định **B27**) thì ra:
+
+| Ngành | Xuất khẩu 2022 | Tỷ trọng | PCI | **Giữ lại trong nước** |
+|---|---|---|---|---|
+| Điện tử | 131,6 tỷ USD | 36,9% | +0,92 | **44,2%** |
+| Máy móc và thiết bị | 43,1 | 12,1% | +0,73 | **47,5%** |
+| Phương tiện vận tải | 6,3 | 1,8% | +0,29 | 43,8% |
+| Hóa chất và nhựa | 21,7 | 6,1% | +0,28 | 45,4% |
+| Kim loại | 19,1 | 5,4% | +0,24 | 66,2% |
+| Đá, thủy tinh, gốm sứ | 3,7 | 1,1% | +0,14 | 60,2% |
+| Dệt may, giày dép, nội thất | 81,5 | 22,9% | −0,56 | 53,0% |
+| Khoáng sản và nhiên liệu | 6,3 | 1,8% | −0,66 | 73,8% (khoảng 52,0–73,8%) |
+| Nông sản, gỗ và giấy | 42,9 | 12,0% | −0,89 | 60,4% |
+
+Ngành "Khác" không có số: HS99 và HS97 là 38,7 tỷ USD (9,8% xuất khẩu), không ghép
+được sang mã ngành nào. Bình quân gia quyền cả rổ ghép được là **50,5%**, khớp với số
+TiVA tự công bố (toàn nền kinh tế 51,5%; công nghiệp chế biến 49,5%).
+
+Ba điều đọc được, và một điều **không** được đọc:
+
+1. **Phần ở lại đã tụt rất xa.** Toàn nền kinh tế từ **79,8% (1995) xuống 51,5%
+   (2022)**; điện tử 64,1% → 44,2%; dệt may 73,2% → 53,1%. Trong cùng thời gian,
+   kim ngạch Atlas đi từ 5,12 lên 385,54 tỷ USD (1995 → 2023). Nghĩa là phần
+   kim ngạch tăng thêm mang về tỷ lệ giá trị trong nước **thấp hơn** mức của năm 1995.
+2. **Hàng càng khó thì càng ít ở lại — mức vừa.** Hệ số Spearman giữa PCI và phần
+   giữ lại là **−0,47** ở mức mã ngành (n = 20, p = 0,038). Bốn ngành PCI cao nhất,
+   chiếm 56,9% xuất khẩu ghép được, đều nằm ở **43,8–47,5%**. Hệ số đó chỉ giải
+   thích chừng một phần năm thứ hạng và chỉ một phép kiểm được chạy, nên nó là một
+   *xu hướng*, không phải một quy luật.
+3. **Máy móc không giữ nhiều hơn điện tử bao nhiêu.** 47,5% so với 44,2%; khoảng
+   của máy móc theo hai cách ghép là 46,2–47,5%, nên chênh 3 điểm nằm trong sai
+   số của bảng ghép. HS84 và HS90 chia nhau mã `C26` và `C28` ở mức HS2, nên khối
+   ghép chung với điện tử (`C26`+`C27`+`C28`) cho **44,2%** theo quy mô TiVA.
+
+*Điều không được đọc:* "Việt Nam chỉ lắp ráp". Gần nửa giá trị hàng điện tử vẫn làm
+ra trong nước. Và "trong nước" là giá trị tạo ra **trong lãnh thổ**, bất kể chủ
+doanh nghiệp — lương và thuế ở lại, lợi nhuận của doanh nghiệp nước ngoài có thể
+chuyển ra — nên số này chưa trả lời hết câu *"cái gì ở lại Việt Nam"*. TiVA là ước
+lượng từ bảng vào–ra đã cân đối, không phải số đo trực tiếp. Chi tiết và phép đối
+chiếu bảng ghép: **A19**.
+
+Lấy lại: `src/map_sector_isic.py` (mặc định `--year 2022`)
+
+---
+
+## 6.3 Những phát hiện này ràng buộc phần Đề xuất như thế nào
 
 Phần Đề xuất là mục riêng, nhưng nó không được tự do: bốn nhịp trên đã khoá sẵn
 bốn điều kiện mà bất kỳ đề xuất nào cũng phải thoả.
@@ -73,8 +129,10 @@ bốn điều kiện mà bất kỳ đề xuất nào cũng phải thoả.
 1. **Không đề xuất "đa dạng hoá thị trường" bằng cách đếm thêm bạn hàng** (§5.3).
    Thêm một nước nhận 5 triệu USD không đổi được HHI. Phép đo phải là tỷ trọng giá
    trị, nên mục tiêu cũng phải phát biểu theo tỷ trọng giá trị.
-2. **Không đề xuất dồn thêm vào điện tử** (§6.1). RCA đã 2,23, chiếm 29,94% rổ
-   hàng, và là khâu phụ thuộc nhập khẩu nhất trong hành lang ở §5.2.
+2. **Không đề xuất dồn thêm vào điện tử** (§6.1). RCA đã 2,23 và chiếm 29,94% rổ
+   hàng — một nhóm đã lớn đến mức đào sâu thêm là tăng độ tập trung, và đầu vào
+   của nó đi qua đúng hành lang hẹp ở §5.2. Lý do này **không** phải "điện tử giữ
+   ít giá trị nhất": §6.2 cho thấy máy móc chỉ hơn điện tử 3 điểm.
 3. **Không đề xuất dồn thêm vào nhóm RCA cao – PCI thấp** (§6.1). Thủy sản, cà
    phê, trái cây đã bán rất đậm và đã giảm tỷ trọng suốt 28 năm.
 4. **Đề xuất phải nói được điều gì sẽ làm nó sai.** §5.3 đưa ra sẵn một mốc kiểm

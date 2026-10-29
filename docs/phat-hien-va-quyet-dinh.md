@@ -928,6 +928,7 @@ thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa 
 | B25 | **Phụ đề hình ghi năm, đơn vị, phạm vi — không ghi hướng dẫn tương tác** | Phụ đề treemap in *"Bấm vào một ngành để xem các nhóm hàng bên trong"* và sunburst in *"Bấm vào một vành để khoan sâu"*. Đúng với bản HTML, **sai với bản PNG** nằm trong báo cáo nộp và trên slide — một lời mời bấm vào ảnh tĩnh. Đã thay bằng câu nói tổng giá trị, số ngành và số nhóm HS2, tính từ dữ liệu; năm đã nằm ở tiêu đề (style guide §6.2). Lỗi này lộ ra khi xem slide, không lộ ra ở bất kỳ phép kiểm chữ nào |
 | B26 | **Trang demo tĩnh dùng lại số của slide; khung giao diện chỉ dùng thang xám mực** — `src/build_web.py` ra `site/` | Chỗ thứ ba in số của đồ án, nên nó không đo gì riêng: gọi `build_slides.do_so()`, đi qua cùng bảng `KY_VONG`, và tự bắt chữ số gõ tay trong phần chữ — phép kiểm này bắt được 6 chỗ ở lần dựng đầu. Khung giao diện không có màu nào: xanh dương và cam phổ biến cho web lại trùng bảng cụm Louvain (`#2166AC`, `#D55E00`), nên đặt cạnh hình node-link sẽ thành mang nghĩa. Mỗi biểu đồ nằm trong iframe giữ đúng khung point gốc (B16) rồi phóng bằng CSS, vì để Plotly tự giãn thì tiêu đề trong hình đè lên vùng vẽ. Chỉ chế độ sáng: biểu đồ được kiểm tương phản trên nền trắng (T24). Lighthouse: Accessibility, Best Practices, SEO đều 100 trên desktop và mobile |
 | B27 | **Ghép 10 ngành sang ISIC qua nhóm HS2, rồi hiệu chỉnh bằng đối chiếu quy mô với TiVA — không bằng suy đoán về hàng Việt Nam** | ghép thẳng ngành Atlas sang ngành ISIC thì sai, vì một ngành Atlas gồm nhiều ngành ISIC (HS84 và HS85 chia nhau `C26`, `C27`, `C28`). Quy tắc ghép: theo định nghĩa chương HS; chỗ mơ hồ ghi phương án thay thế ở cột `isic_alt` để báo cáo khoảng. Bảng 97 dòng ở `data/reference/hs2_to_isic4.csv`, **được commit** (đó là bảng tự viết, không phải dữ liệu thô). Dùng **2022** vì TiVA 2025 dừng ở đó — xem A19 |
+| B28 | **Giữ nguyên đề xuất HS90 + HS84, đổi lý do và thêm một mốc kiểm phần giá trị ở lại** | TiVA (A19) cho ngành máy móc giữ 47,5% (khoảng 46,2–47,5%) so với 44,2% của điện tử: chênh 3 điểm nằm trong sai số của bảng ghép, nên câu cũ *"điện tử là khâu phụ thuộc nhập khẩu nhất"* không còn đỡ được lập luận (và trước đó cũng chưa từng được đo ở mức ngành). Đề xuất không đổi vì nó là đầu ra của quy tắc trong code (A14, B18), nhưng lý do chỉ còn là **độ khó của hàng và mức tập trung**. Hệ quả: §6.2 mới nói phần ở lại, §7.3 nói thẳng rằng kim ngạch có thể tăng nhanh hơn phần ở lại, §7.4 thêm mốc *khối `C26`+`C27`+`C28` ≥ 44,2%*, §7.5 thêm điều kiện đổi ý thứ tư. Mục §6.2 cũ được đánh lại số thành §6.3 |
 
 ## C. Bẫy kỹ thuật đã vấp — đừng vấp lại
 
@@ -1025,9 +1026,11 @@ học (+0,93). Điện tử 115,4 tỷ USD mà RCA chỉ 2,23. **36,2% rổ hàn
 **Nhịp 5 — Vậy nên đề xuất.** Dồn ưu tiên vào **thiết bị quang học – y tế**
 (RCA 0,75 → 0,91; PCI +0,93) và **máy móc công nghiệp** (0,46 → **0,95**; +0,78)
 — hai nhóm khó nhất trong rổ và đang sát ngưỡng lợi thế — thay vì đào sâu thêm
-vào lắp ráp điện tử, nơi RCA đã 2,23 và là khâu phụ thuộc nhập khẩu nhất. Không
+vào lắp ráp điện tử, nơi RCA đã 2,23 và đầu vào đi qua hành lang hẹp. Không
 dồn thêm vào nhóm RCA cao – PCI thấp (thủy sản, cà phê, trái cây), vốn đã giảm
-tỷ trọng suốt 28 năm. → **T31**
+tỷ trọng suốt 28 năm. Và nói thẳng: hai nhóm này giữ khoảng 44–48% giá trị trong
+nước, không hơn điện tử (TiVA: máy móc 47,5%, điện tử 44,2%), nên lý do là độ khó
+và mức tập trung, không phải "giữ nhiều hơn". → **T31**, A19, B28
 
 **Vì sao tin được cách chọn này:** chạy đúng quy tắc ấy trên dữ liệu 2015 thì nó
 chọn thiết bị quang học và sắt thép; tám năm sau cả hai đi đúng hướng, **sắt

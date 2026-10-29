@@ -68,7 +68,7 @@ ba bạn hàng đầu — xem §5.3.
 | 4 | Và chỗ bán đậm nhất là chỗ hàng dễ nhất | giày dép RCA **7,52** / PCI −0,49; máy móc RCA **0,95** / PCI +0,78 | T31 |
 | 5 | → Đề xuất (mục riêng) | — | T31 |
 
-Bốn nhịp đầu là **phần 3 đến phần 6** của báo cáo; nhịp 5 là **phần 7 — Đề xuất**, dựng trên §6.1 và §6.2.
+Bốn nhịp đầu là **phần 3 đến phần 6** của báo cáo; nhịp 5 là **phần 7 — Đề xuất**, dựng trên §6.1 đến §6.3.
 
 Trước bốn nhịp đó, §4.1–§4.2 trả lời câu hỏi nghiên cứu ở tầng mạng lưới: **cấu
 trúc thương mại toàn cầu trông như thế nào, và Việt Nam nằm ở đâu trong đó.** Ba
