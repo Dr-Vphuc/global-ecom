@@ -357,6 +357,8 @@ global-ecom/
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
 │   ├── build_report.py           # T27 ráp 10 mục -> output/bao-cao-cuoi.{md,html}
 │   ├── build_slides.py           # T28 dựng slide -> output/slide-thuyet-trinh.{html,md}
+│   ├── build_web.py              # trang demo 22 biểu đồ tương tác -> site/ (B26)
+│   ├── web/                      # khuôn HTML, CSS, JS của trang demo
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
@@ -461,6 +463,7 @@ python src/make_decision_plane.py --year 2007 --since 1999  # quy tắc chạy �
 python src/build_report.py            # T27 ráp báo cáo cuối từ .report/final/
 python src/build_report.py --embed    # bản HTML một file, nhúng PNG (~8,6 MB)
 python src/build_slides.py            # T28 dựng slide thuyết trình 16:9
+python src/build_web.py               # trang demo -> site/, chạy sau cùng (cần cả slide và báo cáo)
 ```
 
 Biểu đồ ra `output/` dưới hai dạng `.html` và `.png`; thư mục này bị
@@ -571,6 +574,29 @@ PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/build_slides.py --embed  # m
 
 Xem slide bằng cách mở thẳng file HTML; muốn phục vụ qua HTTP thì
 `python -m http.server` trong thư mục `output/`.
+
+## Trang demo trực tuyến
+
+`src/build_web.py` ra thư mục `site/`: một trang tĩnh gom **22 biểu đồ tương tác**
+theo đúng năm nhịp của slide, kèm báo cáo cuối và slide. `site/` **được commit** —
+GitHub Pages phục vụ thẳng từ repo, còn máy của GitHub không có dữ liệu thô để
+chạy pipeline. Workflow `.github/workflows/pages.yml` chỉ đẩy thư mục đó lên, chạy
+mỗi khi `site/` trên `main` đổi. **Bật một lần:** Settings → Pages → Source:
+*GitHub Actions* (cần quyền admin repo).
+
+Trang **không đo gì riêng** (quyết định **B26**): nó gọi đúng `build_slides.do_so()`
+nên web, slide và báo cáo luôn in cùng một con số, rồi tự kiểm 7 việc — ô `{khoá}`
+chưa giải, biểu đồ thiếu file hoặc bị bỏ sót, 62 số đối chiếu với báo cáo, đủ năm
+nhịp, **chữ số gõ tay trong phần chữ**, tài liệu kèm thiếu ảnh, và dung lượng.
+
+Sửa biểu đồ xong thì chạy lại theo thứ tự: script vẽ → `build_report.py` →
+`build_slides.py` → `build_web.py`, rồi commit `site/`. Không chạy lại thì trang
+trực tuyến hiện bản cũ.
+
+```bash
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/build_web.py
+cd site && python -m http.server 8000      # xem thử ở http://localhost:8000
+```
 
 ## Báo cáo cuối đã ráp xong (T27)
 

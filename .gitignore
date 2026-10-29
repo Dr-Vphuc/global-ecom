@@ -72,3 +72,6 @@ output/
 
 # Goi anh nen de upload Overleaf — chi la ban sao cua img/.
 *.zip
+
+# Anh chup va ban ghi cua Playwright khi kiem trang web, khong phai san pham.
+.playwright-mcp/

@@ -8,7 +8,7 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A18), chốt điều gì (B1–B25) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A18), chốt điều gì (B1–B26) | `docs/phat-hien-va-quyet-dinh.md` |
 | **Mạch thuyết trình — năm nhịp, kết bằng đề xuất** | `docs/phat-hien-va-quyet-dinh.md` §E |
 | Các mục của báo cáo cuối đã viết | `.report/final/` — một file một mục (**B21**) |
 | Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
@@ -324,6 +324,11 @@ phải bắt đầu từ trang trắng.
 3. **T30 dọn repo** — pipeline đã chạy lại trọn vẹn; còn dọn ảnh trùng trong
    `.report/` (xem bên dưới), nhớ sửa đường dẫn trong `main.tex` / `index.html`
    nếu xoá.
+
+**Trang demo trực tuyến** — `src/build_web.py` → `site/`, 22 biểu đồ tương tác theo
+năm nhịp, đẩy lên GitHub Pages bằng `.github/workflows/pages.yml` (**B26**). Còn một
+bước cần admin repo: Settings → Pages → Source: *GitHub Actions*. Thấy khi dựng: phụ
+đề hình T20 chạm sát tiêu đề ô 1995 — việc của T23.
 
 Slide chia sẵn ai nói phần nào theo cột *Người phụ trách* của file phân công; muốn
 đổi thì sửa khoá `chu` của slide đó trong `src/build_slides.py` rồi chạy lại.
