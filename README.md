@@ -365,7 +365,7 @@ global-ecom/
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
 │   ├── nhat-ky-cong-viec.md        # đã làm gì, nằm ở đâu — mở trước khi soạn slide
-│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A19, quyết định B1–B30, hạn chế D1–D5
+│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A20, quyết định B1–B30, hạn chế D1–D5
 │   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
 │   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
 │   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
@@ -593,12 +593,6 @@ nên web, slide và báo cáo luôn in cùng một con số, rồi tự kiểm 7
 chưa giải, biểu đồ thiếu file hoặc bị bỏ sót, 62 số đối chiếu với báo cáo, đủ năm
 nhịp, **chữ số gõ tay trong phần chữ**, tài liệu kèm thiếu ảnh, và dung lượng.
 
-Cùng lệnh đó ra thêm **`site/dashboard.html`** — bản để demo (quyết định **B29**):
-sáu ô chỉ số có sparkline 1995–2023 ở trên, ba tab biểu đồ ở dưới, một nút đổi năm
-cho cả trang. Trang chính `index.html` giữ dạng bài viết để gắn link vào báo cáo.
-Dashboard thêm hai phép kiểm (8, 9): hai đầu của mỗi chuỗi phải khớp `do_so()`, và
-mọi thẻ phải lấy được tiêu đề từ chính file biểu đồ.
-
 Sửa biểu đồ xong thì chạy lại theo thứ tự: script vẽ → `build_report.py` →
 `build_slides.py` → `build_web.py`, rồi commit `site/`. Không chạy lại thì trang
 trực tuyến hiện bản cũ.
@@ -606,6 +600,25 @@ trực tuyến hiện bản cũ.
 ```bash
 PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/build_web.py
 cd site && python -m http.server 8000      # xem thử ở http://localhost:8000
+```
+
+### Dashboard BI (`site/bi/`) — bản dùng để demo
+
+Tách hẳn khỏi bài viết và báo cáo (quyết định **B29**): không kể chuyện, không câu
+nhận xét, chỉ có số, biểu đồ và bộ lọc. Bộ lọc chung gồm quốc gia (232 nước) và năm
+(1995–2023). Bên dưới là tám ô chỉ số có sparkline, rồi bảy biểu đồ, mỗi biểu đồ có
+bộ lọc riêng (ngành, chiều xuất/nhập, khu vực, top N, ngưỡng kim ngạch, nhóm nước
+so sánh). Cuối trang là bảng 97 nhóm HS2: tìm kiếm, sắp xếp, tải CSV.
+
+Biểu đồ vẽ trên trình duyệt từ gói dữ liệu đã gộp do `src/build_bi.py` dựng từ
+`data/processed/`: `data/world.json` cộng một file `data/c/<ISO3>.json` cho mỗi nước,
+khoảng 7,6 MB. RCA tính lại trên trình duyệt. Script tự kiểm rằng tổng theo HS2,
+tổng theo đối tác và tổng theo khu vực khớp với `country_year`.
+`build_web.py` không đụng tới `site/bi/`.
+
+```bash
+PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/build_bi.py
+# xem ở http://localhost:8000/bi/  — link có trạng thái: /bi/#VNM-2023
 ```
 
 ## Báo cáo cuối đã ráp xong (T27)
