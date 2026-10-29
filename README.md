@@ -352,6 +352,7 @@ global-ecom/
 │   ├── make_decision_plane.py # RCA × PCI — hình mang ĐỀ XUẤT (T31)
 │   ├── check_readability.py   # kiểm cỡ chữ, khung, tương phản, mù màu (T24)
 │   ├── compare_mirror.py      # chênh lệch gương: hai bản khai có độc lập không (T08, A18)
+│   ├── map_sector_isic.py     # ghép 10 ngành sang ISIC, tỷ lệ giá trị làm ra trong nước (A19, B27)
 │   ├── probe_colour_space.py  # còn chỗ cho bảng màu mới không (B17)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
@@ -363,7 +364,7 @@ global-ecom/
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
 │   ├── nhat-ky-cong-viec.md        # đã làm gì, nằm ở đâu — mở trước khi soạn slide
-│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A17, quyết định B1–B25, hạn chế D1–D5
+│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A19, quyết định B1–B27, hạn chế D1–D5
 │   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
 │   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
 │   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
@@ -457,6 +458,7 @@ python src/make_decision_plane.py     # T31 mặt phẳng quyết định (đề
 python src/make_decision_plane.py --year 2015 --since 2007   # thử lại quy tắc
 python src/check_readability.py       # T24 kiểm khả năng đọc, ĐẠT thì trả 0
 python src/compare_mirror.py          # T08 chênh lệch gương; thêm --year 1995 để đối chứng; --min-flow 0, --all-years
+python src/map_sector_isic.py         # A19 tỷ lệ trong nước theo ngành (TiVA 2022); cần mạng lần đầu, tải vào data/raw/
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 python src/make_decision_plane.py --year 2007 --since 1999  # quy tắc chạy ở 2007

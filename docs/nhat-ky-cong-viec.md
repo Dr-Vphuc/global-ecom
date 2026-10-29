@@ -8,7 +8,7 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A18), chốt điều gì (B1–B26) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A19), chốt điều gì (B1–B27) | `docs/phat-hien-va-quyet-dinh.md` |
 | **Mạch thuyết trình — năm nhịp, kết bằng đề xuất** | `docs/phat-hien-va-quyet-dinh.md` §E |
 | Các mục của báo cáo cuối đã viết | `.report/final/` — một file một mục (**B21**) |
 | Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
@@ -298,10 +298,12 @@ chiếc điện thoại, bất kể giữ lại bao nhiêu giá trị. Đường
 1995)** lên **+0,58 (#78/230, 2023)** một phần đến từ 115,4 tỷ USD điện tử. Sankey
 (T19) cho thấy dấu hiệu hành lang — mua của Trung Quốc 133,05 tỷ, bán cho Hoa Kỳ
 95,16 tỷ — nhưng phần nhạt trên thanh Việt Nam là *xuất trừ nhập*, **không** phải
-giá trị tăng thêm trong nước. Tách được phần ở lại thì cần bảng vào–ra (OECD TiVA,
-ADB MRIO), mà Atlas không có. Vì vậy câu kết luận đúng là: *chỉ số đo sự tiến bộ
-này có một điểm mù, và ta biết điểm mù nằm ở đâu* — không phải "Việt Nam chỉ lắp
-ráp", cũng không phải "Việt Nam đã làm chủ công nghệ". → A2, A12, D2, D5, §2.4.
+giá trị tăng thêm trong nước. Atlas không có bảng vào–ra, nên nhóm lấy thêm OECD
+TiVA 2025: điện tử giữ **44,2%** giá trị trong nước (2022), bình quân hàng hóa ghép
+được 50,5%, và hàng càng phức tạp thì tỷ lệ càng thấp (ρ = −0,47). Vì vậy câu kết
+luận đúng là: *chỉ số đo sự tiến bộ này có một điểm mù, và ta đã đo được cỡ của nó
+ở mức ngành* — không phải "Việt Nam chỉ lắp ráp" (44% vẫn làm ra ở đây), cũng không
+phải "Việt Nam đã làm chủ công nghệ" (56% là linh kiện nhập về). → A2, A12, A19, D2, D5, §2.4.
 
 ---
 
@@ -335,8 +337,9 @@ Slide chia sẵn ai nói phần nào theo cột *Người phụ trách* của fi
 
 **Chỗ yếu cần biết trước khi lên trình bày.** Đề xuất ở T31 dựa trên RCA và PCI
 — hai chỉ số **đo rổ hàng gộp**, nên chúng nói *cái gì đi qua Việt Nam*, chưa hẳn
-*cái gì ở lại*. Không có bảng vào–ra thì không tách được, và phải nói thẳng điều
-đó chứ đừng để người chấm hỏi ra (D2, D5). Điểm mạnh bù lại: quy tắc chọn của
+*cái gì ở lại*. Atlas không tách được; TiVA tách được ở mức ngành cho năm 2022
+(A19), nhưng lệch năm so với 2023 và không xuống tới HS4, nên vẫn phải nói thẳng
+những giới hạn ấy chứ đừng để người chấm hỏi ra (D2, D5). Điểm mạnh bù lại: quy tắc chọn của
 T31 **đã chạy lại trên hai năm quá khứ** và cả hai lần đều chỉ đúng chỗ (2007 →
 điện tử, 2015 → sắt thép vượt ngưỡng), trên một nền mà RCA **không** tự đi lên —
 xem A14 và A17. Nhưng A17 cũng đo được rằng sức dự báo nằm ở điều kiện **PCI > 0**

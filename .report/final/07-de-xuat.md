@@ -172,9 +172,10 @@ của lập luận:
   đưa tới đó. Ranh giới *"không giải thích nguyên nhân chính sách"* đã chốt ở T01.
 - **Không nói Việt Nam giữ lại bao nhiêu giá trị ở hai nhóm ấy.** RCA và PCI đo rổ
   hàng **gộp**, nên chúng đo *cái gì đi qua Việt Nam*, chưa hẳn *cái gì ở lại* —
-  đúng hạn chế **D2** và **D5** ở §8.1. Nếu HS84 và HS90 cũng là lắp ráp thuần thì
-  RCA vượt 1,00 vẫn không đổi được phần giá trị giữ lại, và báo cáo này **không đo
-  được** chỗ đó. Muốn đo cần bảng vào–ra (OECD TiVA hoặc ADB MRIO).
+  đúng hạn chế **D2** và **D5** ở §8.1. TiVA 2025 cho số ở mức ngành: nhóm ghép với
+  điện tử và máy móc (khối `C26`+`C27`+`C28`) giữ khoảng 44% trong nước năm 2022.
+  Nhưng đó là số của cả ngành, không tách riêng HS84 và HS90 được, nên báo cáo
+  vẫn **không đo được** riêng hai nhóm ấy.
 - **Không nói hai nhóm ấy là hai nhóm tốt nhất có thể.** Chúng là hai nhóm **khó
   nhất trong tám nhóm thoả quy tắc** (§7.1). Đổi `N_PICK` hoặc nới `RCA_HI` thì
   danh sách đổi, và bảng tám nhóm ở §7.1 để ngay đó cho người đọc tự xét.
