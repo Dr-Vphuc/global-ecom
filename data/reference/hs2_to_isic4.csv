@@ -1,0 +1,98 @@
+hs2,isic_primary,isic_alt,ly_do
+01,A01,,Chương HS 01–14 chưa chế biến: nông nghiệp
+02,C10T12,,"Thịt, sữa, bột xay: chế biến thực phẩm"
+03,C10T12,A03,"Cá tươi/đông lạnh: TiVA xếp vào chế biến (đối chiếu quy mô: Atlas 7,6 tỷ so với A03 chỉ 0,4 tỷ)"
+04,C10T12,,"Thịt, sữa, bột xay: chế biến thực phẩm"
+05,A01,,Chương HS 01–14 chưa chế biến: nông nghiệp
+06,A01,,Chương HS 01–14 chưa chế biến: nông nghiệp
+07,A01,,Chương HS 01–14 chưa chế biến: nông nghiệp
+08,A01,,Chương HS 01–14 chưa chế biến: nông nghiệp
+09,A01,,Chương HS 01–14 chưa chế biến: nông nghiệp
+10,C10T12,A01,Gạo xay xát: TiVA xếp vào chế biến thực phẩm (đối chiếu quy mô)
+11,C10T12,,"Thịt, sữa, bột xay: chế biến thực phẩm"
+12,A01,,Chương HS 01–14 chưa chế biến: nông nghiệp
+13,A01,,Chương HS 01–14 chưa chế biến: nông nghiệp
+14,A01,,Chương HS 01–14 chưa chế biến: nông nghiệp
+15,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+16,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+17,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+18,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+19,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+20,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+21,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+22,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+23,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+24,C10T12,,"Chương HS 15–24: thực phẩm, đồ uống, thuốc lá chế biến"
+25,B07_08,C23,"Muối, đất đá, xi măng chung một chương: theo tên chương là khai khoáng"
+26,B07_08,,"Quặng, xỉ"
+27,B05_06,C19,"Than, dầu thô, khí lẫn dầu tinh chế trong một chương"
+28,C20,,Hóa chất
+29,C20,,Hóa chất
+30,C21,,Dược phẩm
+31,C20,,Hóa chất
+32,C20,,Hóa chất
+33,C20,,Hóa chất
+34,C20,,Hóa chất
+35,C20,,Hóa chất
+36,C20,,Hóa chất
+37,C20,,Hóa chất
+38,C20,,Hóa chất
+39,C22,,Nhựa và cao su
+40,C22,,Nhựa và cao su
+41,C13T15,,Da và sản phẩm da (ISIC 15)
+42,C13T15,,Da và sản phẩm da (ISIC 15)
+43,C13T15,,Da và sản phẩm da (ISIC 15)
+44,C16,,"Gỗ, lie, mây tre đan"
+45,C16,,"Gỗ, lie, mây tre đan"
+46,C16,,"Gỗ, lie, mây tre đan"
+47,C17_18,,"Bột giấy, giấy, in ấn"
+48,C17_18,,"Bột giấy, giấy, in ấn"
+49,C17_18,,"Bột giấy, giấy, in ấn"
+50,C13T15,,"Dệt, may, giày, mũ"
+51,C13T15,,"Dệt, may, giày, mũ"
+52,C13T15,,"Dệt, may, giày, mũ"
+53,C13T15,,"Dệt, may, giày, mũ"
+54,C13T15,,"Dệt, may, giày, mũ"
+55,C13T15,,"Dệt, may, giày, mũ"
+56,C13T15,,"Dệt, may, giày, mũ"
+57,C13T15,,"Dệt, may, giày, mũ"
+58,C13T15,,"Dệt, may, giày, mũ"
+59,C13T15,,"Dệt, may, giày, mũ"
+60,C13T15,,"Dệt, may, giày, mũ"
+61,C13T15,,"Dệt, may, giày, mũ"
+62,C13T15,,"Dệt, may, giày, mũ"
+63,C13T15,,"Dệt, may, giày, mũ"
+64,C13T15,,"Dệt, may, giày, mũ"
+65,C13T15,,"Dệt, may, giày, mũ"
+66,C31T33,,"Chế tạo khác: nội thất, đồ chơi, nhạc cụ, ô dù"
+67,C31T33,,"Chế tạo khác: nội thất, đồ chơi, nhạc cụ, ô dù"
+68,C23,,"Khoáng phi kim: đá, gốm, thủy tinh"
+69,C23,,"Khoáng phi kim: đá, gốm, thủy tinh"
+70,C23,,"Khoáng phi kim: đá, gốm, thủy tinh"
+71,C31T33,,Chủ yếu trang sức (ISIC 3211)
+72,C241_2431,,Sắt thép cơ bản
+73,C25,,Sản phẩm kim loại gia công
+74,C242_2432,,Kim loại màu cơ bản
+75,C242_2432,,Kim loại màu cơ bản
+76,C242_2432,,Kim loại màu cơ bản
+78,C242_2432,,Kim loại màu cơ bản
+79,C242_2432,,Kim loại màu cơ bản
+80,C242_2432,,Kim loại màu cơ bản
+81,C242_2432,,Kim loại màu cơ bản
+82,C25,,Sản phẩm kim loại gia công
+83,C25,,Sản phẩm kim loại gia công
+84,C28,C26,Máy móc; HS8471 (máy tính) thuộc C26 nhưng không tách được ở HS2
+85,C26,C27,"Điện tử; động cơ, pin, dây cáp thuộc C27 nhưng không tách được ở HS2"
+86,C302T309,,"Đầu máy, máy bay"
+87,C29,,Xe có động cơ và phụ tùng
+88,C302T309,,"Đầu máy, máy bay"
+89,C301,,Đóng tàu thuyền
+90,C26,C31T33,"Dụng cụ quang học, đo lường; thiết bị y tế thuộc C31T33"
+91,C26,,Đồng hồ
+92,C31T33,,"Chế tạo khác: nội thất, đồ chơi, nhạc cụ, ô dù"
+93,C25,,Sản phẩm kim loại gia công
+94,C31T33,,"Chế tạo khác: nội thất, đồ chơi, nhạc cụ, ô dù"
+95,C31T33,,"Chế tạo khác: nội thất, đồ chơi, nhạc cụ, ô dù"
+96,C31T33,,"Chế tạo khác: nội thất, đồ chơi, nhạc cụ, ô dù"
+97,,,"Không ghép được: HS97 tác phẩm nghệ thuật, HS99 không phân loại"
+99,,,"Không ghép được: HS97 tác phẩm nghệ thuật, HS99 không phân loại"

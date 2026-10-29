@@ -9,7 +9,10 @@ cặp nước, riêng Việt Nam mất 37 bạn hàng trị giá 11,4 tỷ USD. 
 
 **D2. ECI tính trên xuất khẩu gộp** → nó thưởng điểm cho việc **lắp ráp** hàng phức
 tạp bất kể nước đó giữ lại được bao nhiêu giá trị. Nói cách khác, ECI đo *cái gì đi
-qua Việt Nam*, chưa hẳn là *cái gì ở lại Việt Nam*.
+qua Việt Nam*, chưa hẳn là *cái gì ở lại Việt Nam*. **Phần này đã đo được ở mức
+ngành** (xem D5): hàng điện tử giữ 44,2% giá trị trong nước, và hàng càng phức tạp
+thì tỷ lệ trong nước càng thấp (ρ = −0,47). Nên ECI đúng là thiên về hàng ít giá trị
+ở lại, nhưng ở mức vừa chứ không tuyệt đối.
 
 **D3. Node-link vứt 98,5% số cạnh.** Nó **không** đọc được là "bản đồ thương mại
 toàn cầu", mà là *"bản đồ các luồng thương mại lớn, cộng chỗ đứng của ASEAN trong
@@ -22,10 +25,20 @@ một đồ thị đã lọc, nên ma trận **không** cứu được cái 98,5
 4,2 giờ tải ở tốc độ đo được. Hệ quả cụ thể: nhóm "Điện, điện tử và linh kiện" gộp
 cả chip lẫn dây điện vào một ô.
 
-**D5. Không có dữ liệu giá trị gia tăng.** Mọi nhận định về "giữ lại bao nhiêu giá
-trị" trong báo cáo là **suy luận từ RCA × PCI**, không phải đo trực tiếp. Phần "xuất
-trừ nhập" trên Sankey (T19) là **số học**, không phải giá trị tăng thêm — tách được
-phần đó cần bảng vào–ra mà Atlas không có.
+**D5. Giá trị gia tăng chỉ đo được ở mức ngành, năm 2022, và là ước lượng.** Atlas không
+có bảng vào–ra, nên nhóm lấy thêm bảng TiVA 2025 của OECD (80 nền kinh tế, 50 ngành,
+đến 2022) và ghép 10 ngành sang mã ISIC qua nhóm HS2 (A19). Kết quả: bình quân hàng
+hóa ghép được giữ **50,5%** trong nước; điện tử **44,2%** (chiếm 36,9% xuất khẩu),
+dệt may 53,0%, nông sản 60,4%, kim loại 66,2%. Bốn điều phải nói kèm:
+- **Lệch năm:** TiVA dừng ở 2022, đồ án dùng 2023.
+- **Lệch độ chi tiết:** TiVA chia theo ngành ISIC, không theo HS, nên không tính lại
+  được RCA, PCI hay ECI trên giá trị gia tăng; HS2 cũng không tách máy tính khỏi máy
+  móc chung (khối ấy ra 44,2% theo quy mô TiVA và 44,8% theo bảng ghép).
+- **"Trong nước" tính theo lãnh thổ, không theo chủ sở hữu:** lợi nhuận của doanh
+  nghiệp nước ngoài có thể chuyển ra ngoài mà vẫn được tính là giá trị làm ra ở đây.
+- **9,8% xuất khẩu (HS97, HS99) không ghép được**, nên ngành "Khác" không có số.
+
+Phần "xuất trừ nhập" trên Sankey (T19) vẫn là **số học**, không phải giá trị tăng thêm.
 
 Hai hạn chế cuối cùng nối thẳng vào chỗ yếu nhất của đề xuất, nên báo cáo nói ra
 trước thay vì chờ bị hỏi. Điểm mạnh bù lại là phép thử lại ở §7.2.
@@ -47,7 +60,8 @@ hàng theo chặng mà Atlas không có.
 
 Bốn câu hỏi mở còn lại đều đã nằm trong năm hạn chế ở §8.1 và không nhắc lại ở đây:
 giá trị ở lại Việt Nam (D2, D5) · chi tiết dưới cấp HS2 (D4) · phần đuôi của mạng
-đã bị lọc (D3) · năm 2024 (D1).
+đã bị lọc (D3) · năm 2024 (D1). Riêng "giá trị ở lại Việt Nam" nay đã đo ở mức ngành;
+phần còn thiếu là mức HS4, năm 2023 và chủ sở hữu (D2, D5).
 
 ## 8.3 Kết luận
 

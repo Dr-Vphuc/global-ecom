@@ -1,6 +1,6 @@
 # Phát hiện & quyết định — sổ ghi cho báo cáo
 
-> Cập nhật **2026-09-24**. Đây là nơi giữ **những gì đáng đưa vào báo cáo** và
+> Cập nhật **2026-10-29**. Đây là nơi giữ **những gì đáng đưa vào báo cáo** và
 > **những gì đã chốt để khỏi cãi lại**. Khác với ba tài liệu kia:
 >
 > | File | Trả lời câu gì |
@@ -428,8 +428,8 @@ hụt 1,39 tỷ), Nhật Bản mua nhiều nhất (thặng dư 0,60 tỷ). Hành
 **hai đầu của nó đã đổi người**, và quy mô gấp 75 lần.
 
 ⚠️ Phần nhạt trên thanh Việt Nam là **xuất trừ nhập**, KHÔNG phải giá trị tăng
-thêm trong nước. Tách được phần ở lại Việt Nam thì cần bảng vào–ra mà Atlas
-không có — xem D2, D5. Đừng để ai đọc hình này thành "Việt Nam chỉ lắp ráp".
+thêm trong nước. Atlas không có bảng vào–ra; phần ở lại Việt Nam đo riêng ở mức
+ngành bằng TiVA — xem A19, D2, D5. Đừng để ai đọc hình này thành "Việt Nam chỉ lắp ráp".
 
 Lấy lại số: `src/make_sankey.py` · Hình: `output/sankey_vietnam_{1995,2023}.png`
 
@@ -702,6 +702,76 @@ Lấy lại số: `src/compare_mirror.py --year 2023` và `--year 1995` →
 `data/processed/mirror_gap_2023.csv`, `mirror_gap_1995.csv`; thêm `--min-flow 0` →
 hậu tố `_min0`; `--all-years` in bảng tóm tắt từng năm.
 
+### A19. Hơn một nửa giá trị hàng điện tử xuất đi là linh kiện nhập về — và hàng càng phức tạp càng ít ở lại
+
+`src/map_sector_isic.py` · `data/reference/hs2_to_isic4.csv` · OECD TiVA 2025 (`EXGR_DVA`), Việt Nam 2022
+
+*Giá trị gia tăng trong nước* là phần tiền thực sự được tạo ra bên trong lãnh thổ
+Việt Nam: doanh thu xuất khẩu trừ phần linh kiện, nguyên liệu mua từ nước ngoài.
+D2 và D5 từng ghi "không đo được" vì Atlas không có bảng vào–ra. TiVA (Trade in Value
+Added) của OECD dựng từ bảng vào–ra liên quốc gia, phủ 80 nền kinh tế gồm Việt Nam,
+50 ngành ISIC Rev. 4, 1995–2022. **Dừng ở 2022**, không phải 2023 của đồ án.
+
+**Đo được.** Tỷ lệ giá trị làm ra trong nước trên xuất khẩu gộp của Việt Nam:
+
+| Ngành Atlas | Xuất khẩu 2022 | Tỷ trọng | Trong nước | Khoảng (2 cách ghép) |
+|---|---|---|---|---|
+| Điện tử | 131,6 tỷ USD | 36,9% | **44,2%** | 43,1–44,2% |
+| Dệt may, giày dép, nội thất | 81,5 | 22,9% | 53,0% | 53,0% |
+| Máy móc và thiết bị | 43,1 | 12,1% | 47,5% | 46,2–47,5% |
+| Nông sản, gỗ và giấy | 42,9 | 12,0% | 60,4% | 60,4–61,7% |
+| Hóa chất và nhựa | 21,7 | 6,1% | 45,4% | 45,4% |
+| Kim loại | 19,1 | 5,4% | 66,2% | 66,2% |
+| Phương tiện vận tải | 6,3 | 1,8% | 43,8% | 43,8% |
+| Khoáng sản và nhiên liệu | 6,3 | 1,8% | 73,8% | 52,0–73,8% |
+| Đá, thủy tinh, gốm sứ | 3,7 | 1,1% | 60,2% | 60,2% |
+
+Tỷ trọng tính trên phần ghép được. Ngành "Khác" **không có số**: HS99 (hàng không
+phân loại) và HS97 (tác phẩm nghệ thuật) là 38,7 tỷ USD, 9,8% xuất khẩu, không ghép
+được sang ISIC. Bình quân gia quyền hàng hóa ghép được là **50,5%** (49,7% theo cách
+ghép thay thế), khớp với TiVA: công nghiệp chế biến 49,5%, toàn nền kinh tế 51,5%.
+
+Chuỗi dài, 1995 → 2022: toàn nền kinh tế **79,8% → 51,5%**, điện tử (`C26`) 64,1% →
+44,2%, dệt may 73,2% → 53,1%. Không phải ngành nào cũng giảm (kim loại cơ bản `C24`
+tăng từ 64,4% lên 72,0%), nhưng ba mốc lớn nhất thì có.
+
+**Hàng càng phức tạp, càng ít giá trị ở lại — mức vừa.** Hệ số Spearman giữa PCI của
+nhóm hàng và tỷ lệ trong nước là **−0,47** ở mức mã ISIC (n = 20, p = 0,038, hoán vị
+10.000 lần) và −0,41 ở mức nhóm HS2 (n = 95, nhưng nhiều nhóm dùng chung một tỷ lệ
+nên con số đáng tin là mức ISIC). Ngành PCI cao nhất (điện tử 0,92; máy móc 0,73;
+phương tiện 0,29; hóa chất 0,28) đều nằm ở 44–48%; ngành PCI thấp nhất (nông sản
+−0,89; khoáng sản −0,66; dệt may −0,56) ở 53–74%. ρ² ≈ 0,22: PCI giải thích chừng
+một phần năm thứ hạng, không hơn.
+
+**Phép kiểm bảng ghép.** Bảng ghép HS2 → ISIC có 97 dòng. Đối chiếu xuất khẩu Atlas qua
+bảng ghép với xuất khẩu gộp của chính TiVA: điện tử `C26` 136,9 vs 134,5 tỷ USD
+(1,02), dệt may 71,5 vs 67,3 (1,06), kim loại cộng lại 19,1 vs 18,9. Phép đối chiếu
+**bắt được hai chỗ ghép sai** lúc đầu: cá tươi/đông lạnh (HS03) và gạo (HS10) TiVA xếp
+vào chế biến thực phẩm chứ không phải nông nghiệp. Khối máy móc + điện tử (HS84, 85,
+90, 91) không tách được ở HS2 vì máy tính (HS8471) thuộc `C26` còn máy móc chung thuộc
+`C28`; tính theo quy mô TiVA khối ra **44,2%**, theo bảng ghép HS2 ra 44,8%.
+
+**Tách hai tầng.** *Đo được:* các con số trên. *Giải thích* (không rút ra được từ dữ
+liệu):
+- "Trong nước" là giá trị tạo ra **trong lãnh thổ**, bất kể chủ doanh nghiệp. Lương
+  và thuế ở lại; lợi nhuận của doanh nghiệp nước ngoài có thể chuyển ra. Nên con số
+  này chưa trả lời hết câu "cái gì ở lại Việt Nam".
+- TiVA là **ước lượng** từ bảng vào–ra đã cân đối, không phải số đo trực tiếp. Nhóm
+  chưa kiểm độ tin cậy riêng cho Việt Nam.
+- Tương quan không phải nhân quả, và chỉ một phép kiểm được chạy. Bảng ghép được chốt
+  **trước** khi tính tương quan; hai lần sửa duy nhất đến từ phép đối chiếu quy mô.
+- Ngành "Khoáng sản" có khoảng rộng vì HS27 gộp dầu thô (`B05_06`, 69,5%) với xăng dầu
+  tinh chế (`C19`, 44,7%); HS2 không tách được. Ước lượng thô từ hai số đó: khoảng 59%.
+
+Câu đúng để nói: *"Ở mức ngành, hàng điện tử giữ khoảng 44% giá trị trong nước; bốn
+ngành PCI cao nhất, chiếm 56,9% xuất khẩu ghép được, đều nằm ở 43,8–47,5%"* —
+**không** phải *"Việt Nam chỉ lắp ráp"*: gần nửa giá trị hàng điện tử vẫn làm ra
+trong nước.
+
+Lấy lại số: `src/map_sector_isic.py` (mặc định `--year 2022`) → in bảng, khối kiểm
+chứng và `data/processed/sector_dva_2022.csv`. Dữ liệu TiVA tải vào `data/raw/`
+(bị `.gitignore`), dùng lại ở lần sau.
+
 ---
 
 ## B. Quyết định đã chốt
@@ -857,6 +927,7 @@ thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa 
 | B24 | **Slide dựng bằng script, không gõ tay** — `src/build_slides.py` ra `output/slide-thuyet-trinh.{html,md}` | Chuẩn "mọi con số in ra phải suy lại từ dữ liệu" áp cho hình thì cũng phải áp cho slide: slide là thứ người chấm nhìn lâu nhất. Script đo lại 62 con số từ `data/processed/` rồi **đối chiếu với con số báo cáo cuối đã in** (bảng `KY_VONG`); lệch một chữ số là thoát mã 1. Chính phép đối chiếu này bắt được con số 28,6% sai ở A17. Không dùng PowerPoint vì phải cài thêm `python-pptx`; bản HTML 16:9 chiếu toàn màn hình, `n` bật lời dẫn, và in ra PDF thì mỗi slide một trang ngang |
 | B25 | **Phụ đề hình ghi năm, đơn vị, phạm vi — không ghi hướng dẫn tương tác** | Phụ đề treemap in *"Bấm vào một ngành để xem các nhóm hàng bên trong"* và sunburst in *"Bấm vào một vành để khoan sâu"*. Đúng với bản HTML, **sai với bản PNG** nằm trong báo cáo nộp và trên slide — một lời mời bấm vào ảnh tĩnh. Đã thay bằng câu nói tổng giá trị, số ngành và số nhóm HS2, tính từ dữ liệu; năm đã nằm ở tiêu đề (style guide §6.2). Lỗi này lộ ra khi xem slide, không lộ ra ở bất kỳ phép kiểm chữ nào |
 | B26 | **Trang demo tĩnh dùng lại số của slide; khung giao diện chỉ dùng thang xám mực** — `src/build_web.py` ra `site/` | Chỗ thứ ba in số của đồ án, nên nó không đo gì riêng: gọi `build_slides.do_so()`, đi qua cùng bảng `KY_VONG`, và tự bắt chữ số gõ tay trong phần chữ — phép kiểm này bắt được 6 chỗ ở lần dựng đầu. Khung giao diện không có màu nào: xanh dương và cam phổ biến cho web lại trùng bảng cụm Louvain (`#2166AC`, `#D55E00`), nên đặt cạnh hình node-link sẽ thành mang nghĩa. Mỗi biểu đồ nằm trong iframe giữ đúng khung point gốc (B16) rồi phóng bằng CSS, vì để Plotly tự giãn thì tiêu đề trong hình đè lên vùng vẽ. Chỉ chế độ sáng: biểu đồ được kiểm tương phản trên nền trắng (T24). Lighthouse: Accessibility, Best Practices, SEO đều 100 trên desktop và mobile |
+| B27 | **Ghép 10 ngành sang ISIC qua nhóm HS2, rồi hiệu chỉnh bằng đối chiếu quy mô với TiVA — không bằng suy đoán về hàng Việt Nam** | ghép thẳng ngành Atlas sang ngành ISIC thì sai, vì một ngành Atlas gồm nhiều ngành ISIC (HS84 và HS85 chia nhau `C26`, `C27`, `C28`). Quy tắc ghép: theo định nghĩa chương HS; chỗ mơ hồ ghi phương án thay thế ở cột `isic_alt` để báo cáo khoảng. Bảng 97 dòng ở `data/reference/hs2_to_isic4.csv`, **được commit** (đó là bảng tự viết, không phải dữ liệu thô). Dùng **2022** vì TiVA 2025 dừng ở đó — xem A19 |
 
 ## C. Bẫy kỹ thuật đã vấp — đừng vấp lại
 
@@ -903,7 +974,8 @@ Năm hạn chế. Nêu ra thì được điểm trung thực; giấu đi mà b�
    này trong phần Phương pháp luận — nó cho thấy nhóm **kiểm tra dữ liệu** chứ
    không chỉ nhận về rồi vẽ. Xem A6.
 2. **ECI tính trên xuất khẩu gộp** → thưởng điểm cho việc lắp ráp hàng phức tạp
-   bất kể giữ lại bao nhiêu giá trị. Xem A2.
+   bất kể giữ lại bao nhiêu giá trị. Xem A2. **Đã đo ở mức ngành (A19):** hàng điện
+   tử giữ 44,2% trong nước; tương quan giữa PCI và tỷ lệ trong nước là ρ = −0,47.
 3. **Node-link vứt 98,5% số cạnh.** Nó **không** đọc được là "bản đồ thương mại
    toàn cầu", mà là *"bản đồ các luồng thương mại lớn, cộng chỗ đứng của ASEAN
    trong đó"*. Ai muốn nhìn phần đuôi phải xem ma trận kề (T16,
@@ -913,8 +985,11 @@ Năm hạn chế. Nêu ra thì được điểm trung thực; giấu đi mà b�
    cùng một đồ thị đã lọc, nên ma trận **không** cứu được cái 98,5% đã bỏ.
 4. **Dữ liệu dừng ở HS2 (97 nhóm hàng).** Chi tiết hơn cần file HS4 452 MB
    (~4,2 giờ tải). "Điện, điện tử và linh kiện" gộp cả chip lẫn dây điện.
-5. **Không có dữ liệu giá trị gia tăng.** Mọi nhận định về "giữ lại bao nhiêu
-   giá trị" trong báo cáo là **suy luận từ RCA × PCI**, không phải đo trực tiếp.
+5. **Dữ liệu giá trị gia tăng chỉ có ở mức ngành, năm 2022, và là ước lượng.** Atlas
+   không có; nhóm lấy TiVA 2025 của OECD (A19). Chưa có ở mức HS4 hay doanh nghiệp,
+   chưa có cho 2023, và "trong nước" tính theo lãnh thổ chứ không theo chủ sở hữu.
+   Nhận định "giữ lại bao nhiêu giá trị" ở cấp nhóm hàng hẹp hơn một ngành ISIC vẫn
+   là **suy luận từ RCA × PCI**.
 
 ---
 
@@ -965,8 +1040,8 @@ cứ yếu đi và phải chọn lại.
 
 **Và phải nói thật:** ECI đo rổ hàng gộp, nên nó đo *cái gì đi qua Việt Nam*,
 chưa hẳn là *cái gì ở lại Việt Nam*. Phần "xuất trừ nhập" trên T19 là số học,
-không phải giá trị tăng thêm — tách được phần đó cần bảng vào–ra mà Atlas không
-có. → D2, D5
+không phải giá trị tăng thêm. Atlas không có bảng vào–ra; riêng hàng điện tử, TiVA
+cho thấy chỉ 44,2% giá trị xuất đi làm ra trong nước (A19). → D2, D5
 
 Nhịp 5 và đoạn "đổi ý" là chỗ tách bài khá khỏi bài giỏi: một đề xuất có điều
 kiện bác bỏ thì mới là đề xuất, còn không thì chỉ là một ý thích.
