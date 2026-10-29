@@ -593,6 +593,12 @@ nên web, slide và báo cáo luôn in cùng một con số, rồi tự kiểm 7
 chưa giải, biểu đồ thiếu file hoặc bị bỏ sót, 62 số đối chiếu với báo cáo, đủ năm
 nhịp, **chữ số gõ tay trong phần chữ**, tài liệu kèm thiếu ảnh, và dung lượng.
 
+Cùng lệnh đó ra thêm **`site/dashboard.html`** — bản để demo (quyết định **B29**):
+sáu ô chỉ số có sparkline 1995–2023 ở trên, ba tab biểu đồ ở dưới, một nút đổi năm
+cho cả trang. Trang chính `index.html` giữ dạng bài viết để gắn link vào báo cáo.
+Dashboard thêm hai phép kiểm (8, 9): hai đầu của mỗi chuỗi phải khớp `do_so()`, và
+mọi thẻ phải lấy được tiêu đề từ chính file biểu đồ.
+
 Sửa biểu đồ xong thì chạy lại theo thứ tự: script vẽ → `build_report.py` →
 `build_slides.py` → `build_web.py`, rồi commit `site/`. Không chạy lại thì trang
 trực tuyến hiện bản cũ.

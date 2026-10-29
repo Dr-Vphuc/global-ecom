@@ -531,7 +531,8 @@ def so_go_tay():
     return loi
 
 
-def kiem_chung(S, thieu, dung, anh):
+def kiem_chung(S, thieu, dung, anh, bang=None):
+    """``bang`` = (C, meta) của dashboard; None khi chỉ dựng bài viết."""
     loi = 0
     print("\n" + "=" * 72)
     print("KIỂM CHỨNG — trang web demo")
@@ -565,7 +566,7 @@ def kiem_chung(S, thieu, dung, anh):
     print("\n  4. Mạch năm nhịp: %s" % " → ".join(nhip))
     loi += 0 if nhip == ["1", "2", "3", "4", "5"] else 1
 
-    tay = so_go_tay()
+    tay = so_go_tay() + (BD.so_go_tay() if bang else [])
     print("\n  5. Con số gõ tay trong phần chữ: %d" % len(tay))
     for s in tay:
         print("     GÕ TAY  %s…" % s)
@@ -585,13 +586,20 @@ def kiem_chung(S, thieu, dung, anh):
         print("     QUÁ LỚN — GitHub Pages khuyên dưới 1 GB, repo nhóm thì càng nhỏ càng tốt")
         loi += 1
 
-    print("\n  %s" % ("ĐẠT — 7 phép kiểm, không lỗi" if not loi
+    so_phep = 7
+    if bang:
+        loi += BD.kiem(S, bang[0], bang[1], dung)
+        so_phep = 9
+    print("\n  %s" % ("ĐẠT — %d phép kiểm, không lỗi" % so_phep if not loi
                       else "KHÔNG ĐẠT — %d lỗi" % loi))
     print("=" * 72)
     return loi
 
 
 def main():
+    # Nhập muộn: build_dashboard dùng lại HINH, NHIP và các hàm ở file này.
+    global BD
+    import build_dashboard as BD
     argparse.ArgumentParser(description=__doc__.split("\n")[0]).parse_args()
     print("Đo lại số qua build_slides.do_so() ...")
     S = BS.do_so()
@@ -607,15 +615,18 @@ def main():
     os.makedirs(os.path.join(SITE, "assets"))
     io.open(os.path.join(SITE, "index.html"), "w", encoding="utf-8",
             newline="\n").write(trang)
-    for f in ("site.css", "site.js"):
+    bang, C, meta = BD.dung_trang(S, thieu)
+    io.open(os.path.join(SITE, "dashboard.html"), "w", encoding="utf-8",
+            newline="\n").write(bang)
+    for f in ("site.css", "site.js", "dash.css", "dash.js"):
         shutil.copyfile(os.path.join(ASSETS_SRC, f), os.path.join(SITE, "assets", f))
     # Pages mặc định chạy Jekyll, và Jekyll bỏ qua file/thư mục bắt đầu bằng "_".
     io.open(os.path.join(SITE, ".nojekyll"), "w").close()
     chep_bieu_do(dung)
     anh = chep_tai_lieu()
-    print("  %s/index.html · %d biểu đồ · %d ảnh tài liệu"
+    print("  %s/index.html + dashboard.html · %d biểu đồ · %d ảnh tài liệu"
           % (SITE, len(dung), len(anh)))
-    return 1 if kiem_chung(S, thieu, dung, anh) else 0
+    return 1 if kiem_chung(S, thieu, dung, anh, (C, meta)) else 0
 
 
 if __name__ == "__main__":
