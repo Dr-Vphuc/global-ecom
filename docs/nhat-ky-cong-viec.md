@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 22/10/2026** · 25/31 việc Xong · `main` ở commit `8235561` (gộp PR #17)
+**Cập nhật 29/10/2026** · 28/31 việc Xong (tính cả T28 của PR #19, gộp cùng lần sửa xung đột) · `main` ở commit `90b6c2a` (gộp PR #20)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -8,7 +8,7 @@ Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trư
 | Cần gì | Mở file nào |
 |---|---|
 | Đã làm gì, ai làm, nằm ở file nào | **sổ này** |
-| Tìm ra điều gì (A1–A18), chốt điều gì (B1–B23) | `docs/phat-hien-va-quyet-dinh.md` |
+| Tìm ra điều gì (A1–A18), chốt điều gì (B1–B25) | `docs/phat-hien-va-quyet-dinh.md` |
 | **Mạch thuyết trình — năm nhịp, kết bằng đề xuất** | `docs/phat-hien-va-quyet-dinh.md` §E |
 | Các mục của báo cáo cuối đã viết | `.report/final/` — một file một mục (**B21**) |
 | Luật của repo — chạy sao, commit sao, hình thế nào là xong | `CLAUDE.md` |
@@ -101,17 +101,17 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T21 | Streamgraph 10 ngành, 1995–2023 | Xong | `src/make_streamgraph.py` → `stream_sectors_1995_2023` · hai tầng, không dùng nền lượn |
 | **T31** | **Mặt phẳng quyết định RCA × PCI — hình mang ĐỀ XUẤT** | Xong | `src/make_decision_plane.py` → `decision_plane_{2015,2023}` · phát hiện **A14**, quyết định **B18** |
 
-### Giai đoạn 4 — Tích hợp (4/5) · Giai đoạn 5 — Hoàn thiện (1/4)
+### Giai đoạn 4 — Tích hợp (4/5) · Giai đoạn 5 — Hoàn thiện (2/4)
 
 | Mã | Việc | Trạng thái | Ghi chú đã có sẵn cho việc đó |
 |---|---|---|---|
-| T22 | Áp hệ thống thị giác lên toàn bộ biểu đồ 3 người | Xong | sửa lỗi đơn vị **B16** cho T09, T12–T15 và bố cục lại cả năm; `R.xuat_png` là chỗ duy nhất định nghĩa phép xuất (**B19**) |
+| T22 | Áp hệ thống thị giác lên toàn bộ biểu đồ 3 người | Xong | *(T28 sửa thêm phụ đề treemap và sunburst: bỏ câu hướng dẫn bấm chuột in trên ảnh tĩnh — **B25**)* · sửa lỗi đơn vị **B16** cho T09, T12–T15 và bố cục lại cả năm; `R.xuat_png` là chỗ duy nhất định nghĩa phép xuất (**B19**) |
 | T23 | Rà soát chéo, mỗi người review 2 hình của người khác | Đang làm | đã sửa lỗi đã biết: phụ đề treemap/sunburst giờ ghi tổng giá trị + phạm vi, bỏ lời *"Bấm vào…"*; còn phần review chéo — checklist ở `style-guide.md` §7 |
 | T24 | Kiểm khả năng đọc: nhãn, chú giải, tương phản, mù màu | Xong | `src/check_readability.py` — 5 phép kiểm, chạy được trong CI, hiện **ĐẠT** |
 | T25 | Viết phần Phương pháp luận | Xong | `.report/final/02-phuong-phap-luan.md` — 12 mục (T27 chuyển 5 mục sang phụ lục), mỗi số kèm lệnh lấy lại · phát hiện **A15** (đồ thị lọc đổi dấu cán cân), quyết định **B21**, **B22** |
 | T26 | Viết phần Phát hiện | Xong | 9 mục, T27 tách thành bốn hồi `03-quy-mo` … `06-y-nghia` · phát hiện **A16** (phép đếm bạn hàng không bền), sửa **A13** và **A4**, sửa tiêu đề T20 |
 | T27 | Ráp báo cáo cuối theo mạch 5 nhịp | Xong | 10 file mục trong `.report/final/` + `src/build_report.py` → `output/bao-cao-cuoi.{md,html}`; viết mới **Tóm tắt, Mở đầu, Quy mô, Đề xuất, Kết luận**; chốt số hiệu mục (**B23**); phát hiện **A17** |
-| T28 | Slide thuyết trình | Chưa | §0 sổ này là bản nháp lời mở |
+| T28 | Slide thuyết trình | Xong | `src/build_slides.py` → `output/slide-thuyet-trinh.{html,md}` — 17 slide chính + 3 dự phòng theo đúng năm nhịp §E; mọi số do script đo lại và **đối chiếu với báo cáo cuối** (**B24**), phép đối chiếu bắt được một con số sai ở A17 |
 | T29 | Diễn tập + 10 câu phản biện | Đang làm | §4 sổ này đủ **10** câu kèm câu trả lời (câu 10: ECI đo hàng đi qua hay ở lại); còn diễn tập thành tiếng |
 | T30 | Dọn repo, README tái lập được | Đang làm | đã chạy lại 18 lệnh vẽ/kiểm/ráp trong README từ `data/processed/`, cả 18 thoát 0; còn dọn bản ảnh trùng trong `.report/` |
 
@@ -137,6 +137,8 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | 22/10 | #15 | **toàn bộ phần R3**: T19 Sankey, T20 small multiples, T21 dòng chảy, T22 sửa lỗi đơn vị cho 5 hình cũ, T24 kiểm khả năng đọc, **T31 hình mang đề xuất**; A12–A14, B18–B20, §E viết lại | T19–T22, T24, T31 |
 | 22/10 | #16 | **phần Phương pháp luận** của báo cáo cuối (12 mục); A15 — dùng đồ thị đã lọc cho Sankey sẽ đổi dấu cán cân; B21, B22 | T25 |
 | 22/10 | #17 | **phần Phát hiện** của báo cáo cuối (9 mục); **A16 — phép đếm bạn hàng không bền, thay bằng tập trung giá trị (HHI)**; sửa A13 (đỉnh thật 2002/208) và A4 (67,84% chứ không phải 68,50%); sửa tiêu đề hình T20 vì nó in một câu sai | T26 |
+| 22/10 | #18 | **báo cáo cuối đã ráp xong** — 10 mục trong `.report/final/` + `src/build_report.py` tự kiểm tham chiếu chéo (19 trang thân + 3 trang phụ lục, 14 hình, 0 tham chiếu treo); chốt số hiệu mục (**B23**); **A17 — RCA không tự đi lên**, quy tắc chọn chạy ở 2007 chỉ ra điện tử khi RCA mới 0,573; sửa 75,4× → 75,3× | T27 |
+| 29/10 | #20 | nhánh `huynguyenkhac17` đồng bộ với `main` (bản song song cũ bỏ, lấy bản `main`); **T08 đổi hướng sang chênh lệch gương** — `src/compare_mirror.py`, **A18**: hai bản khai trùng khít ở mọi luồng, mọi năm, nên không tự đo được sai số (ai hoà giải thì dữ liệu không nói); phụ đề treemap/sunburst bỏ lời *"Bấm vào…"*; câu phản biện thứ 10; pipeline chạy lại trọn vẹn | T08 · một phần T23, T29, T30 |
 
 ¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
@@ -171,6 +173,7 @@ Tất cả đều là số **đã đo trên dữ liệu thật**, không trích 
 | Hạng xuất khẩu của Việt Nam | **61/211** (1995) → **16/230** (2023); nhiều nhất ASEAN, trên Malaysia 353,9 và Singapore 346,6 tỷ | đếm trên `edges.csv` |
 | RCA có tự đi lên không — nền so sánh | **không**: chỉ **45,4%** trong 97 nhóm tăng 2015→2023, trung vị **−0,0178**; riêng PCI > 0 thì 62,8% | `country_product.csv` (A17) |
 | Quy tắc chọn chạy ở năm 2007 | chỉ ra **điện tử** khi RCA mới 0,573 và xuất 3,4 tỷ → 2023 là 2,230 và **115,4 tỷ USD** | `src/make_decision_plane.py --year 2007 --since 1999` |
+| Nền so sánh cửa sổ trước (2007→2015) | **37,1%** trong 97 nhóm có RCA tăng, trung vị −0,0465 — lớp thoả trọn quy tắc ở cửa sổ đó còn kém hơn: 25,0% trên 12 nhóm | `country_product.csv` (A17) |
 | Điện tử trong rổ hàng | 0,6% (1995) → **29,9%** (2023) | `src/make_streamgraph.py` |
 | Nông sản trong rổ hàng | 42,9% → 11,6% | cùng lệnh |
 | Máy móc công nghiệp RCA | 0,46 (2015) → **0,95** (2023), PCI +0,78 | `src/make_decision_plane.py` |
@@ -304,22 +307,26 @@ ráp", cũng không phải "Việt Nam đã làm chủ công nghệ". → A2, A1
 
 ## 5. Việc còn lại, theo thứ tự nên làm
 
-Toàn bộ phần hình đã xong, và **báo cáo cuối đã ráp xong** — 10 mục trong
-`.report/final/`, ráp bằng `src/build_report.py` ra `output/bao-cao-cuoi.{md,html}`,
-khoảng 19 trang thân + 3 trang phụ lục. Việc còn lại là trình bày và rà soát,
-không việc nào phải bắt đầu từ trang trắng.
+Toàn bộ phần hình đã xong, **báo cáo cuối đã ráp xong** (10 mục trong
+`.report/final/` → `output/bao-cao-cuoi.{md,html}`, 19 trang thân + 3 trang phụ lục)
+và **slide cũng đã dựng xong** (`output/slide-thuyet-trinh.html`, 17 slide chính +
+3 dự phòng, lời dẫn kèm sẵn). Việc còn lại là rà soát và diễn tập — không việc nào
+phải bắt đầu từ trang trắng.
 
-1. **T28 slide** — báo cáo đã ráp xong, slide đi theo đúng mạch đó: năm nhịp
-   của **§E**, kết bằng đề xuất ở §7 của báo cáo. Nguồn chữ có sẵn: `00-tom-tat.md`
-   là bản một trang, §1.3 là bảng năm nhịp, §7.3 là hai câu đề xuất. Mỗi người
-   trình bày phần mình sở hữu (checklist nộp bài, mục 3).
-2. **T23 rà soát chéo** — mỗi người review 2 hình của người khác, checklist ở
-   `style-guide.md` §7. Chạy `src/check_readability.py` trước cho đỡ mất công.
-   Lỗi đã thấy khi ráp (phụ đề treemap in lời hướng dẫn tương tác) **đã sửa**.
-3. **T29 diễn tập** — §4 đã đủ 10 câu kèm câu trả lời; còn nói thành tiếng, bấm giờ.
-4. **T30 dọn repo** — pipeline đã chạy lại trọn vẹn; còn dọn ảnh trùng trong
+1. **T23 rà soát chéo** — mỗi người review 2 hình của người khác, checklist ở
+   `style-guide.md` §7, và **sheet *Checklist nộp bài* của file phân công còn 19/23
+   mục “Chưa kiểm”** — phần lớn đã có bằng chứng đo được trong repo, chỉ chưa ai
+   điền. Chạy `src/check_readability.py` trước cho đỡ mất công. Lỗi phụ đề treemap
+   (lời hướng dẫn bấm chuột in trên ảnh tĩnh) **đã sửa** (B25).
+2. **T29 diễn tập** — §4 sổ này đã đủ **10** câu kèm câu trả lời; còn nói thành
+   tiếng, bấm giờ. Lời dẫn từng slide nằm sẵn trong `output/slide-thuyet-trinh.md`
+   (651 chữ, chừng 5 phút).
+3. **T30 dọn repo** — pipeline đã chạy lại trọn vẹn; còn dọn ảnh trùng trong
    `.report/` (xem bên dưới), nhớ sửa đường dẫn trong `main.tex` / `index.html`
    nếu xoá.
+
+Slide chia sẵn ai nói phần nào theo cột *Người phụ trách* của file phân công; muốn
+đổi thì sửa khoá `chu` của slide đó trong `src/build_slides.py` rồi chạy lại.
 
 **Chỗ yếu cần biết trước khi lên trình bày.** Đề xuất ở T31 dựa trên RCA và PCI
 — hai chỉ số **đo rổ hàng gộp**, nên chúng nói *cái gì đi qua Việt Nam*, chưa hẳn
