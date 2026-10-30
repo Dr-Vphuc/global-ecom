@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 30/10/2026** · 28/31 việc Xong (tính cả T28 của PR #19, gộp cùng lần sửa xung đột) · `main` ở commit `4a12ac9` (gộp PR #25)
+**Cập nhật 30/10/2026** · 28/31 việc Xong (tính cả T28 của PR #19, gộp cùng lần sửa xung đột) · `main` ở commit `af3a7c4` (gộp PR #27)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -111,7 +111,7 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | T25 | Viết phần Phương pháp luận | Xong | `.report/final/02-phuong-phap-luan.md` — 12 mục (T27 chuyển 5 mục sang phụ lục), mỗi số kèm lệnh lấy lại · phát hiện **A15** (đồ thị lọc đổi dấu cán cân), quyết định **B21**, **B22** |
 | T26 | Viết phần Phát hiện | Xong | 9 mục, T27 tách thành bốn hồi `03-quy-mo` … `06-y-nghia` · phát hiện **A16** (phép đếm bạn hàng không bền), sửa **A13** và **A4**, sửa tiêu đề T20 |
 | T27 | Ráp báo cáo cuối theo mạch 5 nhịp | Xong | 10 file mục trong `.report/final/` + `src/build_report.py` → `output/bao-cao-cuoi.{md,html}`; viết mới **Tóm tắt, Mở đầu, Quy mô, Đề xuất, Kết luận**; chốt số hiệu mục (**B23**); phát hiện **A17** · sau PR #24–#25: thêm §6.2 (phần giá trị làm ra trong nước), sửa §7.3–§7.5 — **A19**, **B27**, **B28** |
-| T28 | Slide thuyết trình | Xong | `src/build_slides.py` → `output/slide-thuyet-trinh.{html,md}` — 17 slide chính + 3 dự phòng theo đúng năm nhịp §E; mọi số do script đo lại và **đối chiếu với báo cáo cuối** (**B24**), phép đối chiếu bắt được một con số sai ở A17 · một dòng ở slide 11 đã đổi theo **B28**; chưa có slide riêng cho TiVA |
+| T28 | Slide thuyết trình | Xong | `src/build_slides.py` → `output/slide-thuyet-trinh.{html,md}` — 17 slide chính + 3 dự phòng theo đúng năm nhịp §E; mọi số do script đo lại và **đối chiếu với báo cáo cuối** (**B24**), phép đối chiếu bắt được một con số sai ở A17 · một dòng ở slide 11 đã đổi theo **B28** · sau PR #27: 21 slide, thêm slide 8 riêng cho TiVA (hình `dva_sectors_2022`) và điều kiện đổi ý thứ tư ở slide 14 — **B30** |
 | T29 | Diễn tập + 10 câu phản biện | Đang làm | §4 sổ này đủ **10** câu kèm câu trả lời (câu 10: ECI đo hàng đi qua hay ở lại); còn diễn tập thành tiếng |
 | T30 | Dọn repo, README tái lập được | Đang làm | đã chạy lại 18 lệnh vẽ/kiểm/ráp trong README từ `data/processed/`, cả 18 thoát 0; còn dọn bản ảnh trùng trong `.report/` |
 
@@ -139,8 +139,11 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | 22/10 | #17 | **phần Phát hiện** của báo cáo cuối (9 mục); **A16 — phép đếm bạn hàng không bền, thay bằng tập trung giá trị (HHI)**; sửa A13 (đỉnh thật 2002/208) và A4 (67,84% chứ không phải 68,50%); sửa tiêu đề hình T20 vì nó in một câu sai | T26 |
 | 22/10 | #18 | **báo cáo cuối đã ráp xong** — 10 mục trong `.report/final/` + `src/build_report.py` tự kiểm tham chiếu chéo (19 trang thân + 3 trang phụ lục, 14 hình, 0 tham chiếu treo); chốt số hiệu mục (**B23**); **A17 — RCA không tự đi lên**, quy tắc chọn chạy ở 2007 chỉ ra điện tử khi RCA mới 0,573; sửa 75,4× → 75,3× | T27 |
 | 29/10 | #20 | nhánh `huynguyenkhac17` đồng bộ với `main` (bản song song cũ bỏ, lấy bản `main`); **T08 đổi hướng sang chênh lệch gương** — `src/compare_mirror.py`, **A18**: hai bản khai trùng khít ở mọi luồng, mọi năm, nên không tự đo được sai số (ai hoà giải thì dữ liệu không nói); phụ đề treemap/sunburst bỏ lời *"Bấm vào…"*; câu phản biện thứ 10; pipeline chạy lại trọn vẹn | T08 · một phần T23, T29, T30 |
+| 29/10 | #21 | **slide thuyết trình ráp xong**: `src/build_slides.py` (17 slide chính + 3 dự phòng, theo năm nhịp §E), mọi số đo lại từ dữ liệu rồi đối chiếu với báo cáo cuối (62/62 khớp, bắt được một số sai ở A17); PR #19 bị xung đột sau khi #20 vào, nên #21 là bản #19 đã ghép lại lên `main` (gồm sửa câu chữ B25 cho khớp phụ đề treemap/sunburst); **B24**, **B25** | T28 |
+| 29/10 | #22 | **trang demo trực tuyến** `src/build_web.py` → `site/` (22 biểu đồ tương tác theo năm nhịp, kèm báo cáo cuối và slide); đẩy lên GitHub Pages bằng `.github/workflows/pages.yml`; trang không đo gì riêng, lấy số từ `build_slides.do_so()`; **B26** | — |
 | 30/10 | #24 | **đo được phần giá trị làm ra trong nước** bằng OECD TiVA 2025: `src/map_sector_isic.py` + bảng ghép 97 dòng HS2 → ISIC (`data/reference/hs2_to_isic4.csv`); điện tử giữ 44,2%, bình quân rổ 50,5%; **A19**, **B27**; viết lại hạn chế D2, D5 từ "không đo được" thành "đo ở mức ngành, 2022" | — |
 | 30/10 | #25 | **dựng lại lập luận quanh phần ở lại**: §6.2 mới trong báo cáo, §7.3 đổi lý do (không còn "điện tử phụ thuộc nhập khẩu nhất"), thêm mốc kiểm và điều kiện đổi ý thứ tư; đề xuất HS90 + HS84 giữ nguyên; **B28** | T27 |
+| 30/10 | #27 | **TiVA vào câu chuyện**: nhịp 2 của trang web đổi tiêu đề (*"…nhưng phần giá trị ở lại nhỏ dần"*) và có Hình 4; slide 8 mới; hình `src/make_dva_sector.py` (9 ngành xếp theo PCI) thành Hình 14 của báo cáo (§6.2); số lấy từ một file `tiva_headline_2022.csv`, `KY_VONG` 62 → 79; hình đối chứng 2015 cho thấy câu "bốn ngành khó nhất thấp hơn bình quân" không đúng năm đó nên tiêu đề tự đổi câu; **B30** | T27, T28 |
 
 ¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
@@ -329,7 +332,7 @@ phải bắt đầu từ trang trắng.
    `.report/` (xem bên dưới), nhớ sửa đường dẫn trong `main.tex` / `index.html`
    nếu xoá.
 
-**Trang demo trực tuyến** — `src/build_web.py` → `site/`, 22 biểu đồ tương tác theo
+**Trang demo trực tuyến** — `src/build_web.py` → `site/`, 23 biểu đồ tương tác theo
 năm nhịp, đẩy lên GitHub Pages bằng `.github/workflows/pages.yml` (**B26**). Còn một
 bước cần admin repo: Settings → Pages → Source: *GitHub Actions*. Thấy khi dựng: phụ
 đề hình T20 chạm sát tiêu đề ô 1995 — việc của T23.
