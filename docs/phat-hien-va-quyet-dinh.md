@@ -929,6 +929,7 @@ thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa 
 | B26 | **Trang demo tĩnh dùng lại số của slide; khung giao diện chỉ dùng thang xám mực** — `src/build_web.py` ra `site/` | Chỗ thứ ba in số của đồ án, nên nó không đo gì riêng: gọi `build_slides.do_so()`, đi qua cùng bảng `KY_VONG`, và tự bắt chữ số gõ tay trong phần chữ — phép kiểm này bắt được 6 chỗ ở lần dựng đầu. Khung giao diện không có màu nào: xanh dương và cam phổ biến cho web lại trùng bảng cụm Louvain (`#2166AC`, `#D55E00`), nên đặt cạnh hình node-link sẽ thành mang nghĩa. Mỗi biểu đồ nằm trong iframe giữ đúng khung point gốc (B16) rồi phóng bằng CSS, vì để Plotly tự giãn thì tiêu đề trong hình đè lên vùng vẽ. Chỉ chế độ sáng: biểu đồ được kiểm tương phản trên nền trắng (T24). Lighthouse: Accessibility, Best Practices, SEO đều 100 trên desktop và mobile |
 | B27 | **Ghép 10 ngành sang ISIC qua nhóm HS2, rồi hiệu chỉnh bằng đối chiếu quy mô với TiVA — không bằng suy đoán về hàng Việt Nam** | ghép thẳng ngành Atlas sang ngành ISIC thì sai, vì một ngành Atlas gồm nhiều ngành ISIC (HS84 và HS85 chia nhau `C26`, `C27`, `C28`). Quy tắc ghép: theo định nghĩa chương HS; chỗ mơ hồ ghi phương án thay thế ở cột `isic_alt` để báo cáo khoảng. Bảng 97 dòng ở `data/reference/hs2_to_isic4.csv`, **được commit** (đó là bảng tự viết, không phải dữ liệu thô). Dùng **2022** vì TiVA 2025 dừng ở đó — xem A19 |
 | B28 | **Giữ nguyên đề xuất HS90 + HS84, đổi lý do và thêm một mốc kiểm phần giá trị ở lại** | TiVA (A19) cho ngành máy móc giữ 47,5% (khoảng 46,2–47,5%) so với 44,2% của điện tử: chênh 3 điểm nằm trong sai số của bảng ghép, nên câu cũ *"điện tử là khâu phụ thuộc nhập khẩu nhất"* không còn đỡ được lập luận (và trước đó cũng chưa từng được đo ở mức ngành). Đề xuất không đổi vì nó là đầu ra của quy tắc trong code (A14, B18), nhưng lý do chỉ còn là **độ khó của hàng và mức tập trung**. Hệ quả: §6.2 mới nói phần ở lại, §7.3 nói thẳng rằng kim ngạch có thể tăng nhanh hơn phần ở lại, §7.4 thêm mốc *khối `C26`+`C27`+`C28` ≥ 44,2%*, §7.5 thêm điều kiện đổi ý thứ tư. Mục §6.2 cũ được đánh lại số thành §6.3 |
+| B30 | **Đưa phần giá trị ở lại vào nhịp 2 của trang web, slide và báo cáo — không thêm nhịp thứ sáu** — `src/make_dva_sector.py` | Nhịp 2 đã hứa trả lời D2 và D5 rồi bỏ lửng (*"ECI đo hàng đi qua, chưa hẳn hàng ở lại"*); TiVA là câu trả lời nên đặt ngay đó. Thêm nhịp 6 thì lệch báo cáo và slide vốn có năm nhịp, và phép kiểm "đủ năm nhịp" gãy. Hình xếp theo PCI chứ không theo độ dài thanh, vì câu hỏi là *hàng càng khó thì có càng ít ở lại không*: xếp theo PCI thì dốc hiện ra, xếp theo độ dài thì chỉ còn một bảng xếp hạng. Số đi qua đúng một file (`map_sector_isic.py` ghi `tiva_headline_2022.csv`, `build_slides.do_so_tiva()` đọc) để không có hai chỗ cùng tính một số; 17 số mới vào bảng đối chiếu `KY_VONG` (62 → 79). Tiêu đề hình tự đổi sang câu trung tính khi bốn ngành khó nhất không còn dưới mức bình quân, và năm đối chứng 2015 cho thấy điều đó có thật: lúc ấy bốn ngành đầu nằm ở 51,0–68,3% so với bình quân 57,8%, nên câu *"đều thấp hơn bình quân"* chỉ đúng từ về sau |
 
 ## C. Bẫy kỹ thuật đã vấp — đừng vấp lại
 
@@ -1006,6 +1007,10 @@ xuất khẩu gấp **75 lần**. → **T21** (dòng chảy cơ cấu)
 
 **Nhịp 2 — Và Việt Nam trèo lên thật trong bảng xếp hạng năng lực.** ECI từ
 #181/211 lên **#78/230**, COI 0,225 → 1,197, số mặt hàng xuất 186 → 285. → A1
+
+Nhưng ECI đo rổ hàng gộp, nên nhịp này kết bằng phần ở lại: phần giá trị của hàng
+xuất khẩu làm ra trong nước đã tụt **79,8% → 51,5%** (1995 → 2022), riêng điện tử
+64,1% → 44,2%, và hàng càng khó càng ít ở lại (Spearman −0,47). → A19, B30
 
 **Nhịp 3 — Nhưng cách trèo là một hành lang, và hành lang thì hẹp ở cả hai
 đầu.** Mua của Trung Quốc 133,1 tỷ bán lại 86,1 tỷ (**−46,9**); mua của Hoa Kỳ

@@ -117,7 +117,7 @@ chuyển ra — nên số này chưa trả lời hết câu *"cái gì ở lại
 lượng từ bảng vào–ra đã cân đối, không phải số đo trực tiếp. Chi tiết và phép đối
 chiếu bảng ghép: **A19**.
 
-Lấy lại: `src/map_sector_isic.py` (mặc định `--year 2022`)
+Lấy lại: `src/map_sector_isic.py` (mặc định `--year 2022`), hình bằng `src/make_dva_sector.py`
 
 ---
 

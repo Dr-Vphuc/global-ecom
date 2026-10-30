@@ -50,6 +50,7 @@ FIGURES = [
     ("5.3", "time_multiples_xuat", "T20 — Việt Nam bán cho ai, bốn năm mốc"),
     ("5.3", "time_multiples_nhap", "T20 — Việt Nam mua từ ai, bốn năm mốc"),
     ("6.1", "decision_plane_2023", "T31 — mặt phẳng quyết định RCA × PCI, 2023"),
+    ("6.2", "dva_sectors_2022", "A19 — phần giá trị làm ra trong nước theo ngành, Việt Nam 2022"),
     ("7.2", "decision_plane_2015", "T31 — cùng quy tắc chạy trên dữ liệu 2015"),
 ]
 
