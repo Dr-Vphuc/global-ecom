@@ -353,18 +353,19 @@ global-ecom/
 │   ├── check_readability.py   # kiểm cỡ chữ, khung, tương phản, mù màu (T24)
 │   ├── compare_mirror.py      # chênh lệch gương: hai bản khai có độc lập không (T08, A18)
 │   ├── map_sector_isic.py     # ghép 10 ngành sang ISIC, tỷ lệ giá trị làm ra trong nước (A19, B27)
+│   ├── make_dva_sector.py     # hình: phần giá trị ở lại theo ngành, xếp theo PCI (A19, B30)
 │   ├── probe_colour_space.py  # còn chỗ cho bảng màu mới không (B17)
 │   ├── make_hierarchy_charts.py  # treemap + sunburst cây HS92 (T12, T13)
 │   ├── make_small_multiples.py   # lưới 4 nước ASEAN (T14)
 │   ├── build_report.py           # T27 ráp 10 mục -> output/bao-cao-cuoi.{md,html}
 │   ├── build_slides.py           # T28 dựng slide -> output/slide-thuyet-trinh.{html,md}
-│   ├── build_web.py              # trang demo 22 biểu đồ tương tác -> site/ (B26)
+│   ├── build_web.py              # trang demo 23 biểu đồ tương tác -> site/ (B26)
 │   ├── web/                      # khuôn HTML, CSS, JS của trang demo
 │   ├── export_cone_tree_glb.py   # cây nón 3D -> .glb (ngoài pipeline)
 │   └── pptx_flat_3d_lighting.py  # gỡ đèn PowerPoint gắn cho mô hình 3D
 ├── docs/
 │   ├── nhat-ky-cong-viec.md        # đã làm gì, nằm ở đâu — mở trước khi soạn slide
-│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A19, quyết định B1–B28, hạn chế D1–D5
+│   ├── phat-hien-va-quyet-dinh.md  # phát hiện A1–A19, quyết định B1–B30, hạn chế D1–D5
 │   ├── cau-hoi-nghien-cuu.md       # câu hỏi, thông điệp, đối tượng (T01)
 │   ├── style-guide.md              # màu, font, cỡ hình, quy ước nhãn (T04)
 │   ├── nguon-du-lieu-vn-asean.md   # nguồn dữ liệu và vì sao chọn nguồn đó
@@ -459,6 +460,7 @@ python src/make_decision_plane.py --year 2015 --since 2007   # thử lại quy t
 python src/check_readability.py       # T24 kiểm khả năng đọc, ĐẠT thì trả 0
 python src/compare_mirror.py          # T08 chênh lệch gương; thêm --year 1995 để đối chứng; --min-flow 0, --all-years
 python src/map_sector_isic.py         # A19 tỷ lệ trong nước theo ngành (TiVA 2022); cần mạng lần đầu, tải vào data/raw/
+python src/make_dva_sector.py         # A19 hình cột phần giá trị ở lại theo ngành (cần dòng trên chạy trước)
 python src/make_hierarchy_charts.py   # T12, T13 treemap + sunburst
 python src/make_small_multiples.py    # T14 lưới 4 nước ASEAN
 python src/make_decision_plane.py --year 2007 --since 1999  # quy tắc chạy ở 2007
@@ -579,7 +581,7 @@ Xem slide bằng cách mở thẳng file HTML; muốn phục vụ qua HTTP thì
 
 ## Trang demo trực tuyến
 
-`src/build_web.py` ra thư mục `site/`: một trang tĩnh gom **22 biểu đồ tương tác**
+`src/build_web.py` ra thư mục `site/`: một trang tĩnh gom **23 biểu đồ tương tác**
 theo đúng năm nhịp của slide, kèm báo cáo cuối và slide. `site/` **được commit** —
 GitHub Pages phục vụ thẳng từ repo, còn máy của GitHub không có dữ liệu thô để
 chạy pipeline. Workflow `.github/workflows/pages.yml` chỉ đẩy thư mục đó lên, chạy

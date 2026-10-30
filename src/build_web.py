@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Dựng trang web demo — 22 biểu đồ tương tác theo năm nhịp của §E.
+"""Dựng trang web demo — 23 biểu đồ tương tác theo năm nhịp của §E.
 
 Vì sao trang này là một script, không phải một file HTML viết tay
 -----------------------------------------------------------------
@@ -100,6 +100,17 @@ HINH = {
         doc="Mỗi ô tự quy về tỷ trọng nên so được cơ cấu, không so được độ lớn; kim "
             "ngạch của từng nước ghi ngay dưới tên. Việt Nam viền đậm.",
         chieu=[], tep={(): "small_multiples_vnm-tha-mys-idn_{nam}"}),
+    "dva_nganh": dict(
+        viec="A19", lenh="src/make_dva_sector.py",
+        nhan="Phần giá trị ở lại trong nước, theo ngành",
+        dan="Hình dưới đặt chín ngành hàng cạnh nhau, xếp từ hàng khó nhất xuống "
+            "hàng dễ nhất. Thanh càng dài thì càng nhiều giá trị của hàng xuất khẩu "
+            "được làm ra trong nước.",
+        doc="Vạch đứt là mức bình quân của cả rổ hàng, {dva_rb}. Vạch mảnh trên mỗi "
+            "thanh là khoảng giữa hai cách ghép sang ngành của OECD; máy móc chỉ "
+            "dao động từ {dva_may_lo} đến {dva_may_hi}, nên chênh với điện tử nằm "
+            "trong sai số. Hai cột bên phải là phần giữ lại và PCI.",
+        chieu=[], tep={(): "dva_sectors_{tiva_nam}"}),
     "bac": dict(
         viec="T09", lenh="src/make_degree_loglog.py --year {nam}",
         nhan="Phân bố bậc của mạng xuất khẩu",
@@ -201,7 +212,7 @@ NHIP = [
              ("{asean_cuoi}", "hạng trong ASEAN, từ {asean_dau}")],
          hinh=["dong_chay", "cay"]),
     dict(ma="2", id="nang-luc", nav="Năng lực", ke="Năng lực",
-         tieu_de="Việt Nam cũng tiến bộ thật về năng lực sản xuất",
+         tieu_de="Việt Nam tiến bộ thật về năng lực, nhưng phần giá trị ở lại nhỏ dần",
          doan=["Bán được nhiều chưa chắc đã làm giỏi hơn. Để đo năng lực, giới nghiên "
                "cứu dùng chỉ số phức tạp kinh tế (ECI): một nước càng làm được nhiều "
                "mặt hàng, và càng nhiều mặt hàng ít nước khác làm được, thì điểm càng "
@@ -209,12 +220,24 @@ NHIP = [
                "**{eci_cuoi}**.",
                "Nhưng ECI tính trên kim ngạch xuất khẩu gộp. Một chiếc điện thoại lắp "
                "ráp ở Việt Nam được tính trọn độ phức tạp của nó, dù phần giá trị làm "
-               "ra trong nước có thể nhỏ. Vì vậy ECI cho biết hàng gì đi qua Việt Nam, "
-               "chưa hẳn cho biết hàng gì được làm ở đây (D2, D5)."],
+               "ra trong nước có thể nhỏ (D2, D5). Bộ số TiVA của OECD đo đúng phần "
+               "đó, và kết quả không dễ chịu: trên toàn nền kinh tế, phần giá trị của "
+               "hàng xuất khẩu làm ra trong nước đã tụt từ {dva_tong_dau} năm "
+               "{nam_dau} xuống **{dva_tong_cuoi}** năm {tiva_nam}; riêng điện tử từ "
+               "{dva_dien_dau} xuống **{dva_dien_cuoi}**.",
+               "Hàng càng khó thì phần ở lại càng thấp, nhưng chỉ ở mức vừa (hệ số "
+               "Spearman {dva_rho}). Bốn ngành khó nhất, chiếm {dva_top4_ty_trong} "
+               "kim ngạch ghép được, đều giữ lại {dva_top4_lo} đến {dva_top4_hi}. "
+               "Đừng đọc thành \"Việt Nam chỉ lắp ráp\": gần nửa giá trị hàng điện "
+               "tử vẫn làm ra trong nước. Và đây là giá trị tạo ra trong lãnh thổ, "
+               "chưa nói được lợi nhuận về tay ai (A19)."],
          so=[("{eci_cuoi}", "hạng ECI năm {nam}, từ {eci_dau}"),
-             ("{mat_hang_cuoi}", "chỉ số đa dạng (diversity) của Atlas, từ "
-                                 "{mat_hang_dau}")],
-         hinh=["luoi_asean"]),
+             ("{dva_tong_dau} → {dva_tong_cuoi}", "phần giá trị ở lại của hàng xuất "
+                                                  "khẩu, {nam_dau} → {tiva_nam}"),
+             ("{dva_dien_dau} → {dva_dien_cuoi}", "riêng ngành điện tử, cùng "
+                                                  "khoảng thời gian"),
+             ("{dva_rho}", "tương quan giữa độ khó (PCI) và phần ở lại")],
+         hinh=["luoi_asean", "dva_nganh"]),
     dict(ma="3", id="hanh-lang", nav="Hành lang", ke="Cấu trúc",
          tieu_de="Nhưng Việt Nam lớn lên qua một hành lang hẹp ở cả hai đầu",
          doan=["Mạng thương mại toàn cầu rất dày. Năm {nam}, {nut} nước nối với nhau "
@@ -261,7 +284,13 @@ NHIP = [
                "tự tăng RCA; phần lớn sức dự báo đến từ điều kiện PCI dương "
                "({nen_kho_tang} số nhóm hàng khó tăng RCA, so với {nen_de_tang} ở "
                "nhóm hàng dễ). Số nhóm thoả trọn quy tắc cũng chỉ có {nen_tron_n}, "
-               "quá ít để kết luận về mặt thống kê (A17)."],
+               "quá ít để kết luận về mặt thống kê (A17).",
+               "Còn một điều cần nói thẳng: đề xuất này không dựa vào việc hai nhóm "
+               "ấy giữ nhiều giá trị hơn điện tử. Máy móc giữ {dva_may}, điện tử "
+               "{dva_dien}, và cả hai thấp hơn mức bình quân {dva_rb}. Lý do chọn là "
+               "độ khó của hàng và mức tập trung; phần ở lại là một mốc phải theo "
+               "dõi, và nếu nó tiếp tục tụt trong khi RCA vượt ngưỡng thì chúng tôi "
+               "nhận đề xuất là chưa đủ."],
          so=[("{rca_quang}", "RCA hiện tại của {chay_nay_0}; mốc cần vượt là mức "
                              "trung bình thế giới"),
              ("{rca_may}", "RCA hiện tại của {chay_nay_1}; cùng mốc ấy")],
@@ -270,8 +299,9 @@ NHIP = [
 
 HAN_CHE = [
     ("Hàng đi qua, chưa hẳn làm ra ở đây", "RCA, PCI và ECI đều tính trên kim ngạch "
-     "xuất khẩu gộp. Muốn tách phần giá trị thực sự làm ra trong nước thì cần bảng "
-     "cân đối liên ngành, mà Atlas không có (D2, D5)."),
+     "xuất khẩu gộp (D2, D5). Phần giá trị làm ra trong nước chỉ đo được bằng TiVA "
+     "của OECD, ở cấp ngành chứ chưa tới HS4 hay doanh nghiệp, và qua bảng ghép "
+     "HS2 sang ISIC nên còn sai số (A19)."),
     ("Một nguồn dữ liệu, không tự kiểm được", "Mỗi luồng hàng được hai nước khai "
      "báo, nhưng trong dữ liệu hai con số này trùng khít nhau, nên chúng tôi không "
      "tự đo được sai số. Ai đã làm chúng khớp nhau thì dữ liệu không cho biết. Atlas, BACI "

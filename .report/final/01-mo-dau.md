@@ -77,7 +77,7 @@ không, người đọc sẽ tưởng các hình bị vẽ sai.
 
 ---
 
-## 1.4 Bố cục báo cáo, và mười một hình đứng ở đâu
+## 1.4 Bố cục báo cáo, và mười hai hình đứng ở đâu
 
 Báo cáo đi theo bốn hồi mà file phân công đã chốt — **Quy mô → Cấu trúc → Vị trí
 Việt Nam → Ý nghĩa** — rồi thêm hai mục mà vai nhà tư vấn đòi phải có:
@@ -93,7 +93,7 @@ Việt Nam → Ý nghĩa** — rồi thêm hai mục mà vai nhà tư vấn đò
 | 8 | Hạn chế và kết luận | — |
 | Phụ lục | Mười bảng sạch · sáu cửa kiểm · cây HS92 · quy ước thị giác · lệnh tái lập | — |
 
-Mười một họ hình, cả hai họ kỹ thuật của môn học (cây **và** đồ thị), mỗi hình
+Mười hai họ hình, cả hai họ kỹ thuật của môn học (cây **và** đồ thị), mỗi hình
 render ở **hai năm** để câu tiêu đề không bao giờ là một khẳng định viết sẵn:
 
 | Hình | Việc | Script | Đứng ở |
@@ -108,6 +108,7 @@ render ở **hai năm** để câu tiêu đề không bao giờ là một khẳn
 | Sankey nhập → VN → xuất | T19 | `make_sankey.py` | §5.2 |
 | Small multiples theo thời gian | T20 | `make_time_multiples.py` | §5.3 |
 | Streamgraph 10 ngành, 29 năm | T21 | `make_streamgraph.py` | §3.2 |
+| Phần giá trị ở lại theo ngành | A19 | `make_dva_sector.py` | §6.2 |
 | Mặt phẳng quyết định RCA × PCI | T31 | `make_decision_plane.py` | §6.1, §7 |
 
 Hai cặp hình đứng trên **cùng một dữ liệu** để so trực tiếp họ nào hợp việc nào:

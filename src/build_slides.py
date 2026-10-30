@@ -53,6 +53,7 @@ TEN = "slide-thuyet-trinh"
 FOCUS = "VNM"
 NAM = R.REFERENCE_YEAR          # 2023
 NAM_DAU = 1995
+TIVA_NAM = 2022                 # OECD TiVA 2025 dừng ở năm này (A19)
 
 NGUOI = {"R1": "Nguyễn Khắc Huy", "R2": "Nguyễn Việt Phúc",
          "R3": "Dương Quang Huy", "ALL": "cả nhóm"}
@@ -251,7 +252,41 @@ def do_so():
     S["nguong_canh"] = R.fmt_pct(float(ch["pct_edges"]), 2)
     S["nguong_gia_tri"] = R.fmt_pct(float(ch["pct_value"]), 2)
     S["nguong_nut"] = R.fmt_vn(int(ch["n_nodes"]), 0)
+
+    S.update(do_so_tiva())
     return S
+
+
+def do_so_tiva(year=TIVA_NAM):
+    """Số về phần giá trị làm ra trong nước (A19), đọc từ hai file mà
+    ``map_sector_isic.py`` ghi ra. Không tự tính lại ở đây: có hai chỗ cùng tính
+    một số thì sớm muộn hai chỗ nói hai con số."""
+    sp = os.path.join(DATA, "sector_dva_%d.csv" % year)
+    hp = os.path.join(DATA, "tiva_headline_%d.csv" % year)
+    for f in (sp, hp):
+        if not os.path.exists(f):
+            raise SystemExit("thiếu %s — chạy: python src/map_sector_isic.py" % f)
+    sec = pd.read_csv(sp).set_index("sector_id")
+    h = pd.read_csv(hp).set_index("key")["value"]
+    pct = R.fmt_pct
+    T = {"tiva_nam": "%d" % year}
+    for k in ("tong", "dien", "det"):
+        for nhan in ("dau", "cuoi"):
+            T["dva_%s_%s" % (k, nhan)] = pct(float(h["dva_%s_%s" % (k, nhan)]))
+    T["dva_rb"] = pct(float(h["dva_rb"]))
+    T["dva_rho"] = "%s%s" % ("+" if h["rho"] >= 0 else "−", R.fmt_vn(abs(float(h["rho"])), 2))
+    T["dva_p"] = R.fmt_vn(float(h["p"]), 3)
+    T["dva_n"] = R.fmt_vn(int(h["n_isic"]), 0)
+    T["dva_top4_ty_trong"] = pct(float(h["top4_ty_trong"]))
+    T["dva_top4_lo"] = pct(float(h["top4_lo"]))
+    T["dva_top4_hi"] = pct(float(h["top4_hi"]))
+    T["dva_may"] = pct(float(sec.loc[8, "dva_pct"]))
+    T["dva_may_lo"] = R.fmt_vn(float(sec.loc[8, "lo"]), 1)
+    T["dva_may_hi"] = pct(float(sec.loc[8, "hi"]))
+    T["dva_dien"] = pct(float(sec.loc[9, "dva_pct"]))
+    T["dva_khoi"] = pct(float(h["dva_khoi"]))
+    T["dva_khac"] = pct(float(h["khac_pct"]))
+    return T
 
 
 def ten_nuoc(iso):
@@ -300,8 +335,9 @@ SLIDES = [
          bang=[["Nhịp", "Câu", "Hình"],
                ["1", "Rổ hàng được xây lại gần như từ đầu — điện tử "
                 "{dien_tu_dau} → {dien_tu_cuoi}", "T21, T12, T13"],
-               ["2", "Và Việt Nam trèo lên thật: ECI {eci_dau} → {eci_cuoi}",
-                "T14"],
+               ["2", "Và Việt Nam trèo lên thật: ECI {eci_dau} → {eci_cuoi} — nhưng "
+                "phần ở lại tụt, điện tử {dva_dien_dau} → {dva_dien_cuoi}",
+                "T14, A19"],
                ["3", "Nhưng cách trèo là một hành lang, hẹp ở cả hai đầu",
                 "T19, T20"],
                ["4", "Nhìn kỹ thì trèo bằng hàng dễ — {goc_kep_pct} rổ hàng ở góc "
@@ -365,9 +401,33 @@ SLIDES = [
                "Lưới bốn nước cho thấy Việt Nam vượt Thái Lan và Indonesia về quy "
                "mô xuất khẩu trong cùng khoảng thời gian",
                "⚠️ ECI đo rổ hàng **gộp**, nên nó đo *cái gì đi qua* Việt Nam, "
-               "chưa hẳn *cái gì ở lại* — hạn chế D2, D5"],
+               "chưa hẳn *cái gì ở lại* — hạn chế D2, D5; slide kế tiếp đo "
+               "phần ở lại"],
          notes="Đặt cảnh báo D2 ở đây, sớm, chứ đừng để người chấm hỏi ra ở nhịp 5. "
                "Nói trước thì nó là sự cẩn thận; bị hỏi ra thì nó là lỗ hổng."),
+
+    dict(ma="06b", kieu="hinh", chu="R1", nhip=2, viec="A19",
+         hinh="dva_sectors_2022",
+         tieu_de="Nhưng phần giá trị ở lại đã tụt từ {dva_tong_dau} xuống "
+                 "{dva_tong_cuoi}",
+         phu="Phần giá trị của hàng xuất khẩu làm ra trong nước — OECD TiVA 2025, "
+             "Việt Nam {tiva_nam} (TiVA dừng ở năm đó, không phải {nam})",
+         diem=["Toàn nền kinh tế {dva_tong_dau} → **{dva_tong_cuoi}** từ {nam_dau} "
+               "đến {tiva_nam}; riêng điện tử {dva_dien_dau} → **{dva_dien_cuoi}**",
+               "Hàng càng khó càng ít ở lại, mức vừa: Spearman **{dva_rho}** "
+               "(p = {dva_p}). Bốn ngành PCI cao nhất, {dva_top4_ty_trong} xuất "
+               "khẩu, đều ở {dva_top4_lo}–{dva_top4_hi}",
+               "Máy móc {dva_may}, điện tử {dva_dien}: chênh nằm trong sai số của "
+               "bảng ghép sang ngành ISIC",
+               "⚠️ **Không** đọc thành \"Việt Nam chỉ lắp ráp\": gần nửa giá trị "
+               "hàng điện tử vẫn làm ra trong nước"],
+         notes="Đây là chỗ trả lời câu D2 đã nêu ở slide trước, và nó lấy đi một "
+               "câu mà bản đầu của nhóm đã nói: \"điện tử là khâu phụ thuộc nhập "
+               "khẩu nhất\". Số đo cho thấy máy móc giữ {dva_may}, hơn điện tử "
+               "{dva_dien} có ba điểm, trong sai số của bảng ghép. Nên đề xuất "
+               "dồn vào máy móc và thiết bị y tế không dựa vào việc giữ nhiều giá "
+               "trị hơn, mà dựa vào độ khó và mức tập trung. Nói luôn điều không "
+               "đọc được: giá trị tạo ra trong lãnh thổ, bất kể chủ doanh nghiệp."),
 
     dict(ma="07", kieu="hinh2", chu="R2", nhip=3, viec="T15",
          hinh="degree_loglog_2023", hinh2="node_link_2023",
@@ -398,7 +458,8 @@ SLIDES = [
                "**{vung_mua_pct}** hàng vào từ một vùng duy nhất ({vung_mua}); "
                "{vung_ban_pct} hàng ra đi về {vung_ban}",
                "⚠️ \"Xuất trừ nhập\" ở đây là **số học**, không phải giá trị tăng "
-               "thêm — tách được phần đó cần bảng vào–ra mà Atlas không có"],
+               "thêm — Atlas không có bảng vào–ra, nên phần ở lại được đo riêng "
+               "bằng TiVA ở nhịp 2"],
          notes="Đây là nhịp xoay của cả bài: hai nhịp đầu là tin tốt, nhịp này nói "
                "cái giá. Đừng đọc hết tên nước — hai dòng Trung Quốc và Hoa Kỳ là "
                "đủ thấy hình dạng hành lang."),
@@ -510,7 +571,9 @@ SLIDES = [
                "**Nhận là sai nếu:** RCA hai nhóm ấy chững dưới 1 trong vài năm "
                "tới · hoặc đầu vào tự đa dạng hoá mà không cần can thiệp · hoặc ô "
                "*Chưa phân loại* ({chua_phan_loai_cuoi} rổ hàng) được bóc ra và "
-               "hoá ra là hàng dễ."],
+               "hoá ra là hàng dễ · hoặc phần ở lại của khối "
+               "điện tử – máy móc tụt dưới {dva_khoi} trong khi RCA hai nhóm đề "
+               "xuất đã vượt 1,00."],
          notes="Một đề xuất không có điều kiện bác bỏ thì chỉ là một ý thích. Ba "
                "mốc trên đều lấy lại được bằng đúng lệnh ghi trong README."),
 
@@ -518,8 +581,10 @@ SLIDES = [
          tieu_de="Những gì bài này không chứng minh được",
          phu="Hạn chế D1–D5, nói ra chứ không giấu",
          diem=["**D2, D5.** RCA, PCI và ECI đo rổ hàng **gộp** — chúng đo cái gì "
-               "*đi qua* Việt Nam, chưa hẳn cái gì *ở lại*. Tách được phần ở lại "
-               "cần bảng vào–ra mà Atlas không có.",
+               "*đi qua* Việt Nam, chưa hẳn cái gì *ở lại*. Atlas không tách được "
+               "phần ở lại; nhóm đo bằng TiVA của OECD, ở cấp ngành, năm "
+               "{tiva_nam}, qua bảng ghép HS2 → ISIC — chưa có ở cấp HS4 hay "
+               "doanh nghiệp.",
                "**D4.** Phân tích ở cấp HS2 ({nen_n} nhóm). Chi tiết HS4 có trong "
                "Atlas nhưng là file 452 MB, chưa tải.",
                "**Nguồn.** Atlas và BACI đều **dẫn xuất từ UN Comtrade** — ba tên "
@@ -609,6 +674,14 @@ KY_VONG = {
     "nen_tron_truoc_tang": "25,0%", "nen_tron_truoc_trung_vi": "−0,1893",
     "chay2007_0_rca": "0,573", "chay2007_0_xuat": "3,4",
     "chay2007_0_rca_nay": "2,230", "chay2015_1_rca_nay": "1,003",
+    # §6.2 — phần giá trị làm ra trong nước (TiVA, A19)
+    "dva_tong_dau": "79,8%", "dva_tong_cuoi": "51,5%",
+    "dva_dien_dau": "64,1%", "dva_dien_cuoi": "44,2%",
+    "dva_det_dau": "73,2%", "dva_det_cuoi": "53,1%", "dva_rb": "50,5%",
+    "dva_rho": "−0,47", "dva_p": "0,038", "dva_n": "20",
+    "dva_top4_ty_trong": "56,9%", "dva_top4_lo": "43,8%", "dva_top4_hi": "47,5%",
+    "dva_may": "47,5%", "dva_dien": "44,2%", "dva_khoi": "44,2%",
+    "dva_khac": "9,8%",
 }
 
 

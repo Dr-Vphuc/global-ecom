@@ -220,7 +220,7 @@ Nền so sánh của §7.2 — 45,4% trong 97 nhóm có RCA tăng, trung vị �
 tiếp từ `data/processed/country_product.csv`, ghép hai năm theo `product_id`.
 
 Sổ gốc của mọi con số: `docs/phat-hien-va-quyet-dinh.md` — phát hiện **A1–A19**,
-quyết định thiết kế **B1–B28**, hạn chế **D1–D5**.
+quyết định thiết kế **B1–B30**, hạn chế **D1–D5**.
 
 **Đối chiếu sang sổ phát hiện:** §3.2 ← A2 · §4.1 ← A3, A4, A7 · §4.2 ← A8,
 A10, A11 · §5.1 ← A1 · §5.2 ← A12, A15 · §5.3 ← A9, A13, **A16** · §6.1 ← A2,

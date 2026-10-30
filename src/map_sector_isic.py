@@ -100,7 +100,7 @@ def pci_vs_dva(mapped, share, sector_dva):
     for sid, v in sec.items():
         print("  %-30s %6s  (%s)" % (R.SECTOR_NAME_VI[sid], R.fmt_vn(v, 2),
                                      R.fmt_pct(float(sector_dva[sid]))))
-    return r1, p1, r2, p2
+    return r1, p1, r2, p2, sec, len(isic), len(m)
 
 
 def main():
@@ -136,7 +136,6 @@ def main():
     res["share_of_mapped_pct"] = 100.0 * res["export_usd"] / res["export_usd"].sum()
     res.index.name = "sector_id"
     out = os.path.join(DATA, "sector_dva_%d.csv" % year)
-    res.reset_index().to_csv(out, index=False, encoding="utf-8")
 
     # ---- khối kiểm chứng ----
     mapped = ex[ex["isic_primary"].notna()]
@@ -161,7 +160,26 @@ def main():
         for lab, code in (("toàn nền kinh tế", "_T"), ("điện tử C26", "C26"),
                           ("dệt may C13T15", "C13T15"))) + " (1995→%d)" % year)
 
-    pci_vs_dva(mapped, share, base)
+    r1, p1, r2, p2, sec_pci, n_isic, n_hs2 = pci_vs_dva(mapped, share, base)
+    res["pci"] = sec_pci
+    res.reset_index().to_csv(out, index=False, encoding="utf-8")
+
+    # Các con số tiêu đề, để hình / slide / trang web lấy từ một chỗ thay vì tự tính
+    # lại (và lệch nhau). Bốn ngành PCI cao nhất: "hàng khó" trong câu chuyện.
+    top4 = res.loc[sec_pci.sort_values(ascending=False).index[:4]]
+    head = {
+        "nam": year,
+        "dva_tong_dau": hist.loc["_T", 1995], "dva_tong_cuoi": hist.loc["_T", year],
+        "dva_dien_dau": hist.loc["C26", 1995], "dva_dien_cuoi": hist.loc["C26", year],
+        "dva_det_dau": hist.loc["C13T15", 1995], "dva_det_cuoi": hist.loc["C13T15", year],
+        "dva_rb": goods_avg, "dva_rb_alt": goods_alt,
+        "tiva_tong": share["_T"], "tiva_che_bien": share["C"],
+        "rho": r1, "p": p1, "n_isic": n_isic,
+        "rho_hs2": r2, "p_hs2": p2, "n_hs2": n_hs2,
+        "top4_ty_trong": top4["share_of_mapped_pct"].sum(),
+        "top4_lo": top4["dva_pct"].min(), "top4_hi": top4["dva_pct"].max(),
+        "khac_pct": 100.0 * unmapped / tot_usd,
+    }
 
     # ---- đối chiếu quy mô: bảng ghép có đưa xuất khẩu về đúng ngành không ----
     try:
@@ -190,9 +208,12 @@ def main():
               % (R.fmt_vn(usd[blk].sum() / 1e9, 1), R.fmt_vn(hs_blk["export_value"].sum() / 1e9, 1)))
         print("Tỷ lệ trong nước của khối: %s (theo quy mô TiVA) vs %s (theo bảng ghép HS2)"
               % (R.fmt_pct(tiva_blk), R.fmt_pct(atlas_blk)))
+        head["dva_khoi"], head["dva_khoi_hs"] = tiva_blk, atlas_blk
     except Exception as e:  # đối chiếu là phần phụ, đừng làm hỏng kết quả chính
         print("\n(bỏ qua phần đối chiếu quy mô: %s)" % e)
-    print("\nGhi ra %s" % out)
+    hp = os.path.join(DATA, "tiva_headline_%d.csv" % year)
+    pd.Series(head, name="value").rename_axis("key").to_csv(hp, encoding="utf-8")
+    print("\nGhi ra %s và %s" % (out, hp))
 
 
 if __name__ == "__main__":
