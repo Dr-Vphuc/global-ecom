@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard thương mại quốc tế — Nhóm 8</title>
+<meta name="description" content="Dashboard thương mại hàng hóa của 230 nước, 1995–2023: kim ngạch, cơ cấu ngành, đối tác, mặt hàng HS2, RCA và PCI.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect x=%272%27 y=%272%27 width=%2712%27 height=%2712%27 fill=%27none%27 stroke=%27%2315171c%27 stroke-width=%272.5%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="bi.css">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8" defer></script>
+<script src="bi.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#noi-dung">Bỏ qua, tới nội dung</a>
+
+<header class="app">
+  <div class="app__row">
+    <a class="app__brand" href="./"><span class="app__mark" aria-hidden="true"></span>Thương mại quốc tế</a>
+    <form class="gf" aria-label="Bộ lọc chung" onsubmit="return false">
+      <label class="gf__item">
+        <span class="gf__label">Quốc gia</span>
+        <select id="f-nuoc" class="ctl ctl--wide"></select>
+      </label>
+      <div class="gf__item">
+        <span class="gf__label" id="f-nam-l">Năm</span>
+        <div class="stepper" role="group" aria-labelledby="f-nam-l">
+          <button type="button" class="ctl ctl--icon" id="f-nam-lui" aria-label="Năm trước">‹</button>
+          <select id="f-nam" class="ctl" aria-labelledby="f-nam-l"></select>
+          <button type="button" class="ctl ctl--icon" id="f-nam-toi" aria-label="Năm sau">›</button>
+        </div>
+      </div>
+    </form>
+    <nav class="app__links" aria-label="Liên kết">
+      <a href="../">Bài viết</a>
+      <a href="https://github.com/Dr-Vphuc/global-ecom" rel="noopener">Mã nguồn</a>
+    </nav>
+  </div>
+</header>
+
+<main id="noi-dung" class="wrap" aria-busy="true">
+  <h1 class="sr-only">Dashboard thương mại quốc tế</h1>
+  <p class="status" id="status" role="status">Đang tải dữ liệu…</p>
+
+  <section aria-label="Chỉ số chính">
+    <ul class="kpis" id="kpis"></ul>
+  </section>
+
+  <div class="grid">
+    <article class="card c-8" id="c-kimngach">
+      <header class="card__head">
+        <h2 class="card__title">Kim ngạch xuất nhập khẩu</h2>
+        <div class="filters">
+          <div class="seg" role="group" aria-label="Chỉ tiêu" data-key="chi">
+            <button type="button" data-v="xm" aria-pressed="true">Xuất &amp; nhập</button>
+            <button type="button" data-v="cc" aria-pressed="false">Cán cân</button>
+          </div>
+          <label class="fl"><span>Từ</span><select class="ctl" data-key="tu"></select></label>
+          <label class="fl"><span>Đến</span><select class="ctl" data-key="den"></select></label>
+        </div>
+      </header>
+      <div class="plot" role="img" aria-label="Biểu đồ kim ngạch theo năm"></div>
+    </article>
+
+    <article class="card c-4" id="c-khuvuc">
+      <header class="card__head">
+        <h2 class="card__title">Theo khu vực đối tác</h2>
+        <div class="filters">
+          <div class="seg" role="group" aria-label="Chiều" data-key="chieu">
+            <button type="button" data-v="x" aria-pressed="true">Xuất</button>
+            <button type="button" data-v="m" aria-pressed="false">Nhập</button>
+          </div>
+          <label class="fl"><span>So với</span><select class="ctl" data-key="so"></select></label>
+        </div>
+      </header>
+      <div class="plot" role="img" aria-label="Biểu đồ tỷ trọng theo khu vực"></div>
+    </article>
+
+    <article class="card c-6" id="c-nganh">
+      <header class="card__head">
+        <h2 class="card__title">Cơ cấu xuất khẩu theo ngành</h2>
+        <div class="filters">
+          <label class="fl"><span>Ngành</span><select class="ctl" data-key="nganh"></select></label>
+          <div class="seg" role="group" aria-label="Hiển thị" data-key="kieu">
+            <button type="button" data-v="gt" aria-pressed="true">Giá trị</button>
+            <button type="button" data-v="tt" aria-pressed="false">Tỷ trọng</button>
+          </div>
+        </div>
+      </header>
+      <div class="plot plot--tall" role="img" aria-label="Biểu đồ cơ cấu xuất khẩu theo ngành"></div>
+    </article>
+
+    <article class="card c-6" id="c-doitac">
+      <header class="card__head">
+        <h2 class="card__title">Đối tác lớn nhất</h2>
+        <div class="filters">
+          <div class="seg" role="group" aria-label="Chiều" data-key="chieu">
+            <button type="button" data-v="x" aria-pressed="true">Xuất</button>
+            <button type="button" data-v="m" aria-pressed="false">Nhập</button>
+          </div>
+          <label class="fl"><span>Khu vực</span><select class="ctl" data-key="kv"></select></label>
+          <div class="seg" role="group" aria-label="Số đối tác" data-key="top">
+            <button type="button" data-v="10" aria-pressed="true">Top 10</button>
+            <button type="button" data-v="20" aria-pressed="false">Top 20</button>
+          </div>
+        </div>
+      </header>
+      <div class="plot plot--tall" role="img" aria-label="Biểu đồ đối tác lớn nhất"></div>
+    </article>
+
+    <article class="card c-6" id="c-mathang">
+      <header class="card__head">
+        <h2 class="card__title">Nhóm hàng HS2</h2>
+        <div class="filters">
+          <label class="fl"><span>Ngành</span><select class="ctl" data-key="nganh"></select></label>
+          <div class="seg" role="group" aria-label="Xếp theo" data-key="xep">
+            <button type="button" data-v="gt" aria-pressed="true">Kim ngạch</button>
+            <button type="button" data-v="tg" aria-pressed="false">Tăng trưởng</button>
+          </div>
+          <div class="seg" role="group" aria-label="Số nhóm" data-key="top">
+            <button type="button" data-v="10" aria-pressed="true">Top 10</button>
+            <button type="button" data-v="20" aria-pressed="false">Top 20</button>
+          </div>
+        </div>
+      </header>
+      <div class="plot" role="img" aria-label="Biểu đồ nhóm hàng HS2"></div>
+    </article>
+
+    <article class="card c-6" id="c-rca">
+      <header class="card__head">
+        <h2 class="card__title">RCA × PCI theo nhóm hàng</h2>
+        <div class="filters">
+          <label class="fl"><span>Ngành</span><select class="ctl" data-key="nganh"></select></label>
+          <label class="fl"><span>Kim ngạch từ</span><select class="ctl" data-key="san">
+            <option value="0">Tất cả</option>
+            <option value="10000">10 triệu USD</option>
+            <option value="100000" selected>100 triệu USD</option>
+            <option value="1000000">1 tỷ USD</option>
+          </select></label>
+        </div>
+      </header>
+      <div class="plot" role="img" aria-label="Biểu đồ phân tán RCA và PCI"></div>
+    </article>
+
+    <article class="card c-12" id="c-sosanh">
+      <header class="card__head">
+        <h2 class="card__title">So sánh quốc gia</h2>
+        <div class="filters">
+          <label class="fl"><span>Chỉ số</span><select class="ctl" data-key="cs">
+            <option value="x">Kim ngạch xuất khẩu</option>
+            <option value="m">Kim ngạch nhập khẩu</option>
+            <option value="tp">Thị phần xuất khẩu</option>
+            <option value="er">Hạng ECI</option>
+            <option value="eci">ECI</option>
+          </select></label>
+          <label class="fl"><span>Nhóm nước</span><select class="ctl" data-key="nhom">
+            <option value="asean">ASEAN</option>
+            <option value="kv">Cùng khu vực</option>
+            <option value="top">10 nước xuất khẩu lớn nhất</option>
+          </select></label>
+        </div>
+      </header>
+      <div class="plot plot--tall" role="img" aria-label="Biểu đồ so sánh quốc gia"></div>
+    </article>
+
+    <article class="card c-12" id="c-bang">
+      <header class="card__head">
+        <h2 class="card__title">Chi tiết nhóm hàng HS2</h2>
+        <div class="filters">
+          <label class="fl"><span>Tìm</span><input type="search" class="ctl" data-key="q" placeholder="Mã hoặc tên nhóm hàng"></label>
+          <label class="fl"><span>Ngành</span><select class="ctl" data-key="nganh"></select></label>
+          <button type="button" class="ctl ctl--btn" data-act="csv">Tải CSV</button>
+        </div>
+      </header>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr>
+            <th scope="col" data-sort="ma">Mã</th>
+            <th scope="col" data-sort="ten">Nhóm hàng</th>
+            <th scope="col" data-sort="ng">Ngành</th>
+            <th scope="col" data-sort="gt" class="num" aria-sort="descending">Kim ngạch (triệu USD)</th>
+            <th scope="col" data-sort="tt" class="num">Tỷ trọng</th>
+            <th scope="col" data-sort="tg" class="num">So năm trước</th>
+            <th scope="col" data-sort="rca" class="num">RCA</th>
+            <th scope="col" data-sort="pci" class="num">PCI</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="tbl__foot" id="tbl-foot"></p>
+    </article>
+  </div>
+</main>
+
+<footer class="foot">
+  <p>Nguồn: Atlas of Economic Complexity, Harvard Growth Lab · Phân loại HS92 · Giá trị danh nghĩa, USD · RCA tính trên 97 nhóm HS2 · Nhóm 8</p>
+</footer>
+</body>
+</html>

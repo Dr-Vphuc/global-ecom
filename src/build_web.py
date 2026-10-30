@@ -600,8 +600,11 @@ def main():
 
     # Dọn bên trong chứ không xoá chính thư mục: trên Windows, một server xem
     # thử đang đứng trong site/ sẽ khoá thư mục đó.
+    # site/bi/ là dashboard, do build_bi.py dựng riêng — không đụng tới.
     if os.path.isdir(SITE):
         for f in os.listdir(SITE):
+            if f == "bi":
+                continue
             p = os.path.join(SITE, f)
             shutil.rmtree(p) if os.path.isdir(p) else os.remove(p)
     os.makedirs(os.path.join(SITE, "assets"))
