@@ -438,6 +438,84 @@
     });
   }
 
+  /* F2. Phần giá trị ở lại trong nước (OECD TiVA). Chỉ Việt Nam, nên không đổi
+   * theo bộ lọc quốc gia; theo bộ lọc năm tới 2022, năm TiVA dừng. */
+  var dvaNarrow = null;
+  function gap2(s) {              // gập tên ngành thành hai dòng, ở chỗ trắng gần giữa nhất
+    var mid = s.length / 2, best = -1, i;
+    for (i = s.indexOf(" "); i >= 0; i = s.indexOf(" ", i + 1)) {
+      if (best < 0 || Math.abs(i - mid) < Math.abs(best - mid)) best = i;
+    }
+    return best < 0 || s.length <= 16 ? s : s.slice(0, best) + "<br>" + s.slice(best + 1);
+  }
+  function rDva(el, st) {
+    var D = W.dva, foot = el.querySelector("#dva-foot");
+    if (!D) { foot.textContent = "Không có dữ liệu TiVA."; return; }
+    var k = D.nam.indexOf(S.y), cuoi = D.nam[D.nam.length - 1];
+    if (k < 0) k = D.nam.length - 1;
+    var rows = [];
+    D.ng.forEach(function (id, j) {
+      if (D.v[k][j] === null) return;
+      rows.push({ id: id, ten: nganh[id].ten, v: D.v[k][j], lo: D.lo[k][j], hi: D.hi[k][j],
+                  pci: D.pci[k][j], tt: D.tt[k][j] });
+    });
+    // Xếp theo PCI giảm dần: ngành khó nhất ở trên cùng (B30).
+    rows.sort(function (a, b) { return (b.pci === null ? -9 : b.pci) - (a.pci === null ? -9 : a.pci); });
+    // Khổ hẹp: hai cột chữ bên phải không còn chỗ, nên số đặt ngay cuối thanh và
+    // bỏ cột PCI (vẫn còn trong hover và trong thứ tự xếp).
+    var narrow = el.querySelector(".plot").clientWidth < 600;
+    dvaNarrow = narrow;
+    var ten = rows.map(function (r) { return narrow ? gap2(r.ten) : r.ten; });
+    var rb = D.rb[k];
+    var ann = [
+      { xref: "x", x: rb, xanchor: "center", yref: "paper", y: 1, yanchor: "bottom",
+        text: "Bình quân cả rổ " + pct(rb), showarrow: false, font: { size: 11, color: MUTED } }
+    ];
+    if (!narrow) {
+      ann.push({ xref: "paper", x: 1, xanchor: "left", xshift: 10, yref: "paper", y: 1, yanchor: "bottom",
+                 text: "Trong nước", showarrow: false, font: { size: 11, color: MUTED } });
+      ann.push({ xref: "paper", x: 1, xanchor: "left", xshift: 76, yref: "paper", y: 1, yanchor: "bottom",
+                 text: "PCI", showarrow: false, font: { size: 11, color: MUTED } });
+    }
+    rows.forEach(function (r, i) {
+      if (narrow) {
+        ann.push({ xref: "x", x: r.hi, xanchor: "left", xshift: 5, yref: "y", y: ten[i],
+                   text: pct(r.v), showarrow: false, font: { size: 11, color: INK } });
+        return;
+      }
+      ann.push({ xref: "paper", x: 1, xanchor: "left", xshift: 10, yref: "y", y: ten[i],
+                 text: pct(r.v), showarrow: false, font: { size: 12, color: INK } });
+      ann.push({ xref: "paper", x: 1, xanchor: "left", xshift: 76, yref: "y", y: ten[i],
+                 text: n2(r.pci, 2, true), showarrow: false, font: { size: 12, color: MUTED } });
+    });
+    draw(el, [{
+      type: "bar", orientation: "h", x: rows.map(function (r) { return r.v; }), y: ten,
+      marker: { color: rows.map(function (r) { return nganh[r.id].mau; }),
+                line: { color: "#fff", width: 1 } },
+      error_x: { type: "data", symmetric: false, color: INK2, thickness: 1, width: 3,
+                 array: rows.map(function (r) { return Math.max(0, r.hi - r.v); }),
+                 arrayminus: rows.map(function (r) { return Math.max(0, r.v - r.lo); }) },
+      customdata: rows.map(function (r) {
+        return [r.ten, pct(r.v), f(r.lo, 1), pct(r.hi), n2(r.pci, 2, true), pct(r.tt)];
+      }),
+      hovertemplate: "<b>%{customdata[0]}</b><br>Giữ lại trong nước: %{customdata[1]}" +
+        "<br>Khoảng theo hai cách ghép: %{customdata[2]}–%{customdata[3]}" +
+        "<br>PCI %{customdata[4]} · %{customdata[5]} xuất khẩu ghép được<extra></extra>"
+    }], {
+      margin: narrow ? { l: 112, r: 44, t: 34, b: 36 } : { l: 190, r: 130, t: 34, b: 36 },
+      bargap: 0.35, annotations: ann,
+      xaxis: { range: [0, 100], fixedrange: true, tickmode: "array", tickvals: [0, 25, 50, 75, 100],
+               ticktext: [0, 25, 50, 75, 100].map(function (t) { return f(t, 0) + "%"; }) },
+      yaxis: { autorange: "reversed", fixedrange: true, ticks: "", gridcolor: "#fff" },
+      shapes: [{ type: "line", xref: "x", yref: "paper", x0: rb, x1: rb, y0: 0, y1: 1,
+                 line: { color: MUTED, width: 1, dash: "dash" } }]
+    });
+    foot.textContent = "Năm TiVA: " + D.nam[k] +
+      (S.y > cuoi ? " (TiVA dừng ở " + cuoi + "; bộ lọc năm là " + S.y + ")" : "") +
+      " · luôn là Việt Nam, không đổi theo bộ lọc quốc gia · chưa tính ngành Khác (" +
+      pct(D.khac[k]) + " xuất khẩu: HS97, HS99 không ghép được) · vạch mảnh là khoảng giữa hai cách ghép HS2 sang ISIC · thanh xếp theo PCI giảm dần";
+  }
+
   /* G. So sánh quốc gia */
   function rSoSanh(el, st) {
     var i = idx(), ds;
@@ -572,6 +650,7 @@
     card("c-doitac", rDoiTac);
     card("c-mathang", rMatHang);
     card("c-rca", rRca);
+    card("c-dva", rDva);
     card("c-sosanh", rSoSanh);
     var bang = card("c-bang", rBang);
 
@@ -605,6 +684,15 @@
       });
     });
     bang.querySelector('[data-act="csv"]').addEventListener("click", function () { csv(CARDS["c-bang"].st); });
+
+    var rt = null;                // vẽ lại thẻ giá trị ở lại khi đổi giữa khổ rộng và hẹp
+    window.addEventListener("resize", function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () {
+        var p = CARDS["c-dva"].el.querySelector(".plot");
+        if ((p.clientWidth < 600) !== dvaNarrow) CARDS["c-dva"].go();
+      }, 150);
+    });
 
     fn.addEventListener("change", function () { change(fn.value, S.y); });
     fy.addEventListener("change", function () { change(S.iso, +fy.value); });

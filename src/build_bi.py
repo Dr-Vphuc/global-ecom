@@ -15,7 +15,9 @@ Gộp từ ``data/processed/`` — không phải dữ liệu thô (Nguyên tắc
 
 * ``data/world.json`` — danh mục nước, ngành, 97 nhóm HS2; theo từng năm: tổng
   xuất khẩu thế giới của mỗi nhóm HS2 (mẫu số của RCA), PCI của mỗi nhóm, và
-  chuỗi chỉ số theo nước (xuất, nhập, ECI, hạng ECI).
+  chuỗi chỉ số theo nước (xuất, nhập, ECI, hạng ECI); và khóa ``dva`` — phần giá
+  trị xuất khẩu làm ra trong nước theo ngành, CHỈ Việt Nam, 1995–2022 (OECD TiVA,
+  xem ``map_sector_isic.py``; TiVA 2025 dừng ở 2022 nên không có năm 2023).
 * ``data/c/<ISO3>.json`` — một file mỗi nước, tải khi được chọn: xuất khẩu theo
   97 nhóm HS2 từng năm; xuất và nhập với 40 đối tác lớn nhất cả giai đoạn (phần
   còn lại gộp "Các nước khác"); và tổng theo khu vực, tính trên MỌI đối tác.
@@ -132,6 +134,46 @@ def the_gioi(cp, cy, hs2_ids, ds_nuoc, ds_hs2, ds_nganh):
     }
 
 
+def dva_viet_nam():
+    """Phần giá trị xuất khẩu Việt Nam làm ra trong nước, theo ngành Atlas (A19).
+
+    Đọc ``sector_dva_<năm>.csv`` và ``tiva_headline_<năm>.csv`` do
+    ``map_sector_isic.py`` ghi. Chỉ lấy những năm có đủ cả hai file, nên chuỗi
+    dừng ở 2022 dù ``NAM`` tới 2023. Mọi mảng ``[năm][ngành]`` theo thứ tự ``nam``
+    và ``ng``; ngành không có số ở năm nào thì ``null``.
+    """
+    nam, bang, dau = [], {}, {}
+    for y in NAM:
+        p = os.path.join(DATA, "sector_dva_%d.csv" % y)
+        hp = os.path.join(DATA, "tiva_headline_%d.csv" % y)
+        if not (os.path.exists(p) and os.path.exists(hp)):
+            continue
+        nam.append(y)
+        bang[y] = pd.read_csv(p).set_index("sector_id")
+        dau[y] = pd.read_csv(hp).set_index("key")["value"]
+    if not nam:
+        return None
+    ng = sorted(set().union(*[set(b.index) for b in bang.values()]))
+
+    def lay(cot, nd):
+        out = []
+        for y in nam:
+            b = bang[y]
+            out.append([round(float(b.at[i, cot]), nd)
+                        if i in b.index and b.at[i, cot] == b.at[i, cot] else None
+                        for i in ng])
+        return out
+
+    return {"nam": nam, "ng": [int(i) for i in ng],
+            # 4 chữ số, không ít hơn: trình duyệt làm tròn tiếp ra 1 chữ số, mà làm
+            # tròn hai lần có thể lệch (53,0495 → 53,050 → "53,1" thay vì "53,0").
+            "v": lay("dva_pct", 4), "lo": lay("lo", 4), "hi": lay("hi", 4),
+            "pci": lay("pci", 4), "tt": lay("share_of_mapped_pct", 4),
+            # bình quân cả rổ và tỷ trọng ngành "Khác" (HS97, HS99: không ghép được)
+            "rb": [round(float(dau[y]["dva_rb"]), 4) for y in nam],
+            "khac": [round(float(dau[y]["khac_pct"]), 4) for y in nam]}
+
+
 def mot_nuoc(iso, cp_c, ex, im, hs2_ids, kv_cua):
     p = cp_c.pivot_table(index="year", columns="product_id", values="export_value",
                          aggfunc="sum").reindex(index=NAM, columns=hs2_ids)
@@ -157,6 +199,72 @@ def mot_nuoc(iso, cp_c, ex, im, hs2_ids, kv_cua):
         kv[ten] = {k: [_k(v) for v in g.loc[k]] for k in g.index}
     out["kv"] = kv
     return out
+
+
+def kiem_dva(dva):
+    """Khối kiểm chứng của thẻ giá trị ở lại; trả về số lỗi."""
+    print("\n  Giá trị ở lại (TiVA, chỉ Việt Nam):")
+    if not dva:
+        print("     THIẾU  không có sector_dva_<năm>.csv — chạy map_sector_isic.py --year <năm>")
+        return 1
+    loi = 0
+    nam, ng = dva["nam"], dva["ng"]
+    lien = nam == list(range(nam[0], nam[-1] + 1))
+    print("     %d năm (%d–%d), %d ngành%s" % (len(nam), nam[0], nam[-1], len(ng),
+                                              "" if lien else " — THIẾU NĂM GIỮA CHUỖI"))
+    loi += 0 if lien else 1
+    for i in ng:
+        if i not in R.SECTOR_PALETTE:
+            print("     LỖI  ngành %s không có trong R.SECTOR_PALETTE" % i)
+            loi += 1
+    dien = [i for i in ng if R.SECTOR_NAME_VI.get(i) == "Điện tử"]
+
+    for k, y in enumerate(nam):
+        v, lo, hi, tt = dva["v"][k], dva["lo"][k], dva["hi"][k], dva["tt"][k]
+        for j, i in enumerate(ng):
+            if v[j] is None:
+                print("     LỖI  %d: ngành %s không có số" % (y, i))
+                loi += 1
+            elif not 0 < v[j] < 100 or lo[j] > v[j] + 1e-3 or hi[j] < v[j] - 1e-3:
+                print("     LỖI  %d: ngành %s ngoài (0, 100) hoặc ngoài khoảng ghép" % (y, i))
+                loi += 1
+        if None in v or None in tt:
+            continue
+        # Tỷ trọng cộng lại bằng 100, và bình quân cả rổ phải bằng bình quân
+        # gia quyền của chính chín ngành: hai con số đến từ hai file khác nhau.
+        s = sum(tt)
+        rb = sum(a * b for a, b in zip(v, tt)) / 100.0
+        if abs(s - 100) > 0.05 or abs(rb - dva["rb"][k]) > 0.05:
+            print("     LỖI  %d: tỷ trọng %s, bình quân tính lại %s so với %s"
+                  % (y, R.fmt_vn(s, 2), R.fmt_vn(rb, 2), R.fmt_vn(dva["rb"][k], 2)))
+            loi += 1
+        # Điện tử là một mã ISIC duy nhất (C26) nên phải khớp số tiêu đề của TiVA.
+        if dien:
+            hp = pd.read_csv(os.path.join(DATA, "tiva_headline_%d.csv" % y)).set_index("key")["value"]
+            if abs(v[ng.index(dien[0])] - float(hp["dva_dien_cuoi"])) > 1e-3:
+                print("     LỖI  %d: điện tử %s ≠ tiêu đề TiVA %s" % (
+                    y, R.fmt_vn(v[ng.index(dien[0])], 3), R.fmt_vn(float(hp["dva_dien_cuoi"]), 3)))
+                loi += 1
+
+    # Gói JSON khớp từng ô với file CSV nguồn ở năm đối chứng (2015) và năm cuối.
+    for y in sorted({2015, nam[-1]} & set(nam)):
+        csv = pd.read_csv(os.path.join(DATA, "sector_dva_%d.csv" % y)).set_index("sector_id")
+        k = nam.index(y)
+        lech = max(abs(dva["v"][k][j] - float(csv.at[i, "dva_pct"]))
+                   for j, i in enumerate(ng) if i in csv.index)
+        print("     %d: lệch lớn nhất so với sector_dva_%d.csv: %s điểm %%"
+              % (y, y, R.fmt_vn(lech, 4)))
+        # Gói làm tròn 4 chữ số nên sai số tối đa là nửa đơn vị cuối, 5·10⁻⁵.
+        if lech > 5e-5 + 1e-9:
+            loi += 1
+    for y in sorted({nam[0], 2015, nam[-1]} & set(nam)):
+        k = nam.index(y)
+        d = ""
+        if dien:
+            d = " · điện tử %s" % R.fmt_pct(dva["v"][k][ng.index(dien[0])])
+        print("     %d: bình quân rổ %s%s · ngành Khác (không ghép được) %s xuất khẩu"
+              % (y, R.fmt_pct(dva["rb"][k]), d, R.fmt_pct(dva["khac"][k])))
+    return loi
 
 
 def kiem(world, mau):
@@ -193,6 +301,8 @@ def kiem(world, mau):
         "%s %s" % (ten.get(d, d), R.fmt_vn(r[i] / 1e6, 1)) for d, r in
         sorted(zip(vn["dt"], vn["x"]), key=lambda t: -t[1][i])[:3])))
 
+    loi += kiem_dva(world.get("dva"))
+
     tong = 0
     for goc, _, files in os.walk(OUT):
         tong += sum(os.path.getsize(os.path.join(goc, f)) for f in files)
@@ -211,6 +321,7 @@ def main():
     cp, cy, e, tree, nodes = doc()
     hs2_ids, ds_nuoc, ds_hs2, ds_nganh = danh_muc(cp, cy, tree, nodes)
     world = the_gioi(cp, cy, hs2_ids, ds_nuoc, ds_hs2, ds_nganh)
+    world["dva"] = dva_viet_nam()
     kv_cua = {n["iso"]: n["kv"] for n in ds_nuoc}
 
     if os.path.isdir(OUT):

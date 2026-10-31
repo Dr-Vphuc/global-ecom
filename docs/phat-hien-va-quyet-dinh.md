@@ -947,6 +947,7 @@ thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa 
 | B28 | **Giữ nguyên đề xuất HS90 + HS84, đổi lý do và thêm một mốc kiểm phần giá trị ở lại** | TiVA (A19) cho ngành máy móc giữ 47,5% (khoảng 46,2–47,5%) so với 44,2% của điện tử: chênh 3 điểm nằm trong sai số của bảng ghép, nên câu cũ *"điện tử là khâu phụ thuộc nhập khẩu nhất"* không còn đỡ được lập luận (và trước đó cũng chưa từng được đo ở mức ngành). Đề xuất không đổi vì nó là đầu ra của quy tắc trong code (A14, B18), nhưng lý do chỉ còn là **độ khó của hàng và mức tập trung**. Hệ quả: §6.2 mới nói phần ở lại, §7.3 nói thẳng rằng kim ngạch có thể tăng nhanh hơn phần ở lại, §7.4 thêm mốc *khối `C26`+`C27`+`C28` ≥ 44,2%*, §7.5 thêm điều kiện đổi ý thứ tư. Mục §6.2 cũ được đánh lại số thành §6.3 |
 | B29 | **Demo bằng dashboard BI tách hẳn khỏi bài viết và báo cáo** — `src/build_bi.py` ra `site/bi/` | Nhóm đánh giá trang B26 đọc như blog, đem demo sẽ bị trừ điểm. Dashboard không kể chuyện: chỉ số, biểu đồ, bộ lọc, không câu nhận xét. Vì cần lọc theo mọi năm, nước, ngành, nên biểu đồ vẽ trên trình duyệt từ gói dữ liệu đã gộp (một file chung và một file mỗi nước, khoảng 7,6 MB), không dùng các file Plotly một năm của bài viết. Đã gộp từ `data/processed/`, không phải dữ liệu thô (Nguyên tắc #5). RCA không chở theo mà tính lại trên trình duyệt; đã đo khớp cột `rca` của Atlas tới 5·10⁻⁵. Đối tác chỉ giữ 40 nước lớn nhất cả giai đoạn của mỗi nước, phần còn lại gộp; tổng theo khu vực vẫn tính trên mọi đối tác, và script kiểm hai tổng này khớp nhau. Màu vẫn chỉ mang nghĩa ngành; so sánh quốc gia dùng một đường mực cho nước đang chọn trên nền các đường xám. Không dùng cột diversity (A19) |
 | B30 | **Đưa phần giá trị ở lại vào nhịp 2 của trang web, slide và báo cáo — không thêm nhịp thứ sáu** — `src/make_dva_sector.py` | Nhịp 2 đã hứa trả lời D2 và D5 rồi bỏ lửng (*"ECI đo hàng đi qua, chưa hẳn hàng ở lại"*); TiVA là câu trả lời nên đặt ngay đó. Thêm nhịp 6 thì lệch báo cáo và slide vốn có năm nhịp, và phép kiểm "đủ năm nhịp" gãy. Hình xếp theo PCI chứ không theo độ dài thanh, vì câu hỏi là *hàng càng khó thì có càng ít ở lại không*: xếp theo PCI thì dốc hiện ra, xếp theo độ dài thì chỉ còn một bảng xếp hạng. Số đi qua đúng một file (`map_sector_isic.py` ghi `tiva_headline_2022.csv`, `build_slides.do_so_tiva()` đọc) để không có hai chỗ cùng tính một số; 17 số mới vào bảng đối chiếu `KY_VONG` (62 → 79). Tiêu đề hình tự đổi sang câu trung tính khi bốn ngành khó nhất không còn dưới mức bình quân, và năm đối chứng 2015 cho thấy điều đó có thật: lúc ấy bốn ngành đầu nằm ở 51,0–68,3% so với bình quân 57,8%, nên câu *"đều thấp hơn bình quân"* chỉ đúng từ về sau |
+| B31 | **Thẻ "Phần giá trị ở lại trong nước" trên dashboard BI: chỉ Việt Nam, đi theo bộ lọc năm 1995–2022, không có câu nhận xét** — `src/build_bi.py` (`dva_viet_nam`, `kiem_dva`), `src/web/bi/bi.js` (`rDva`) | Trang BI chỉ có số Atlas nên cho xem RCA × PCI và hạng ECI mà không có chỗ nào nói phần ở lại (D2, D5); người demo bằng BI sẽ đọc điện tử RCA 2,23 thành "làm chủ". Thẻ là **Việt Nam, không đổi theo bộ lọc nước**, vì `map_sector_isic.py` mới ghép HS2 → ISIC cho Việt Nam; ghi rõ trên thẻ. Theo năm **1995–2022** chứ không chỉ 2022: TiVA 2025 phủ đủ 28 năm, chỉ 2023 là không có nên năm 2023 giữ thanh của 2022 kèm dòng nói rõ. Tiêu đề là danh từ, không khẳng định gì (B29: dashboard không kể chuyện); hình xếp theo PCI như B30. **Đã đo trước khi nhận 28 năm:** chạy `map_sector_isic.py` cho từng năm, đủ 9 ngành và không giá trị vô lý ở cả 28 năm, nhưng đối chiếu quy mô khối C26+C27+C28 (Atlas/TiVA) lệch nhiều ở 1995–1999 (0,25–0,86) vì khối khi đó chỉ 0,1–0,6 tỷ USD; từ 2001 nằm trong 0,8–1,5. Thứ thẻ hiển thị là *tỷ lệ*, và tỷ lệ của khối theo bảng ghép HS2 chênh so với theo quy mô TiVA **tối đa 2,0 điểm** trong cả 28 năm, nên giữ nguyên chuỗi và nói rõ giới hạn này. Gói chở số 4 chữ số thập phân (xem bẫy "làm tròn hai lần" ở mục C) |
 
 ## C. Bẫy kỹ thuật đã vấp — đừng vấp lại
 
@@ -957,6 +958,7 @@ thế thôi") đến đây không còn là một lựa chọn thẩm mỹ nữa 
 | File tải về bị cắt giữa chừng | mất trọn các nước ở cuối thứ tự sắp xếp — **từng mất Hoa Kỳ** mà không ai biết | `src/check_raw_data.py` chạy trước mọi thứ, là cửa chặn |
 | Tốc độ tải Dataverse ~30 KB/s | file HS6 song phương 12,2 GB ≈ 113 giờ | xem bảng khả thi ở `nguon-du-lieu-vn-asean.md` §7 |
 | Dataverse API | danh sách file nằm ở `latestVersion.files`, **không phải** `dataFiles`; WAF trả 403 cho User-Agent mặc định của urllib | dùng UA bắt đầu bằng `Mozilla/` |
+| Làm tròn hai lần khi chở số sang trình duyệt | gói dashboard làm tròn 3 chữ số rồi trình duyệt làm tròn tiếp ra 1 chữ số: dệt may 53,0495 → 53,050 → in **53,1%** trong khi sổ ghi **53,0%**. Phép kiểm sai số 5·10⁻⁴ vẫn đạt, vì sai số *nhỏ* nhưng nó đủ lật chữ số hiển thị | chở nhiều chữ số hơn mức hiển thị (gói BI chở 4, hiển thị 1) và đối chiếu **chuỗi đã định dạng** trên trình duyệt với `R.fmt_pct` của Python, không chỉ so số thô |
 
 ### Bốn phép kiểm định đang chạy tự động
 
@@ -1004,9 +1006,12 @@ Năm hạn chế. Nêu ra thì được điểm trung thực; giấu đi mà b�
    cùng một đồ thị đã lọc, nên ma trận **không** cứu được cái 98,5% đã bỏ.
 4. **Dữ liệu dừng ở HS2 (97 nhóm hàng).** Chi tiết hơn cần file HS4 452 MB
    (~4,2 giờ tải). "Điện, điện tử và linh kiện" gộp cả chip lẫn dây điện.
-5. **Dữ liệu giá trị gia tăng chỉ có ở mức ngành, năm 2022, và là ước lượng.** Atlas
-   không có; nhóm lấy TiVA 2025 của OECD (A19). Chưa có ở mức HS4 hay doanh nghiệp,
-   chưa có cho 2023, và "trong nước" tính theo lãnh thổ chứ không theo chủ sở hữu.
+5. **Dữ liệu giá trị gia tăng chỉ có ở mức ngành, chỉ Việt Nam, 1995–2022, và là ước
+   lượng.** Atlas không có; nhóm lấy TiVA 2025 của OECD (A19). Hình trong báo cáo dùng
+   2022; dashboard BI cho kéo cả 28 năm (B31), nhưng với 1995–1999 phép đối chiếu quy
+   mô của khối máy móc – điện tử lệch nhiều (khối còn nhỏ), chỉ tỷ lệ là bền (chênh
+   tối đa 2,0 điểm). Chưa có ở mức HS4 hay doanh nghiệp, chưa có cho 2023, và
+   "trong nước" tính theo lãnh thổ chứ không theo chủ sở hữu.
    Nhận định "giữ lại bao nhiêu giá trị" ở cấp nhóm hàng hẹp hơn một ngành ISIC vẫn
    là **suy luận từ RCA × PCI**.
 
