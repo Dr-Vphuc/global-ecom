@@ -1,6 +1,6 @@
 # Nhật ký công việc — đã làm gì, nằm ở đâu, và vì sao
 
-**Cập nhật 30/10/2026** · 28/31 việc Xong (tính cả T28 của PR #19, gộp cùng lần sửa xung đột) · `main` ở commit `af3a7c4` (gộp PR #27)
+**Cập nhật 11/11/2026** · 28/31 việc Xong (tính cả T28 của PR #19, gộp cùng lần sửa xung đột) · `main` ở commit `30c7dc0` (gộp PR #30)
 
 Sổ này chỉ trả lời **một câu: "đã làm được gì rồi"**. Khi cần soạn slide, viết phần
 Phương pháp luận, hay trả lời phản biện thì mở sổ này ra trước, nó dẫn sang chỗ cần.
@@ -144,6 +144,9 @@ thuyết trình mà chưa sinh lại biểu đồ.
 | 30/10 | #24 | **đo được phần giá trị làm ra trong nước** bằng OECD TiVA 2025: `src/map_sector_isic.py` + bảng ghép 97 dòng HS2 → ISIC (`data/reference/hs2_to_isic4.csv`); điện tử giữ 44,2%, bình quân rổ 50,5%; **A19**, **B27**; viết lại hạn chế D2, D5 từ "không đo được" thành "đo ở mức ngành, 2022" | — |
 | 30/10 | #25 | **dựng lại lập luận quanh phần ở lại**: §6.2 mới trong báo cáo, §7.3 đổi lý do (không còn "điện tử phụ thuộc nhập khẩu nhất"), thêm mốc kiểm và điều kiện đổi ý thứ tư; đề xuất HS90 + HS84 giữ nguyên; **B28** | T27 |
 | 30/10 | #27 | **TiVA vào câu chuyện**: nhịp 2 của trang web đổi tiêu đề (*"…nhưng phần giá trị ở lại nhỏ dần"*) và có Hình 4; slide 8 mới; hình `src/make_dva_sector.py` (9 ngành xếp theo PCI) thành Hình 14 của báo cáo (§6.2); số lấy từ một file `tiva_headline_2022.csv`, `KY_VONG` 62 → 79; hình đối chứng 2015 cho thấy câu "bốn ngành khó nhất thấp hơn bình quân" không đúng năm đó nên tiêu đề tự đổi câu; **B30** | T27, T28 |
+| 30/10 | #23 | **dashboard BI để demo**, tách khỏi bài viết: `src/build_bi.py` → `site/bi/` (gói dữ liệu gộp từ `data/processed/`, RCA tính lại trên trình duyệt); **B29** | — |
+| 01/11 | #29 | thẻ **phần giá trị ở lại trong nước** (TiVA, chỉ Việt Nam, 1995–2022) trên dashboard BI; **B31** | — |
+| 11/11 | #30 | **dashboard BI vừa một màn hình**: ba trang Tổng quan · Mặt hàng · So sánh, thẻ KPI chọn chỉ số cho cả trang, bản đồ đối tác lọc được, bộ chọn năm so sánh; thẻ TiVA thành KPI thứ tư trang Mặt hàng; **B32** | — |
 
 ¹ commit trải từ 22/09 đến 13/10 trên nhánh `huynguyenkhac17`, nhưng chỉ vào `main` khi gộp PR #7 ngày 20/10.
 ² PR #3 gom nhiều commit từ 23–24/09.
@@ -334,7 +337,8 @@ phải bắt đầu từ trang trắng.
 
 **Trang demo trực tuyến** — `src/build_web.py` → `site/`, 23 biểu đồ tương tác theo
 năm nhịp, đẩy lên GitHub Pages bằng `.github/workflows/pages.yml` (**B26**). Còn một
-bước cần admin repo: Settings → Pages → Source: *GitHub Actions*. Thấy khi dựng: phụ
+Pages đã bật, mỗi lần gộp vào `main` có đổi `site/` là tự deploy. Dashboard BI để demo:
+https://dr-vphuc.github.io/global-ecom/bi/ (**B32**). Thấy khi dựng: phụ
 đề hình T20 chạm sát tiêu đề ô 1995 — việc của T23.
 
 Slide chia sẵn ai nói phần nào theo cột *Người phụ trách* của file phân công; muốn
