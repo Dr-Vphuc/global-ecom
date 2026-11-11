@@ -605,10 +605,19 @@ cd site && python -m http.server 8000      # xem thử ở http://localhost:8000
 ### Dashboard BI (`site/bi/`) — bản dùng để demo
 
 Tách hẳn khỏi bài viết và báo cáo (quyết định **B29**): không kể chuyện, không câu
-nhận xét, chỉ có số, biểu đồ và bộ lọc. Bộ lọc chung gồm quốc gia (232 nước) và năm
-(1995–2023). Bên dưới là tám ô chỉ số có sparkline, rồi bảy biểu đồ, mỗi biểu đồ có
-bộ lọc riêng (ngành, chiều xuất/nhập, khu vực, top N, ngưỡng kim ngạch, nhóm nước
-so sánh). Cuối trang là bảng 97 nhóm HS2: tìm kiếm, sắp xếp, tải CSV.
+nhận xét, chỉ có số, biểu đồ và bộ lọc. Vừa một màn hình máy tính, không cuộn trang
+(quyết định **B32**); màn hình nhỏ thì xếp dọc. Thanh trên chọn quốc gia (232 nước),
+năm (1995–2023) và năm so sánh. Ba trang dùng chung một khuôn:
+
+| Trang | Thẻ KPI (bấm để chọn chỉ số cho cả trang) | Ô lọc bên trái | Xu hướng · phân rã · bảng |
+|---|---|---|---|
+| Tổng quan | Xuất khẩu · Nhập khẩu · Cán cân | Bản đồ đối tác + nút châu lục; bấm một nước để lọc | Theo năm · theo khu vực · bảng đối tác |
+| Mặt hàng | Kim ngạch · Số nhóm RCA ≥ 1 · PCI bình quân · Giá trị ở lại trong nước (TiVA, chỉ Việt Nam, B31) | Thanh theo ngành, hoặc phần ở lại theo ngành khi chọn thẻ TiVA; bấm để lọc | Cơ cấu theo năm · RCA × PCI · bảng 97 nhóm HS2 |
+| So sánh | Hạng xuất khẩu · Hạng ECI · Thị phần | Xếp hạng nhóm nước (ASEAN, cùng khu vực, top 10) | Theo năm · quy mô × ECI · bảng nhóm nước |
+
+Bảng nào cũng sắp xếp, tìm kiếm, có dòng tổng và tải CSV. Sửa giao diện ở
+`src/web/bi/` (`index.html`, `bi.css`, `bi.js`); `build_bi.py` chép ba file đó sang
+`site/bi/`.
 
 Biểu đồ vẽ trên trình duyệt từ gói dữ liệu đã gộp do `src/build_bi.py` dựng từ
 `data/processed/`: `data/world.json` cộng một file `data/c/<ISO3>.json` cho mỗi nước,
@@ -618,7 +627,8 @@ tổng theo đối tác và tổng theo khu vực khớp với `country_year`.
 
 ```bash
 PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe src/build_bi.py
-# xem ở http://localhost:8000/bi/  — link có trạng thái: /bi/#VNM-2023
+# xem ở http://localhost:8000/bi/  — link có trạng thái: /bi/#tq-VNM-2023-auto-x
+# (trang-nước-năm-so với-chỉ số; dạng cũ /bi/#VNM-2023 vẫn mở được)
 ```
 
 ## Báo cáo cuối đã ráp xong (T27)
