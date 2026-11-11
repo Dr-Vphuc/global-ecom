@@ -584,7 +584,8 @@
         out.push({ id: "dva", label: "Giá trị ở lại trong nước" + (g ? " · " + g : ""), kind: "pp1",
           s: W.nam.map(function (y) { return Dv.nam.indexOf(y) >= 0 ? MH.dvaVal(S.ng, Dv.nam.indexOf(y)) : null; }),
           now: MH.dvaVal(S.ng, MH.dvaK(S.y)),
-          dnote: S.y > cuoi ? "số năm " + cuoi + ", TiVA dừng ở " + cuoi : null,
+          // Sau năm TiVA cuối: để trống dòng so sánh (so số năm cuối với chính nó vô nghĩa)
+          dnote: S.y > cuoi ? " " : null,
           val: function (v) { return [ok(v) ? f(v, 1) : "—", "% (TiVA)"]; },
           tip: "Phần giá trị xuất khẩu thực sự làm ra trong nước (OECD TiVA), không tính phần linh kiện, nguyên liệu nhập về. Chỉ có cho Việt Nam, 1995–" + cuoi + "; ngành Atlas được ghép sang ngành TiVA qua nhóm HS2." });
       }
